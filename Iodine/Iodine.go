@@ -1,14 +1,14 @@
-// package Iodine
+package Iodine
 
-package main
+// package main
 // import 	"fmt"
 import (
 	"encoding/json"
+	"image/color"
 	"io/ioutil"
 	"sort"
-	"image/color"
-	"github.com/llgcode/draw2d/draw2dimg"
-	"image"
+	// "github.com/llgcode/draw2d/draw2dimg"
+	// "image"
 )
 
 var netSetStack TNetSetStack
@@ -24,14 +24,14 @@ type TNetworkSet []TNetwork
 //TNode A  node with a id, an x,y coordinate
 //(top/left corner of node) and w, h (width and height)
 type TNode struct {
-	ID string  `json:"id"`
-	X  float64 `json:"x"`
-	Y  float64 `json:"y"`
-	W  float64 `json:"w"`
-	H  float64 `json:"h"`
-	FillColor    		color.RGBA 	`json:"fillColor"`
-	OutlineColor 		color.RGBA  `json:"outlineColor"`
-	OutlineThickness 	int			`json:"outlineThickness"`
+	ID               string     `json:"id"`
+	X                float64    `json:"x"`
+	Y                float64    `json:"y"`
+	W                float64    `json:"w"`
+	H                float64    `json:"h"`
+	FillColor        color.RGBA `json:"fillColor"`
+	OutlineColor     color.RGBA `json:"outlineColor"`
+	OutlineThickness int        `json:"outlineThickness"`
 }
 
 //TNetwork The list of Nodes
@@ -44,11 +44,11 @@ type TNetwork struct {
 
 //TReaction a reaction with multiple species
 type TReaction struct {
-	ID      string                `json:"id"`
-	RateLaw string                `json:"rateLaw"`
-	Species [2]map[string]float64 `json:"species"`
-	FillColor  color.RGBA		  `json:"fillColor"`
-	Thickness  int	 			  `json:"thickness"`
+	ID        string                `json:"id"`
+	RateLaw   string                `json:"rateLaw"`
+	Species   [2]map[string]float64 `json:"species"`
+	FillColor color.RGBA            `json:"fillColor"`
+	Thickness int                   `json:"thickness"`
 }
 
 //###############################################################
@@ -78,12 +78,12 @@ func (n *TNetworkSet) deepcopy() TNetworkSet {
 
 		for j := range (*n)[i].Nodes {
 			NewNodeX := TNode{ID: (*n)[i].Nodes[j].ID,
-				X: (*n)[i].Nodes[j].X,
-				Y: (*n)[i].Nodes[j].Y,
-				W: (*n)[i].Nodes[j].W,
-				H: (*n)[i].Nodes[j].H,
-				FillColor:    color.RGBA{},
-				OutlineColor: color.RGBA{},
+				X:                (*n)[i].Nodes[j].X,
+				Y:                (*n)[i].Nodes[j].Y,
+				W:                (*n)[i].Nodes[j].W,
+				H:                (*n)[i].Nodes[j].H,
+				FillColor:        color.RGBA{},
+				OutlineColor:     color.RGBA{},
 				OutlineThickness: (*n)[i].Nodes[j].OutlineThickness,
 			}
 			NewNodeX.FillColor.R = (*n)[i].Nodes[j].FillColor.R
@@ -94,21 +94,21 @@ func (n *TNetworkSet) deepcopy() TNetworkSet {
 			NewNodeX.OutlineColor.G = (*n)[i].Nodes[j].OutlineColor.G
 			NewNodeX.OutlineColor.B = (*n)[i].Nodes[j].OutlineColor.B
 			NewNodeX.OutlineColor.A = (*n)[i].Nodes[j].OutlineColor.A
-		
+
 			NewNetworkX.Nodes = append(NewNetworkX.Nodes, NewNodeX)
 		}
 
 		for k := range (*n)[i].ReactionSet {
 			NewReactionX := TReaction{
-				ID:      (*n)[i].ReactionSet[k].ID,
-				RateLaw: (*n)[i].ReactionSet[k].RateLaw,
+				ID:        (*n)[i].ReactionSet[k].ID,
+				RateLaw:   (*n)[i].ReactionSet[k].RateLaw,
 				FillColor: color.RGBA{},
 				Thickness: (*n)[i].ReactionSet[k].Thickness,
 			}
 
 			NewReactionX.Species[0] = make(map[string]float64, 0)
 			NewReactionX.Species[1] = make(map[string]float64, 0)
-			
+
 			for l := range (*n)[i].ReactionSet[k].Species[0] {
 				NewReactionX.Species[0][l] = (*n)[i].ReactionSet[k].Species[0][l]
 			}
@@ -127,7 +127,6 @@ func (n *TNetworkSet) deepcopy() TNetworkSet {
 	}
 	return NewNetworkSet
 }
-
 
 //GetNetworkSet GetNetworkSet
 //used in Iodine_C.go functions
@@ -197,15 +196,15 @@ func SaveNetworkAsJSON(neti int, fileName string) int {
 		return errCode
 	}
 	file, err1 := json.MarshalIndent(networkSet[neti], "", "    ")
-	if err1 != nil{
+	if err1 != nil {
 		errCode = -10
 		return errCode
-	} 
+	}
 	err2 := ioutil.WriteFile(fileName, file, 0644)
-	if err2 != nil{
+	if err2 != nil {
 		errCode = -11
 		return errCode
-	} 
+	}
 	return errCode
 }
 
@@ -215,18 +214,18 @@ func SaveNetworkAsJSON(neti int, fileName string) int {
 func ReadNetworkFromJSON(filePath string) int {
 	errCode := 0
 	file, err1 := ioutil.ReadFile(filePath)
-	if err1 != nil{
-		errCode= -11
+	if err1 != nil {
+		errCode = -11
 		return errCode
 	}
 	newNet := TNetwork{}
 	err2 := json.Unmarshal([]byte(file), &newNet)
-	if err2 != nil{
-		errCode= -10
+	if err2 != nil {
+		errCode = -10
 		return errCode
 	}
-	for i := range networkSet{
-		if newNet.ID == networkSet[i].ID{
+	for i := range networkSet {
+		if newNet.ID == networkSet[i].ID {
 			errCode = -3
 			return errCode
 		}
@@ -287,7 +286,7 @@ func GetNetworkID(neti int, errCode *int) string {
 //AddNode adds a node to the network
 //errCode -3: id repeat, 0 :ok
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 func AddNode(neti int, id string, x, y, w, h float64) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
@@ -301,26 +300,22 @@ func AddNode(neti int, id string, x, y, w, h float64) int {
 			return errCode
 		}
 	}
-	if x<0 || y<0 || w<=0 || h<=0 {
+	if x < 0 || y < 0 || w <= 0 || h <= 0 {
 		errCode = -12
 		return errCode
 	}
-	
+
 	redoStack = TNetSetStack{}
 	netSetStack.push(networkSet)
 
-
-	newNode := TNode{ID: id, X: x, Y: y, W: w, H: h, 
-		FillColor:color.RGBA{R:255,G: 150, B:80,A:255},
-		OutlineColor: color.RGBA{R:255,G: 100, B:80,A:255},
+	newNode := TNode{ID: id, X: x, Y: y, W: w, H: h,
+		FillColor:        color.RGBA{R: 255, G: 150, B: 80, A: 255},
+		OutlineColor:     color.RGBA{R: 255, G: 100, B: 80, A: 255},
 		OutlineThickness: 3}
 	n.Nodes = append(n.Nodes, newNode)
 	networkSet[neti] = n
 	return errCode
 }
-
-
-
 
 //GetNodeIndex get node index by id
 //index:  -2: node id can't find, >=0: ok
@@ -465,7 +460,7 @@ func GetNodeCenterY(neti, nodei int, errCode *int) float64 {
 	return n.Nodes[nodei].Y + n.Nodes[nodei].H*0.5
 }
 
-//GetNodeID Get the list fo node ids  python: getNodeList
+//GetNodeID Get the id of the node
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 func GetNodeID(neti, nodei int, errCode *int) string {
@@ -565,9 +560,9 @@ func GetNodeFillColor(neti, nodei int, errCode *int) uint32 {
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	color1 := uint32(n.Nodes[nodei].FillColor.R)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].FillColor.G)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].FillColor.B)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].FillColor.A)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.G)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.B)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.A)
 	return color1
 }
 
@@ -586,14 +581,14 @@ func GetNodeOutlineColor(neti, nodei int, errCode *int) uint32 {
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	color1 := uint32(n.Nodes[nodei].OutlineColor.R)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].OutlineColor.G)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].OutlineColor.B)
-	color1 = (color1 << 8)|uint32(n.Nodes[nodei].OutlineColor.A)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.G)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.B)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.A)
 	return color1
 }
 
 //GetNodeOutlineThickness GetNodeOutlineThickness
-//errCode: 0:ok, -7: node index out of range
+//errCode: -7: node index out of range
 //-5: net index out of range
 func GetNodeOutlineThickness(neti, nodei int) int {
 	errCode := 0
@@ -612,8 +607,8 @@ func GetNodeOutlineThickness(neti, nodei int) int {
 //SetNodeCoordinateAndSize SetNodeCoordinateAndSize
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
-func SetNodeCoordinateAndSize(neti, nodei int, x,y,w,h float64) int {
+//-12: Variable out of range:
+func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -624,11 +619,11 @@ func SetNodeCoordinateAndSize(neti, nodei int, x,y,w,h float64) int {
 		errCode = -7
 		return errCode
 	}
-	if x<0 || y<0 || w<=0 || h<=0 {
+	if x < 0 || y < 0 || w <= 0 || h <= 0 {
 		errCode = -12
 		return errCode
 	}
-	
+
 	redoStack = TNetSetStack{}
 	netSetStack.push(networkSet)
 
@@ -640,12 +635,11 @@ func SetNodeCoordinateAndSize(neti, nodei int, x,y,w,h float64) int {
 	return errCode
 }
 
-
 //SetNodeFillColor SetNodeFillColor
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
-func SetNodeFillColor(neti, nodei, r,g,b,a int)int{
+//-12: Variable out of range:
+func SetNodeFillColor(neti, nodei, r, g, b, a int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -656,7 +650,7 @@ func SetNodeFillColor(neti, nodei, r,g,b,a int)int{
 		errCode = -7
 		return errCode
 	}
-	if r<0 || r>255 ||g<0 || g>255 ||b<0 || b>255 ||a<0 || a>255 {
+	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255 {
 		errCode = -12
 		return errCode
 	}
@@ -677,8 +671,8 @@ func SetNodeFillColor(neti, nodei, r,g,b,a int)int{
 //SetNodeOutlineColor SetNodeOutlineColor
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
-func SetNodeOutlineColor(neti, nodei, r,g,b,a int)int{
+//-12: Variable out of range:
+func SetNodeOutlineColor(neti, nodei, r, g, b, a int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -689,7 +683,7 @@ func SetNodeOutlineColor(neti, nodei, r,g,b,a int)int{
 		errCode = -7
 		return errCode
 	}
-	if r<0 || r>255 ||g<0 || g>255 ||b<0 || b>255 ||a<0 || a>255 {
+	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255 {
 		errCode = -12
 		return errCode
 	}
@@ -711,7 +705,7 @@ func SetNodeOutlineColor(neti, nodei, r,g,b,a int)int{
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range
-func SetNodeOutlineThickness(neti, nodei, thickness int)int{
+func SetNodeOutlineThickness(neti, nodei, thickness int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -722,7 +716,7 @@ func SetNodeOutlineThickness(neti, nodei, thickness int)int{
 		errCode = -7
 		return errCode
 	}
-	if thickness<= 0{
+	if thickness <= 0 {
 		errCode = -12
 		return errCode
 	}
@@ -753,8 +747,8 @@ func CreateReaction(neti int, id string) int {
 	netSetStack.push(networkSet)
 
 	newReact := TReaction{ID: id,
-		FillColor: color.RGBA{R:255,G: 150, B:80,A:255},
-		Thickness:3,
+		FillColor: color.RGBA{R: 255, G: 150, B: 80, A: 255},
+		Thickness: 3,
 	}
 	newReact.Species[0] = make(map[string]float64, 0)
 	newReact.Species[1] = make(map[string]float64, 0)
@@ -825,7 +819,7 @@ func ClearReactions(neti int) int {
 	return errCode
 }
 
-//GetNumberOfReactions get the number of nodes in the current Reactionset
+//GetNumberOfReactions get the number of reactions in the current Reactionset
 //return: >=0: ok, -5: net index out of range
 func GetNumberOfReactions(neti int) int {
 	if neti < 0 || neti >= len(networkSet) {
@@ -870,7 +864,6 @@ func GetReactionRateLaw(neti, reai int, errCode *int) string {
 	return r[reai].RateLaw
 }
 
-
 //GetReactionFillColor GetReactionFillColor
 //errCode: 0:ok,  -6: reaction index out of range
 //-5: net index out of range
@@ -886,14 +879,14 @@ func GetReactionFillColor(neti, reai int, errCode *int) uint32 {
 		return 0
 	}
 	color1 := uint32(r[reai].FillColor.R)
-	color1 = (color1 << 8)|uint32(r[reai].FillColor.G)
-	color1 = (color1 << 8)|uint32(r[reai].FillColor.B)
-	color1 = (color1 << 8)|uint32(r[reai].FillColor.A)
+	color1 = (color1 << 8) | uint32(r[reai].FillColor.G)
+	color1 = (color1 << 8) | uint32(r[reai].FillColor.B)
+	color1 = (color1 << 8) | uint32(r[reai].FillColor.A)
 	return color1
 }
 
 //GetReactionLineThickness GetReactionLineThickness
-//errCode: 0:ok, -6: reaction index out of range
+//errCode: -6: reaction index out of range
 //-5: net index out of range
 func GetReactionLineThickness(neti, reai int) int {
 	errCode := 0
@@ -909,9 +902,8 @@ func GetReactionLineThickness(neti, reai int) int {
 	return r[reai].Thickness
 }
 
-
 //GetReactionSrcNodeStoich Get the SrcNode stoichiometry of Reaction
-//return: positive int: ok, -6: reaction index out of range,
+//errCode: -6: reaction index out of range,
 //-5: net index out of range, -2: id not found
 func GetReactionSrcNodeStoich(neti, reai int, srcNodeID string, errCode *int) float64 {
 	*errCode = 0
@@ -1199,8 +1191,8 @@ func SetRateLaw(neti, reai int, rateLaw string) int {
 //SetReactionFillColor SetReactionFillColor
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
-func SetReactionFillColor(neti, reai,R,G,B,A int)int{
+//-12: Variable out of range:
+func SetReactionFillColor(neti, reai, R, G, B, A int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -1211,7 +1203,7 @@ func SetReactionFillColor(neti, reai,R,G,B,A int)int{
 		errCode = -6
 		return errCode
 	}
-	if R<0 || R>255 ||G<0 || G>255 ||B<0 || B>255 ||A<0 || A>255 {
+	if R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255 || A < 0 || A > 255 {
 		errCode = -12
 		return errCode
 	}
@@ -1221,7 +1213,7 @@ func SetReactionFillColor(neti, reai,R,G,B,A int)int{
 	G1 := uint8(G)
 	B1 := uint8(B)
 	A1 := uint8(A)
-	
+
 	r[reai].FillColor.R = R1
 	r[reai].FillColor.G = G1
 	r[reai].FillColor.B = B1
@@ -1244,7 +1236,7 @@ func SetReactionLineThickness(neti, reai, thickness int) int {
 		errCode = -6
 		return errCode
 	}
-	if thickness <= 0{
+	if thickness <= 0 {
 		errCode = -12
 		return errCode
 	}
@@ -1268,38 +1260,20 @@ func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i in
 
 //###################################################################
 
-func main() {
-	// err := 0
-	// err:= ReadNetworkFromJSON("jstr.json")
-	// err1:= SaveNetworkAsJSON(0,"jon.json")
-	// fmt.Println(networkSet)
-	// fmt.Println(err1)
-	NewNetwork("network1")
-    AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
-    AddNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
-    AddNode(0, "node3", 2.2, 3.1, 1.5, 4.5)
-    AddNode(0, "node4", 7.2, 3.5, 1.6, 4.8)
-    createBiBi(0, "Rea1", "k1*A",0, 1, 2, 3, 1.0, 2.0, 3.0, 4.0)
-	createBiBi(0, "Rea2", "k2*A",1, 3, 0, 2, 2.0, 5.0, 8.0, 7.0)
+// func main() {
+// err := 0
+// err:= ReadNetworkFromJSON("jstr.json")
+// err1:= SaveNetworkAsJSON(0,"jon.json")
+// fmt.Println(networkSet)
+// fmt.Println(err1)
+// NewNetwork("network1")
+// AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
+// AddNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
+// AddNode(0, "node3", 2.2, 3.1, 1.5, 4.5)
+// AddNode(0, "node4", 7.2, 3.5, 1.6, 4.8)
+// createBiBi(0, "Rea1", "k1*A",0, 1, 2, 3, 1.0, 2.0, 3.0, 4.0)
+// createBiBi(0, "Rea2", "k2*A",1, 3, 0, 2, 2.0, 5.0, 8.0, 7.0)
 
-	dest := image.NewRGBA(image.Rect(0, 0, 297, 210.0))
-	gc := draw2dimg.NewGraphicContext(dest)
+// delete ClearNetwork()
 
-	// Set some properties
-	gc.SetFillColor(color.RGBA{0x44, 0xff, 0x44, 0xff})
-	gc.SetStrokeColor(color.RGBA{0x44, 0x44, 0x44, 0xff})
-	gc.SetLineWidth(5)
-
-	// Draw a closed shape
-	gc.BeginPath() // Initialize a new path
-	gc.MoveTo(10, 10) // Move to a position to start the new path
-	gc.LineTo(100, 50)
-	gc.QuadCurveTo(100, 10, 10, 10)
-	gc.Close()
-	gc.FillStroke()
-
-	// Save to file
-	draw2dimg.SaveToPngFile("hello.png", dest)
-
-
-}
+// }
