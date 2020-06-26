@@ -18,9 +18,15 @@ The NOM can be used from golang, Python or C.
 
 ## Example of using the C API
 
+Provide an example of using the library from C
+
 ## Example of using the Python interface
 
+Provide an example of using the library from Python
+
 ## Running the Tests
+
+Explain how to run the Pyhton tests
 
 # API Documenation
 
