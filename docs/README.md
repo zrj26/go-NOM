@@ -34,7 +34,7 @@ Provide an example of using the library from Python
 
 ## Running the Tests
 
-Explain how to run the Pyhton tests
+Explain how to run the Python tests
 
 # API Documenation
 
