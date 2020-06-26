@@ -20,6 +20,10 @@ The NOM can be used from golang, Python or C.
 
 Provide an example of using the library from C
 
+The library has been precompiled as a 64-bit DLL, iodine.dll. This can be used directly in a host application. The iodine.h is header file and contains all the C method signatures.
+
+Should provide a C loader application.
+
 ## Example of using the Python interface
 
 Provide an example of using the library from Python
