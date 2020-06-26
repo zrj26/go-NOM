@@ -4,11 +4,13 @@ A golang based Network Object library.
 ## Description
 
 The library supports the storage and management of information that represents a reaction network. In addition to the 
-species and reactions, the linrary also stores visualization inforamtion including positing and various visual attributes of species and reasctions.
+species and reactions, the library also stores visualization information including positioning and various visual attributes of species and reactions. These are sumamrized below.
+
+# Object Model
 
 ### Features
 
-Undo/redo, json import/export, set and get API for object attributes.
+As well and providing settters and getters for the various data items stored in the model, the object also support undo/redo. That is any operations applied to the model can be undo or redo by calling the undo and redo methods. Inaddition, the model provides a means to pserist the object model in the form of json import and export. 
 
 ## How to use the library
 
