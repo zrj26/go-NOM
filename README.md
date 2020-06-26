@@ -22,9 +22,9 @@ The NOM can be used from golang, Python or C.
 
 ## Running the Tests
 
-### API Documenation
+# API Documenation
 
 Documentation for the API can be found in the 
 
-### Download
+# Download
 
