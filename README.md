@@ -14,7 +14,7 @@ As well and providing settters and getters for the various data items stored in 
 
 ## Object Model
 
-Describe the object model, network, nodes and reactions
+Describe the object model, network, nodes and reactions. Maybe a simple UML diagram would work.
 
 # How to use the library
 
