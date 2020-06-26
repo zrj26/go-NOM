@@ -1,17 +1,22 @@
 # go-NOM
-A golang based Network Object Model library. 
+A golang based Network Object library. 
 
-##Description
+## Description
 
-Briefly describe what the library does
+The library supports the storage and management of information that represents a reaction network. In addition to the 
+species and reactions, the linrary also stores visualization inforamtion including positing and various visual attributes of species and reasctions.
 
 ### Features
 
+Undo/redo, json import/export, set and get API for object attributes.
+
 ## How to use the library
 
-Discuss about the three APIs you support, python, C and go
+The NOM can be used from golang, Python or C.
 
 # Example of using the C API
+
+# Example of using the Python interface
 
 # Running the Tests
 
