@@ -1,5 +1,5 @@
 # go-NOM
-A golang based Network Object library. 
+A golang based Network Object library for storing information on chemical reaction networks.  
 
 ## Description
 
