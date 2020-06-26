@@ -38,7 +38,7 @@ Explain how to run the Pyhton tests
 
 # API Documenation
 
-Documentation for the API can be found in the 
+[Documentation for the Go API](https://github.com/zrj26/go-NOM/blob/master/docs/Go-NOM%20documentation.md)
 
 # Download
 
