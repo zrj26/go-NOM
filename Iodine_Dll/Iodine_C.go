@@ -3,7 +3,7 @@ package main
 // import "fmt"
 import (
 	"C"
-	"IodinePkg/Iodine_GO"
+	Iodine "IodinePkg/Iodine_GO"
 )
 
 var errCode int = 0
@@ -26,32 +26,32 @@ func redo() C.int {
 
 //export newNetwork
 //errCode -3: ID repeat, 0 :ok
-func newNetwork(n *C.char, l C.int) C.int {
-	ID := C.GoStringN(n, l)
+func newNetwork(id *C.char) C.int {
+	ID := C.GoString(id)
 	return C.int(Iodine.NewNetwork(ID))
 }
 
 //export getNetworkIndex
 //return:  -2: net ID can't find, >=0: ok
-func getNetworkIndex(n *C.char, l C.int) C.int {
-	ID := C.GoStringN(n, l)
+func getNetworkIndex(id *C.char) C.int {
+	ID := C.GoString(id)
 	return C.int(Iodine.GetNetworkIndex(ID))
 }
 
 //export saveNetworkAsJSON
 //errCode:  0:ok, -5: net index out of range
 //-10: "Json convert error", -11: "File error",
-func saveNetworkAsJSON(n *C.char, l, neti C.int) C.int {
-	fileName := C.GoStringN(n, l)
+func saveNetworkAsJSON(neti C.int, name *C.char) C.int {
 	netI := int(neti)
+	fileName := C.GoString(name)
 	return C.int(Iodine.SaveNetworkAsJSON(netI, fileName))
 }
 
 //export readNetworkFromJSON
 //errCode -3: name repeat, 0 :ok
 //-10: "Json convert error", -11: "File error",
-func readNetworkFromJSON(n *C.char, l C.int) C.int {
-	filePath := C.GoStringN(n, l)
+func readNetworkFromJSON(path *C.char) C.int {
+	filePath := C.GoString(path)
 	return C.int(Iodine.ReadNetworkFromJSON(filePath))
 }
 
@@ -84,10 +84,10 @@ func getNetworkID(neti C.int) *C.char {
 //export addNode
 //return -3: ID repeat, 0 :ok
 //-5: net index out of range
-//-12: Variable out of range: 
-func addNode(n *C.char, l, neti C.int, x, y, w, h C.float) C.int {
-	ID := C.GoStringN(n, l)
+//-12: Variable out of range:
+func addNode(neti C.int, id *C.char, x, y, w, h C.float) C.int {
 	netI := int(neti)
+	ID := C.GoString(id)
 	x1 := float64(x)
 	y1 := float64(y)
 	w1 := float64(w)
@@ -99,9 +99,9 @@ func addNode(n *C.char, l, neti C.int, x, y, w, h C.float) C.int {
 //export getNodeIndex
 //return:  -2: node ID can't find, >=0: ok
 //-5: net index out of range
-func getNodeIndex(n *C.char, l, neti C.int) C.int {
+func getNodeIndex(neti C.int, id *C.char) C.int {
 	netI := int(neti)
-	ID := C.GoStringN(n, l)
+	ID := C.GoString(id)
 	index := Iodine.GetNodeIndex(netI, ID)
 	return C.int(index)
 }
@@ -243,7 +243,7 @@ func getNodeOutlineThickness(neti, nodei C.int) C.int {
 //export setNodeCoordinateAndSize
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 func setNodeCoordinateAndSize(neti, nodei C.int, x, y, w, h C.float) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
@@ -259,7 +259,7 @@ func setNodeCoordinateAndSize(neti, nodei C.int, x, y, w, h C.float) C.int {
 //export setNodeFillColor
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 func setNodeFillColor(neti, nodei, r, g, b, a C.int) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
@@ -274,8 +274,8 @@ func setNodeFillColor(neti, nodei, r, g, b, a C.int) C.int {
 //export setNodeOutlineColor
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
-func setNodeOutlineColor(neti, nodei,r, g, b, a C.int) C.int {
+//-12: Variable out of range:
+func setNodeOutlineColor(neti, nodei, r, g, b, a C.int) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
 	R := int(r)
@@ -301,9 +301,9 @@ func setNodeOutlineThickness(neti, nodei, thickness C.int) C.int {
 //export createReaction
 //errCode: 0: ok, -3: ID repeat
 //-5: net index out of range
-func createReaction(n *C.char, l, neti C.int) C.int {
-	reaID := C.GoStringN(n, l)
+func createReaction(neti C.int,reaid *C.char) C.int {
 	netI := int(neti)
+	reaID := C.GoString(reaid)
 	err := Iodine.CreateReaction(netI, reaID)
 	return C.int(err)
 }
@@ -311,9 +311,9 @@ func createReaction(n *C.char, l, neti C.int) C.int {
 //export getReactionIndex
 //return: -2: ID can't find, >=0: ok
 //-5: net index out of range
-func getReactionIndex(n *C.char, l, neti C.int) C.int {
-	reaID := C.GoStringN(n, l)
+func getReactionIndex(neti C.int, reaid *C.char) C.int {
 	netI := int(neti)
+	reaID := C.GoString(reaid)
 	index := Iodine.GetReactionIndex(netI, reaID)
 	return C.int(index)
 }
@@ -390,10 +390,10 @@ func getReactionLineThickness(neti, reai C.int) C.int {
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
-func getReactionSrcNodeStoich(n *C.char, l, neti, reai C.int) C.float {
+func getReactionSrcNodeStoich(neti, reai C.int,srcNodeid *C.char) C.float {
 	netI := int(neti)
 	reaI := int(reai)
-	srcNodeID := C.GoStringN(n, l)
+	srcNodeID := C.GoString(srcNodeid)
 	stoich := Iodine.GetReactionSrcNodeStoich(netI, reaI, srcNodeID, &errCode)
 	return C.float(stoich)
 }
@@ -402,10 +402,10 @@ func getReactionSrcNodeStoich(n *C.char, l, neti, reai C.int) C.float {
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
-func getReactionDestNodeStoich(n *C.char, l, neti, reai C.int) C.float {
+func getReactionDestNodeStoich(neti, reai C.int,destNodeid *C.char) C.float {
 	netI := int(neti)
 	reaI := int(reai)
-	destNodeID := C.GoStringN(n, l)
+	destNodeID := C.GoString(destNodeid)
 	Stoich := Iodine.GetReactionDestNodeStoich(netI, reaI, destNodeID, &errCode)
 	return C.float(Stoich)
 }
@@ -493,10 +493,10 @@ func addDestNode(neti, reai, nodei C.int, stoich C.float) C.int {
 //errCode: 0:ok, -6: reaction index out of range,
 //-7: node index out of range
 //-5: net index out of range
-func deleteSrcNode(n *C.char, l, neti, reai C.int) C.int {
-	srcNodeID := C.GoStringN(n, l)
+func deleteSrcNode(neti, reai C.int, srcNodeid *C.char) C.int {
 	netI := int(neti)
 	reaI := int(reai)
+	srcNodeID := C.GoString(srcNodeid)
 	err := Iodine.DeleteSrcNode(netI, reaI, srcNodeID)
 	return C.int(err)
 }
@@ -505,10 +505,10 @@ func deleteSrcNode(n *C.char, l, neti, reai C.int) C.int {
 //errCode: 0:ok, -6: reaction index out of range,
 //-7: node index out of range
 //-5: net index out of range
-func deleteDestNode(n *C.char, l, neti, reai C.int) C.int {
-	destNodeID := C.GoStringN(n, l)
+func deleteDestNode(neti, reai C.int, destNodeid *C.char) C.int {
 	netI := int(neti)
 	reaI := int(reai)
+	destNodeID := C.GoString(destNodeid)
 	err := Iodine.DeleteDestNode(netI, reaI, destNodeID)
 	return C.int(err)
 }
@@ -516,10 +516,10 @@ func deleteDestNode(n *C.char, l, neti, reai C.int) C.int {
 //export setRateLaw
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-func setRateLaw(n *C.char, l, neti, reai C.int) C.int {
-	rateLaw := C.GoStringN(n, l)
+func setRateLaw(neti, reai C.int, ratelaw *C.char) C.int {
 	netI := int(neti)
 	reaI := int(reai)
+	rateLaw := C.GoString(ratelaw)
 	err := Iodine.SetRateLaw(netI, reaI, rateLaw)
 	return C.int(err)
 }

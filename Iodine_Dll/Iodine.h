@@ -77,21 +77,21 @@ extern int redo();
 
 //errCode -3: ID repeat, 0 :ok
 
-extern int newNetwork(char* p0, int p1);
+extern int newNetwork(char* p0);
 
 //return:  -2: net ID can't find, >=0: ok
 
-extern int getNetworkIndex(char* p0, int p1);
+extern int getNetworkIndex(char* p0);
 
 //errCode:  0:ok, -5: net index out of range
 //-10: "Json convert error", -11: "File error",
 
-extern int saveNetworkAsJSON(char* p0, int p1, int p2);
+extern int saveNetworkAsJSON(int p0, char* p1);
 
 //errCode -3: name repeat, 0 :ok
 //-10: "Json convert error", -11: "File error",
 
-extern int readNetworkFromJSON(char* p0, int p1);
+extern int readNetworkFromJSON(char* p0);
 
 //errCode:  0:ok, -5: net index out of range
 
@@ -110,14 +110,14 @@ extern char* getNetworkID(int p0);
 
 //return -3: ID repeat, 0 :ok
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 
-extern int addNode(char* p0, int p1, int p2, float p3, float p4, float p5, float p6);
+extern int addNode(int p0, char* p1, float p2, float p3, float p4, float p5);
 
 //return:  -2: node ID can't find, >=0: ok
 //-5: net index out of range
 
-extern int getNodeIndex(char* p0, int p1, int p2);
+extern int getNodeIndex(int p0, char* p1);
 
 //flag: 0: ok, -7: node index out of range,
 //-4: node is not free
@@ -194,19 +194,19 @@ extern int getNodeOutlineThickness(int p0, int p1);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 
 extern int setNodeCoordinateAndSize(int p0, int p1, float p2, float p3, float p4, float p5);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 
 extern int setNodeFillColor(int p0, int p1, int p2, int p3, int p4, int p5);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-//-12: Variable out of range: 
+//-12: Variable out of range:
 
 extern int setNodeOutlineColor(int p0, int p1, int p2, int p3, int p4, int p5);
 
@@ -219,12 +219,12 @@ extern int setNodeOutlineThickness(int p0, int p1, int p2);
 //errCode: 0: ok, -3: ID repeat
 //-5: net index out of range
 
-extern int createReaction(char* p0, int p1, int p2);
+extern int createReaction(int p0, char* p1);
 
 //return: -2: ID can't find, >=0: ok
 //-5: net index out of range
 
-extern int getReactionIndex(char* p0, int p1, int p2);
+extern int getReactionIndex(int p0, char* p1);
 
 //errCode:  0:ok, -6: reaction index out of range
 //-5: net index out of range
@@ -265,13 +265,13 @@ extern int getReactionLineThickness(int p0, int p1);
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
 
-extern float getReactionSrcNodeStoich(char* p0, int p1, int p2, int p3);
+extern float getReactionSrcNodeStoich(int p0, int p1, char* p2);
 
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
 
-extern float getReactionDestNodeStoich(char* p0, int p1, int p2, int p3);
+extern float getReactionDestNodeStoich(int p0, int p1, char* p2);
 
 //return: non-negative int: ok, -6: reaction index out of range
 //-5: net index out of range
@@ -317,18 +317,18 @@ extern int addDestNode(int p0, int p1, int p2, float p3);
 //-7: node index out of range
 //-5: net index out of range
 
-extern int deleteSrcNode(char* p0, int p1, int p2, int p3);
+extern int deleteSrcNode(int p0, int p1, char* p2);
 
 //errCode: 0:ok, -6: reaction index out of range,
 //-7: node index out of range
 //-5: net index out of range
 
-extern int deleteDestNode(char* p0, int p1, int p2, int p3);
+extern int deleteDestNode(int p0, int p1, char* p2);
 
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
-extern int setRateLaw(char* p0, int p1, int p2, int p3);
+extern int setRateLaw(int p0, int p1, char* p2);
 
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range

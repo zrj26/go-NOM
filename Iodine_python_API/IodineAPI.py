@@ -3,17 +3,17 @@ import ctypes
 libIodine = ctypes.cdll.LoadLibrary('Iodine_Dll/Iodine.dll')
 
 #########################   argtypes   #########################
-libIodine.newNetwork.argtypes = [ctypes.c_char_p, ctypes.c_int]
-libIodine.getNetworkIndex.argtypes = [ctypes.c_char_p, ctypes.c_int]
+libIodine.newNetwork.argtypes = [ctypes.c_char_p]
+libIodine.getNetworkIndex.argtypes = [ctypes.c_char_p]
 libIodine.saveNetworkAsJSON.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+    ctypes.c_int,  ctypes.c_char_p]
 libIodine.readNetworkFromJSON.argtypes = [
-    ctypes.c_char_p, ctypes.c_int]
+    ctypes.c_char_p]
 libIodine.deleteNetwork.argtypes = [ctypes.c_int]
 libIodine.getNetworkID.argtypes = [ctypes.c_int]
-libIodine.addNode.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_int,
+libIodine.addNode.argtypes = [ctypes.c_int, ctypes.c_char_p,
                               ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float]
-libIodine.getNodeIndex.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+libIodine.getNodeIndex.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libIodine.deleteNode.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.clearNetwork.argtypes = [ctypes.c_int]
 libIodine.getNumberOfNodes.argtypes = [ctypes.c_int]
@@ -36,10 +36,8 @@ libIodine.setNodeOutlineColor.argtypes = [
 libIodine.setNodeOutlineThickness.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_int]
 
-libIodine.createReaction.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
-libIodine.getReactionIndex.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+libIodine.createReaction.argtypes = [ctypes.c_int, ctypes.c_char_p]
+libIodine.getReactionIndex.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libIodine.deleteReaction.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.clearReactions.argtypes = [ctypes.c_int]
 libIodine.getNumberOfReactions.argtypes = [ctypes.c_int]
@@ -48,9 +46,9 @@ libIodine.getReactionRateLaw.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionFillColor.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionLineThickness.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionSrcNodeStoich.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.getReactionDestNodeStoich.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.getNumberOfSrcNodes.argtypes = [
     ctypes.c_int, ctypes.c_int]
 libIodine.getNumberOfDestNodes.argtypes = [
@@ -63,11 +61,10 @@ libIodine.addSrcNode.argtypes = [ctypes.c_int,
 libIodine.addDestNode.argtypes = [ctypes.c_int,
                                   ctypes.c_int, ctypes.c_int, ctypes.c_float]
 libIodine.deleteSrcNode.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.deleteDestNode.argtypes = [
-    ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int]
-libIodine.setRateLaw.argtypes = [ctypes.c_char_p,
-                                 ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
+libIodine.setRateLaw.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.setReactionFillColor.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ctypes.c_int, ctypes.c_int]
 libIodine.setReactionLineThickness.argtypes = [
@@ -230,13 +227,13 @@ def redo():
 
 
 def newNetwork(netId):
-    errCode = libIodine.newNetwork(netId.encode(), len(netId))
+    errCode = libIodine.newNetwork(netId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], netId)
 
 
 def getNetworkIndex(netId):
-    neti = libIodine.getNetworkIndex(netId.encode(), len(netId))
+    neti = libIodine.getNetworkIndex(netId.encode())
     if neti < 0:
         raise ExceptionDict[neti](errorDict[neti], netId)
     else:
@@ -245,13 +242,13 @@ def getNetworkIndex(netId):
 
 def saveNetworkAsJSON(neti, fileName):
     errCode = libIodine.saveNetworkAsJSON(
-        fileName.encode(), len(fileName), neti)
+        neti, fileName.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, fileName)
 
 
 def readNetworkFromJSON(filePath):
-    errCode = libIodine.readNetworkFromJSON(filePath.encode(), len(filePath))
+    errCode = libIodine.readNetworkFromJSON(filePath.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], filePath)
 
@@ -288,14 +285,14 @@ def getListOfNetworks():
 
 
 def addNode(neti, nodeId, x, y, w, h):
-    errCode = libIodine.addNode(nodeId.encode(), len(nodeId), neti, x, y, w, h)
+    errCode = libIodine.addNode(neti, nodeId.encode(), x, y, w, h)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, nodeId, x, y, w, h)
 
 
 def getNodeIndex(neti, nodeId):
-    nodei = libIodine.getNodeIndex(nodeId.encode(), len(nodeId), neti)
+    nodei = libIodine.getNodeIndex(neti, nodeId.encode())
     if nodei < 0:
         raise ExceptionDict[nodei](errorDict[nodei], neti, nodeId)
     else:
@@ -410,13 +407,13 @@ def setNodeOutlineThickness(neti, nodei, thickness):
 
 
 def createReaction(neti, reaId):
-    errCode = libIodine.createReaction(reaId.encode(), len(reaId), neti)
+    errCode = libIodine.createReaction(neti, reaId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reaId)
 
 
 def getReactionIndex(neti, reaId):
-    reai = libIodine.getReactionIndex(reaId.encode(), len(reaId), neti)
+    reai = libIodine.getReactionIndex(neti, reaId.encode())
     if reai < 0:
         raise ExceptionDict[reai](errorDict[reai], neti, reaId)
     else:
@@ -488,7 +485,7 @@ def getReactionLineThickness(neti, reai):
 
 def getReactionSrcNodeStoich(neti, reai, srcNodeId):
     SrcNodeStoich = libIodine.getReactionSrcNodeStoich(
-        srcNodeId.encode(), len(srcNodeId), neti, reai)
+        neti, reai, srcNodeId.encode())
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](
@@ -499,7 +496,7 @@ def getReactionSrcNodeStoich(neti, reai, srcNodeId):
 
 def getReactionDestNodeStoich(neti, reai, destNodeId):
     DestNodeStoich = libIodine.getReactionDestNodeStoich(
-        destNodeId.encode(), len(destNodeId), neti, reai)
+        neti, reai, destNodeId.encode())
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](
@@ -590,23 +587,21 @@ def addDestNode(neti, reai, nodei, stoich):
 
 def deleteSrcNode(neti, reai, srcNodeId):
     errCode = libIodine.deleteSrcNode(
-        srcNodeId.encode(), len(srcNodeId), neti, reai)
+        neti, reai, srcNodeId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai, srcNodeId)
 
 
 def deleteDestNode(neti, reai, destNodeId):
     errCode = libIodine.deleteDestNode(
-        destNodeId.encode(), len(destNodeId), neti, reai)
+        neti, reai, destNodeId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, destNodeId)
 
 
 def setRateLaw(neti, reai, rateLaw):
-    n = rateLaw.encode()
-    l = len(rateLaw)
-    errCode = libIodine.setRateLaw(n, l, neti, reai)
+    errCode = libIodine.setRateLaw(neti, reai, rateLaw.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai, rateLaw)
 
