@@ -34,11 +34,12 @@ Provide an example of using the library from Python
 
 ## Running the Tests
 
-Explain how to run the Pyhton tests
+Explain how to run the Python tests
 
 # API Documenation
 
 [Documentation for the Go API](https://github.com/zrj26/go-NOM/blob/master/docs/Go-NOM%20documentation.md)
 
 # Download
+
 
