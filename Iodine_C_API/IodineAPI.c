@@ -13,51 +13,34 @@ int init(){
     {
         return -1;
     }
+    printf("init\n");
     return 0;
 }
 
 // int newNetwork(char* p0, int p1);
-int NewNetwork(char *name)
-{
+int NewNetwork(char *name){
     MYFunc newNetwork;
-    BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
-
-    if (LibIodine = NULL)
-    {
+    if (LibIodine = NULL){
         return -1;
     }
-
     newNetwork = (MYFunc)GetProcAddress(LibIodine, "newNetwork");
-
-    // If the function address is valid, call the function.
-    if (newNetwork = NULL)
-    {
+    if (newNetwork = NULL){
         return -1;
     }
-            // fRunTimeLinkSuccess = TRUE;
-    newNetwork(name, strlen(name));
-    
-        // Free the DLL module.
-        // fFreeResult = FreeLibrary(LibIodine);
-    return 0;
+    int err = newNetwork(name, strlen(name));
+    return err;
 }
 
 char* getNetworkID(int index)
 {
     MYFunc2 getNetworkID;
-    BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
     char* id;
-    if (LibIodine != NULL)
-    {
-        getNetworkID = (MYFunc2)GetProcAddress(LibIodine, "getNetworkID");
-
-        // If the function address is valid, call the function.
-        if (NULL != getNetworkID)
-        {
-            fRunTimeLinkSuccess = TRUE;
-            id = getNetworkID(index);
-        }
-
+    if (LibIodine = NULL){
+        return "error";
+    }
+    getNetworkID = (MYFunc2)GetProcAddress(LibIodine, "getNetworkID");
+    if (NULL != getNetworkID){
+        id = getNetworkID(index);
     }
     return id;
 }

@@ -1,17 +1,20 @@
 #include "IodineAPI.c"
+// #include <stdio.h>
 
-void main()
+int main()
 {
     int success = init();
     if (success==-1){
         // failed
         printf("init library failed");
-        return;
+        return 0;
     }
-
+    printf("sss");
     char *name = "network1";
-    int res = NewNetwork(name);
+    int err = NewNetwork(name);
+    printf(err);
     char* id = getNetworkID(0);
-    printf(id);
+    printf("sdfsd");
     printf("sdds");
+    return 0;
 }
