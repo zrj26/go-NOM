@@ -11,10 +11,8 @@ int main()
     }
     char *name = "network1";
     int err = NewNetwork(name);
-    // printf("123");
 
-    // printf("%d", err);
-    char* id = getNetworkID(0);
+    char* id = GetNetworkID(0);
     printf("%S",id);
     return 0;
 }

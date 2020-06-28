@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include "..\Iodine_Dll\Iodine.h"
 
-typedef int(__cdecl *MYFunc)(char*, int);
-typedef char*(__cdecl *MYFunc2)(int);
+typedef __stdcall int (*MYFunc)(char *, int);
+typedef __stdcall char*(*MYFunc2)(int);
 
 HINSTANCE LibIodine = NULL;
 
@@ -19,28 +19,35 @@ int init(){
 
 // int newNetwork(char* p0, int p1);
 int NewNetwork(char *name){
-    MYFunc newNetwork;
-    if (LibIodine == NULL){
+    if (LibIodine == NULL)
+    {
+        printf("lib Null");
         return -1;
     }
+    MYFunc newNetwork;
     newNetwork = (MYFunc)GetProcAddress(LibIodine, "newNetwork");
     if (newNetwork == NULL){
+        printf("func Null: newNetwork");
         return -1;
     }
     int err = newNetwork(name, strlen(name));
     return err;
 }
 
-char* getNetworkID(int index)
+char* GetNetworkID(int index)
 {
-    MYFunc2 getNetworkID;
-    char* id;
     if (LibIodine = NULL){
+        printf("lib Null");
         return "error";
     }
+    MYFunc2 getNetworkID;
     getNetworkID = (MYFunc2)GetProcAddress(LibIodine, "getNetworkID");
-    if (NULL != getNetworkID){
-        id = getNetworkID(index);
+    if (getNetworkID == NULL){
+        printf("func Null: getNetworkID");
+        return "error";
     }
+    printf("123");
+    char *id;
+    id = getNetworkID(index);
     return id;
 }
