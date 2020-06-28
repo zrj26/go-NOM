@@ -9,12 +9,12 @@ int main()
         printf("init library failed");
         return 0;
     }
-    printf("sss");
     char *name = "network1";
     int err = NewNetwork(name);
-    printf(err);
+    // printf("123");
+
+    // printf("%d", err);
     char* id = getNetworkID(0);
-    printf("sdfsd");
-    printf("sdds");
+    printf("%S",id);
     return 0;
 }

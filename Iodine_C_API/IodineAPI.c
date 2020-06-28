@@ -8,8 +8,8 @@ typedef char*(__cdecl *MYFunc2)(int);
 HINSTANCE LibIodine = NULL;
 
 int init(){
-    LibIodine = LoadLibrary(TEXT("Iodine_Dll/Iodine.dll"));
-    if (LibIodine != NULL)
+    LibIodine = LoadLibrary(TEXT("../Iodine_Dll/Iodine.dll"));
+    if (LibIodine == NULL)
     {
         return -1;
     }
@@ -20,11 +20,11 @@ int init(){
 // int newNetwork(char* p0, int p1);
 int NewNetwork(char *name){
     MYFunc newNetwork;
-    if (LibIodine = NULL){
+    if (LibIodine == NULL){
         return -1;
     }
     newNetwork = (MYFunc)GetProcAddress(LibIodine, "newNetwork");
-    if (newNetwork = NULL){
+    if (newNetwork == NULL){
         return -1;
     }
     int err = newNetwork(name, strlen(name));
