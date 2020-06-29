@@ -1,18 +1,27 @@
 #include "IodineAPI.c"
-// #include <stdio.h>
 
 int main()
 {
-    int success = init();
-    if (success==-1){
-        // failed
-        printf("init library failed");
-        return 0;
+    int errorCode;
+    int err;
+    char *Id;
+    if (loadDll(&errorCode))
+    {
+        printf("Error code from iodine = %d\n", getErrorCode());
+        err = newNetwork("net1");
+        printf("errCode = %d\n", err);
+        Id = getNetworkID(0);
+        printf("Network Id = %s\n", Id);
     }
-    char *name = "network1";
-    int err = NewNetwork(name);
+    else
+    {
+        printf("Failed to load DLL: %d\n", errorCode);
+    }
 
-    char* id = GetNetworkID(0);
-    printf("%S",id);
+    bool fFreeResult = FreeLibrary(hinstLib);
+    if (!fFreeResult){
+        printf("free error");
+    }
+
     return 0;
 }

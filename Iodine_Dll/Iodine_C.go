@@ -301,7 +301,7 @@ func setNodeOutlineThickness(neti, nodei, thickness C.int) C.int {
 //export createReaction
 //errCode: 0: ok, -3: ID repeat
 //-5: net index out of range
-func createReaction(neti C.int,reaid *C.char) C.int {
+func createReaction(neti C.int, reaid *C.char) C.int {
 	netI := int(neti)
 	reaID := C.GoString(reaid)
 	err := Iodine.CreateReaction(netI, reaID)
@@ -390,7 +390,7 @@ func getReactionLineThickness(neti, reai C.int) C.int {
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
-func getReactionSrcNodeStoich(neti, reai C.int,srcNodeid *C.char) C.float {
+func getReactionSrcNodeStoich(neti, reai C.int, srcNodeid *C.char) C.float {
 	netI := int(neti)
 	reaI := int(reai)
 	srcNodeID := C.GoString(srcNodeid)
@@ -402,7 +402,7 @@ func getReactionSrcNodeStoich(neti, reai C.int,srcNodeid *C.char) C.float {
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
-func getReactionDestNodeStoich(neti, reai C.int,destNodeid *C.char) C.float {
+func getReactionDestNodeStoich(neti, reai C.int, destNodeid *C.char) C.float {
 	netI := int(neti)
 	reaI := int(reai)
 	destNodeID := C.GoString(destNodeid)
