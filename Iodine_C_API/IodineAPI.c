@@ -13,7 +13,7 @@ typedef int(*deleteNetworkProc)(int p0);
 typedef void(*clearNetworksProc)();
 typedef int(*getNumberOfNetworksProc)();
 typedef char *(*getNetworkIDProc)(int p0);
-typedef int(*addNodeProc)(int p0, char *p1, float p2, float p3, float p4, float p5);
+typedef int(*addNodeProc)(int netIndex, char *nodeName, float x, float y, float w, float h);
 typedef int(*getNodeIndexProc)(int p0, char *p1);
 typedef int(*deleteNodeProc)(int p0, int p1);
 typedef int(*clearNetworkProc)(int p0);
