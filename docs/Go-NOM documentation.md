@@ -636,6 +636,33 @@ Iodine.AddNode (0, "node1", 1.1, 2.2, 3.1, 4.1)   //result: 0
 thickness1 := Iodine.GetNodeOutlineThickness (0, 0)  //result: 3 //default thickness
 ```
 
+## SetNodeID(neti, nodei int, newID string) int
+
+set the id of a node. new ID can't repeat with any other IDs in the same network.
+
+### Return:
+
++ errCode
+
+| errCode | meaning |  
+|:---|:---|
+0:|ok
+-5:|net index out of range
+-7:|node index out of range
+-3:|id repeat
+
+### Example:
+
+```go
+Iodine.NewNetwork("net1")
+Iodine.AddNode (0, "node1", 1.1, 2.2, 3.1, 4.1)   //result: 0
+err:= Iodine.SetNodeID(0,0, "Node1" )
+fmt.Println(err) //result: 0
+errCode:= 0
+Id1:= Iodine.GetNodeID(0, 0, &errCode)  //result: "Node1"
+fmt.Println(errCode) //result: 0
+```
+
 ## SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int
 
 Set coordinate and size of the node. x and y have to be non-negative, w, h have to be positive.

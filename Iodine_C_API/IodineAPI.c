@@ -28,6 +28,7 @@ typedef float (*getNodeHProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeFillColorProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeOutlineColorProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
+typedef int (*setNodeIDProc)(int netIndex, int nodeIndex, char *newID);
 typedef int (*setNodeCoordinateAndSizeProc)(int netIndex, int nodeIndex, float x, float y, float w, float h);
 typedef int (*setNodeFillColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
 typedef int (*setNodeOutlineColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
@@ -82,6 +83,7 @@ getNodeHProc getNodeH;
 getNodeFillColorProc getNodeFillColor;
 getNodeOutlineColorProc getNodeOutlineColor;
 getNodeOutlineThicknessProc getNodeOutlineThickness;
+setNodeIDProc setNodeID;
 setNodeCoordinateAndSizeProc setNodeCoordinateAndSize;
 setNodeFillColorProc setNodeFillColor;
 setNodeOutlineColorProc setNodeOutlineColor;
@@ -293,6 +295,12 @@ bool loadDll(int *errorCode)
     }
     getNodeOutlineThickness = (getNodeOutlineThicknessProc)GetProcAddress(hinstLib, "getNodeOutlineThickness");
     if (getNodeOutlineThickness == NULL)
+    {
+        *errorCode = -13;
+        return FALSE;
+    }
+    setNodeID = (setNodeIDProc)GetProcAddress(hinstLib, "setNodeID");
+    if (setNodeID == NULL)
     {
         *errorCode = -13;
         return FALSE;
