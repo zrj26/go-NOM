@@ -604,6 +604,35 @@ func GetNodeOutlineThickness(neti, nodei int) int {
 	return n.Nodes[nodei].OutlineThickness
 }
 
+
+//SetNodeID set the id of a node
+//errCode -3: id repeat, 0 :ok
+//-5: net index out of range
+//-7: node index out of range
+func SetNodeID(neti, nodei int, newID string) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		return errCode
+	}
+	for i := range n.Nodes {
+		if n.Nodes[i].ID == newID {
+			errCode = -3
+			return errCode
+		}
+	}
+	redoStack = TNetSetStack{}
+	netSetStack.push(networkSet)
+
+	n.Nodes[nodei].ID = newID
+	return errCode
+}
+
 //SetNodeCoordinateAndSize SetNodeCoordinateAndSize
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range

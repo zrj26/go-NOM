@@ -1,6 +1,6 @@
 import ctypes
 
-libIodine = ctypes.cdll.LoadLibrary('Iodine_Dll/Iodine.dll')
+libIodine = ctypes.cdll.LoadLibrary('../Iodine_Dll/Iodine.dll')
 
 #########################   argtypes   #########################
 libIodine.newNetwork.argtypes = [ctypes.c_char_p]
@@ -27,6 +27,7 @@ libIodine.getNodeH.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeFillColor.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeOutlineColor.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeOutlineThickness.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.setNodeID.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.setNodeCoordinateAndSize.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float]
 libIodine.setNodeFillColor.argtypes = [
@@ -97,6 +98,7 @@ libIodine.getNodeH.restype = ctypes.c_float
 libIodine.getNodeFillColor.restype = ctypes.c_uint32
 libIodine.getNodeOutlineColor.restype = ctypes.c_uint32
 libIodine.getNodeOutlineThickness.restype = ctypes.c_int
+libIodine.setNodeID.restype = ctypes.c_int
 libIodine.setNodeCoordinateAndSize.restype = ctypes.c_int
 libIodine.setNodeFillColor.restype = ctypes.c_int
 libIodine.setNodeOutlineColor.restype = ctypes.c_int
@@ -380,6 +382,12 @@ def getNodeOutlineThickness(neti, nodei):
     if thickness < 0:
         raise ExceptionDict[thickness](errorDict[thickness], neti, nodei)
     return thickness
+
+
+def setNodeId(neti, nodei, newId):
+    errCode = libIodine.setNodeID(neti, nodei, newId.encode())
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
 def setNodeCoordinateAndSize(neti, nodei, x, y, w, h):

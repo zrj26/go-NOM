@@ -240,6 +240,19 @@ func getNodeOutlineThickness(neti, nodei C.int) C.int {
 	return C.int(err)
 }
 
+//export setNodeID
+//setNodeID set the id of a node
+//errCode -3: id repeat, 0 :ok
+//-5: net index out of range
+//-7: node index out of range
+func setNodeID(neti, nodei C.int, newID *C.char) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	NewID := C.GoString(newID)
+	err := Iodine.SetNodeID(netI, nodeI, NewID)
+	return C.int(err)
+}
+
 //export setNodeCoordinateAndSize
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range

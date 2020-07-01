@@ -192,6 +192,13 @@ extern unsigned int getNodeOutlineColor(int p0, int p1);
 
 extern int getNodeOutlineThickness(int p0, int p1);
 
+//setNodeID set the id of a node
+//errCode -3: id repeat, 0 :ok
+//-5: net index out of range
+//-7: node index out of range
+
+extern int setNodeID(int p0, int p1, char* p2);
+
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:

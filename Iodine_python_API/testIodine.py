@@ -270,6 +270,16 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeOutlineThickness(1, 4)
 
+    def test_setNodeId(self):
+        self.assertEqual(IodineAPI.getNodeId(
+            0, 1), "node2")
+        self.assertEqual(IodineAPI.setNodeId(
+            0, 1, "Node2"), None)
+        self.assertEqual(IodineAPI.getNodeId(
+            0, 1), "Node2")
+        
+
+
     def test_setNodeCoordinateAndSize(self):
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
             0, 1), (1.2, 3.2, 2.5, 4.1))
@@ -896,13 +906,13 @@ class TestReactionNodeFunc(unittest.TestCase):
 
 
     def test_saveNetworkAsJSON_readNetworkFromJSON(self):
-        self.assertEqual(IodineAPI.saveNetworkAsJSON(0, "JSON_files/testfile.json"), None)
+        self.assertEqual(IodineAPI.saveNetworkAsJSON(0, "../JSON_files/testfile.json"), None)
         self.assertEqual(IodineAPI.readNetworkFromJSON(
-            "JSON_files/testfile1.json"), None)
+            "../JSON_files/testfile1.json"), None)
         with self.assertRaises(IodineAPI.FileError):
             IodineAPI.readNetworkFromJSON("testfdfjsd.json")
         with self.assertRaises(IodineAPI.IdRepeatError):
-            IodineAPI.readNetworkFromJSON("JSON_files/testfile1.json")
+            IodineAPI.readNetworkFromJSON("../JSON_files/testfile1.json")
 
 
 if __name__ == '__main__':
