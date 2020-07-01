@@ -387,7 +387,7 @@ def getNodeOutlineThickness(neti, nodei):
 def setNodeId(neti, nodei, newId):
     errCode = libIodine.setNodeID(neti, nodei, newId.encode())
     if errCode < 0:
-        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei, newId)
 
 
 def setNodeCoordinateAndSize(neti, nodei, x, y, w, h):

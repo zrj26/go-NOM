@@ -271,13 +271,28 @@ class TestNodeFunc(unittest.TestCase):
             IodineAPI.getNodeOutlineThickness(1, 4)
 
     def test_setNodeId(self):
-        self.assertEqual(IodineAPI.getNodeId(
-            0, 1), "node2")
-        self.assertEqual(IodineAPI.setNodeId(
-            0, 1, "Node2"), None)
-        self.assertEqual(IodineAPI.getNodeId(
-            0, 1), "Node2")
-        
+        self.assertEqual(IodineAPI.getNodeId(0, 1), "node2")
+        self.assertEqual(IodineAPI.setNodeId(0, 1, "Node2"), None)
+        self.assertEqual(IodineAPI.getNodeId(0, 1), "Node2")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeId(-1, 1, "Node2")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeId(3, 1, "Node2")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeId(1, -1, "Node2") 
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeId(1, 1, "Node2")
+        with self.assertRaises(IodineAPI.IdRepeatError):
+            IodineAPI.setNodeId(0, 1, "node1")
+        with self.assertRaises(IodineAPI.IdRepeatError):
+            IodineAPI.setNodeId(0, 1, "node3")
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeId(0, 1), "node2")
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeId(0, 1), "Node2")
 
 
     def test_setNodeCoordinateAndSize(self):
