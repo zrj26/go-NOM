@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdbool.h>
-HINSTANCE hinstLib;
+HINSTANCE Iod_hinstLib;
 typedef int (*getErrorCodeProc)();
 typedef int (*undoProc)();
 typedef int (*redoProc)();
@@ -57,62 +57,63 @@ typedef int (*setRateLawProc)(int netIndex, int reactionIndex, char *rateLaw);
 typedef int (*setReactionFillColorProc)(int netIndex, int reactionIndex, int R, int G, int B, int A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
 
-getErrorCodeProc getErrorCode;
-undoProc undo;
-redoProc redo;
-newNetworkProc newNetwork;
-getNetworkIndexProc getNetworkIndex;
-saveNetworkAsJSONProc saveNetworkAsJSON;
-readNetworkFromJSONProc readNetworkFromJSON;
-deleteNetworkProc deleteNetwork;
-clearNetworksProc clearNetworks;
-getNumberOfNetworksProc getNumberOfNetworks;
-getNetworkIDProc getNetworkID;
-addNodeProc addNode;
-getNodeIndexProc getNodeIndex;
-deleteNodeProc deleteNode;
-clearNetworkProc clearNetwork;
-getNumberOfNodesProc getNumberOfNodes;
-getNodeCenterXProc getNodeCenterX;
-getNodeCenterYProc getNodeCenterY;
-getNodeIDProc getNodeID;
-getNodeXProc getNodeX;
-getNodeYProc getNodeY;
-getNodeWProc getNodeW;
-getNodeHProc getNodeH;
-getNodeFillColorProc getNodeFillColor;
-getNodeOutlineColorProc getNodeOutlineColor;
-getNodeOutlineThicknessProc getNodeOutlineThickness;
-setNodeIDProc setNodeID;
-setNodeCoordinateAndSizeProc setNodeCoordinateAndSize;
-setNodeFillColorProc setNodeFillColor;
-setNodeOutlineColorProc setNodeOutlineColor;
-setNodeOutlineThicknessProc setNodeOutlineThickness;
-createReactionProc createReaction;
-getReactionIndexProc getReactionIndex;
-deleteReactionProc deleteReaction;
-clearReactionsProc clearReactions;
-getNumberOfReactionsProc getNumberOfReactions;
-getReactionIDProc getReactionID;
-getReactionRateLawProc getReactionRateLaw;
-getReactionFillColorProc getReactionFillColor;
-getReactionLineThicknessProc getReactionLineThickness;
-getReactionSrcNodeStoichProc getReactionSrcNodeStoich;
-getReactionDestNodeStoichProc getReactionDestNodeStoich;
-getNumberOfSrcNodesProc getNumberOfSrcNodes;
-getNumberOfDestNodesProc getNumberOfDestNodes;
-getListOfReactionSrcNodesProc getListOfReactionSrcNodes;
-getListOfReactionDestNodesProc getListOfReactionDestNodes;
-getReactionNodeIDProc getReactionNodeID;
-addSrcNodeProc addSrcNode;
-addDestNodeProc addDestNode;
-deleteSrcNodeProc deleteSrcNode;
-deleteDestNodeProc deleteDestNode;
-setRateLawProc setRateLaw;
-setReactionFillColorProc setReactionFillColor;
-setReactionLineThicknessProc setReactionLineThickness;
+getErrorCodeProc Iod_getErrorCode;
+undoProc Iod_undo;
+redoProc Iod_redo;
+newNetworkProc Iod_newNetwork;
+getNetworkIndexProc Iod_getNetworkIndex;
+saveNetworkAsJSONProc Iod_saveNetworkAsJSON;
+readNetworkFromJSONProc Iod_readNetworkFromJSON;
+deleteNetworkProc Iod_deleteNetwork;
+clearNetworksProc Iod_clearNetworks;
+getNumberOfNetworksProc Iod_getNumberOfNetworks;
+getNetworkIDProc Iod_getNetworkID;
+addNodeProc Iod_addNode;
+getNodeIndexProc Iod_getNodeIndex;
+deleteNodeProc Iod_deleteNode;
+clearNetworkProc Iod_clearNetwork;
+getNumberOfNodesProc Iod_getNumberOfNodes;
+getNodeCenterXProc Iod_getNodeCenterX;
+getNodeCenterYProc Iod_getNodeCenterY;
+getNodeIDProc Iod_getNodeID;
+getNodeXProc Iod_getNodeX;
+getNodeYProc Iod_getNodeY;
+getNodeWProc Iod_getNodeW;
+getNodeHProc Iod_getNodeH;
+getNodeFillColorProc Iod_getNodeFillColor;
+getNodeOutlineColorProc Iod_getNodeOutlineColor;
+getNodeOutlineThicknessProc Iod_getNodeOutlineThickness;
+setNodeIDProc Iod_setNodeID;
+setNodeCoordinateAndSizeProc Iod_setNodeCoordinateAndSize;
+setNodeFillColorProc Iod_setNodeFillColor;
+setNodeOutlineColorProc Iod_setNodeOutlineColor;
+setNodeOutlineThicknessProc Iod_setNodeOutlineThickness;
+createReactionProc Iod_createReaction;
+getReactionIndexProc Iod_getReactionIndex;
+deleteReactionProc Iod_deleteReaction;
+clearReactionsProc Iod_clearReactions;
+getNumberOfReactionsProc Iod_getNumberOfReactions;
+getReactionIDProc Iod_getReactionID;
+getReactionRateLawProc Iod_getReactionRateLaw;
+getReactionFillColorProc Iod_getReactionFillColor;
+getReactionLineThicknessProc Iod_getReactionLineThickness;
+getReactionSrcNodeStoichProc Iod_getReactionSrcNodeStoich;
+getReactionDestNodeStoichProc Iod_getReactionDestNodeStoich;
+getNumberOfSrcNodesProc Iod_getNumberOfSrcNodes;
+getNumberOfDestNodesProc Iod_getNumberOfDestNodes;
+getListOfReactionSrcNodesProc Iod_getListOfReactionSrcNodes;
+getListOfReactionDestNodesProc Iod_getListOfReactionDestNodes;
+getReactionNodeIDProc Iod_getReactionNodeID;
+addSrcNodeProc Iod_addSrcNode;
+addDestNodeProc Iod_addDestNode;
+deleteSrcNodeProc Iod_deleteSrcNode;
+deleteDestNodeProc Iod_deleteDestNode;
+setRateLawProc Iod_setRateLaw;
+setReactionFillColorProc Iod_setReactionFillColor;
+setReactionLineThicknessProc Iod_setReactionLineThickness;
 
-char* getErrorMessage(int errCode){
+char *Iod_getErrorMessage(int errCode)
+{
     switch(errCode){
         case  0 :  return "ok";
         case -1 :  return "other";
@@ -135,334 +136,334 @@ char* getErrorMessage(int errCode){
 // Returns TRUE if successful else returns FALSE
 bool loadDll(int *errorCode)
 {
-    hinstLib = LoadLibrary("../Iodine_Dll/Iodine.dll");
-    if (hinstLib == NULL)
+    Iod_hinstLib = LoadLibrary("../Iodine_Dll/Iodine.dll");
+    if (Iod_hinstLib == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
 
-    getErrorCode = (getErrorCodeProc)GetProcAddress(hinstLib,  "getErrorCode");
-        if (getErrorCode == NULL)
+    Iod_getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
+    if (Iod_getErrorCode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
 
-    undo = (undoProc)GetProcAddress(hinstLib, "undo");
-    if (undo == NULL)
+    Iod_undo = (undoProc)GetProcAddress(Iod_hinstLib, "undo");
+    if (Iod_undo == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    redo = (redoProc)GetProcAddress(hinstLib, "redo");
-    if (redo == NULL)
+    Iod_redo = (redoProc)GetProcAddress(Iod_hinstLib, "redo");
+    if (Iod_redo == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    newNetwork = (newNetworkProc)GetProcAddress(hinstLib, "newNetwork");
-    if (newNetwork == NULL)
+    Iod_newNetwork = (newNetworkProc)GetProcAddress(Iod_hinstLib, "newNetwork");
+    if (Iod_newNetwork == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNetworkIndex = (getNetworkIndexProc)GetProcAddress(hinstLib, "getNetworkIndex");
-    if (getNetworkIndex == NULL)
+    Iod_getNetworkIndex = (getNetworkIndexProc)GetProcAddress(Iod_hinstLib, "getNetworkIndex");
+    if (Iod_getNetworkIndex == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    saveNetworkAsJSON = (saveNetworkAsJSONProc)GetProcAddress(hinstLib, "saveNetworkAsJSON");
-    if (saveNetworkAsJSON == NULL)
+    Iod_saveNetworkAsJSON = (saveNetworkAsJSONProc)GetProcAddress(Iod_hinstLib, "saveNetworkAsJSON");
+    if (Iod_saveNetworkAsJSON == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    readNetworkFromJSON = (readNetworkFromJSONProc)GetProcAddress(hinstLib, "readNetworkFromJSON");
-    if (readNetworkFromJSON == NULL)
+    Iod_readNetworkFromJSON = (readNetworkFromJSONProc)GetProcAddress(Iod_hinstLib, "readNetworkFromJSON");
+    if (Iod_readNetworkFromJSON == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    deleteNetwork = (deleteNetworkProc)GetProcAddress(hinstLib, "deleteNetwork");
-    if (deleteNetwork == NULL)
+    Iod_deleteNetwork = (deleteNetworkProc)GetProcAddress(Iod_hinstLib, "deleteNetwork");
+    if (Iod_deleteNetwork == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    clearNetworks = (clearNetworksProc)GetProcAddress(hinstLib, "clearNetworks");
-    if (clearNetworks == NULL)
+    Iod_clearNetworks = (clearNetworksProc)GetProcAddress(Iod_hinstLib, "clearNetworks");
+    if (Iod_clearNetworks == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNumberOfNetworks = (getNumberOfNetworksProc)GetProcAddress(hinstLib, "getNumberOfNetworks");
-    if (getNumberOfNetworks == NULL)
+    Iod_getNumberOfNetworks = (getNumberOfNetworksProc)GetProcAddress(Iod_hinstLib, "getNumberOfNetworks");
+    if (Iod_getNumberOfNetworks == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNetworkID = (getNetworkIDProc)GetProcAddress(hinstLib, "getNetworkID");
-    if (getNetworkID == NULL)
+    Iod_getNetworkID = (getNetworkIDProc)GetProcAddress(Iod_hinstLib, "getNetworkID");
+    if (Iod_getNetworkID == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    addNode = (addNodeProc)GetProcAddress(hinstLib, "addNode");
-    if (addNode == NULL)
+    Iod_addNode = (addNodeProc)GetProcAddress(Iod_hinstLib, "addNode");
+    if (Iod_addNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeIndex = (getNodeIndexProc)GetProcAddress(hinstLib, "getNodeIndex");
-    if (getNodeIndex == NULL)
+    Iod_getNodeIndex = (getNodeIndexProc)GetProcAddress(Iod_hinstLib, "getNodeIndex");
+    if (Iod_getNodeIndex == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    deleteNode = (deleteNodeProc)GetProcAddress(hinstLib, "deleteNode");
-    if (deleteNode == NULL)
+    Iod_deleteNode = (deleteNodeProc)GetProcAddress(Iod_hinstLib, "deleteNode");
+    if (Iod_deleteNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    clearNetwork = (clearNetworkProc)GetProcAddress(hinstLib, "clearNetwork");
-    if (clearNetwork == NULL)
+    Iod_clearNetwork = (clearNetworkProc)GetProcAddress(Iod_hinstLib, "clearNetwork");
+    if (Iod_clearNetwork == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNumberOfNodes = (getNumberOfNodesProc)GetProcAddress(hinstLib, "getNumberOfNodes");
-    if (getNumberOfNodes == NULL)
+    Iod_getNumberOfNodes = (getNumberOfNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfNodes");
+    if (Iod_getNumberOfNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeCenterX = (getNodeCenterXProc)GetProcAddress(hinstLib, "getNodeCenterX");
-    if (getNodeCenterX == NULL)
+    Iod_getNodeCenterX = (getNodeCenterXProc)GetProcAddress(Iod_hinstLib, "getNodeCenterX");
+    if (Iod_getNodeCenterX == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeCenterY = (getNodeCenterYProc)GetProcAddress(hinstLib, "getNodeCenterY");
-    if (getNodeCenterY == NULL)
+    Iod_getNodeCenterY = (getNodeCenterYProc)GetProcAddress(Iod_hinstLib, "getNodeCenterY");
+    if (Iod_getNodeCenterY == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeID = (getNodeIDProc)GetProcAddress(hinstLib, "getNodeID");
-    if (getNodeID == NULL)
+    Iod_getNodeID = (getNodeIDProc)GetProcAddress(Iod_hinstLib, "getNodeID");
+    if (Iod_getNodeID == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeX = (getNodeXProc)GetProcAddress(hinstLib, "getNodeX");
-    if (getNodeX == NULL)
+    Iod_getNodeX = (getNodeXProc)GetProcAddress(Iod_hinstLib, "getNodeX");
+    if (Iod_getNodeX == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeY = (getNodeYProc)GetProcAddress(hinstLib, "getNodeY");
-    if (getNodeY == NULL)
+    Iod_getNodeY = (getNodeYProc)GetProcAddress(Iod_hinstLib, "getNodeY");
+    if (Iod_getNodeY == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeW = (getNodeWProc)GetProcAddress(hinstLib, "getNodeW");
-    if (getNodeW == NULL)
+    Iod_getNodeW = (getNodeWProc)GetProcAddress(Iod_hinstLib, "getNodeW");
+    if (Iod_getNodeW == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeH = (getNodeHProc)GetProcAddress(hinstLib, "getNodeH");
-    if (getNodeH == NULL)
+    Iod_getNodeH = (getNodeHProc)GetProcAddress(Iod_hinstLib, "getNodeH");
+    if (Iod_getNodeH == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeFillColor = (getNodeFillColorProc)GetProcAddress(hinstLib, "getNodeFillColor");
-    if (getNodeFillColor == NULL)
+    Iod_getNodeFillColor = (getNodeFillColorProc)GetProcAddress(Iod_hinstLib, "getNodeFillColor");
+    if (Iod_getNodeFillColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeOutlineColor = (getNodeOutlineColorProc)GetProcAddress(hinstLib, "getNodeOutlineColor");
-    if (getNodeOutlineColor == NULL)
+    Iod_getNodeOutlineColor = (getNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineColor");
+    if (Iod_getNodeOutlineColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNodeOutlineThickness = (getNodeOutlineThicknessProc)GetProcAddress(hinstLib, "getNodeOutlineThickness");
-    if (getNodeOutlineThickness == NULL)
+    Iod_getNodeOutlineThickness = (getNodeOutlineThicknessProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineThickness");
+    if (Iod_getNodeOutlineThickness == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setNodeID = (setNodeIDProc)GetProcAddress(hinstLib, "setNodeID");
-    if (setNodeID == NULL)
+    Iod_setNodeID = (setNodeIDProc)GetProcAddress(Iod_hinstLib, "setNodeID");
+    if (Iod_setNodeID == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setNodeCoordinateAndSize = (setNodeCoordinateAndSizeProc)GetProcAddress(hinstLib, "setNodeCoordinateAndSize");
-    if (setNodeCoordinateAndSize == NULL)
+    Iod_setNodeCoordinateAndSize = (setNodeCoordinateAndSizeProc)GetProcAddress(Iod_hinstLib, "setNodeCoordinateAndSize");
+    if (Iod_setNodeCoordinateAndSize == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setNodeFillColor = (setNodeFillColorProc)GetProcAddress(hinstLib, "setNodeFillColor");
-    if (setNodeFillColor == NULL)
+    Iod_setNodeFillColor = (setNodeFillColorProc)GetProcAddress(Iod_hinstLib, "setNodeFillColor");
+    if (Iod_setNodeFillColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setNodeOutlineColor = (setNodeOutlineColorProc)GetProcAddress(hinstLib, "setNodeOutlineColor");
-    if (setNodeOutlineColor == NULL)
+    Iod_setNodeOutlineColor = (setNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineColor");
+    if (Iod_setNodeOutlineColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setNodeOutlineThickness = (setNodeOutlineThicknessProc)GetProcAddress(hinstLib, "setNodeOutlineThickness");
-    if (setNodeOutlineThickness == NULL)
+    Iod_setNodeOutlineThickness = (setNodeOutlineThicknessProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineThickness");
+    if (Iod_setNodeOutlineThickness == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    createReaction = (createReactionProc)GetProcAddress(hinstLib, "createReaction");
-    if (createReaction == NULL)
+    Iod_createReaction = (createReactionProc)GetProcAddress(Iod_hinstLib, "createReaction");
+    if (Iod_createReaction == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionIndex = (getReactionIndexProc)GetProcAddress(hinstLib, "getReactionIndex");
-    if (getReactionIndex == NULL)
+    Iod_getReactionIndex = (getReactionIndexProc)GetProcAddress(Iod_hinstLib, "getReactionIndex");
+    if (Iod_getReactionIndex == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    deleteReaction = (deleteReactionProc)GetProcAddress(hinstLib, "deleteReaction");
-    if (deleteReaction == NULL)
+    Iod_deleteReaction = (deleteReactionProc)GetProcAddress(Iod_hinstLib, "deleteReaction");
+    if (Iod_deleteReaction == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    clearReactions = (clearReactionsProc)GetProcAddress(hinstLib, "clearReactions");
-    if (clearReactions == NULL)
+    Iod_clearReactions = (clearReactionsProc)GetProcAddress(Iod_hinstLib, "clearReactions");
+    if (Iod_clearReactions == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNumberOfReactions = (getNumberOfReactionsProc)GetProcAddress(hinstLib, "getNumberOfReactions");
-    if (getNumberOfReactions == NULL)
+    Iod_getNumberOfReactions = (getNumberOfReactionsProc)GetProcAddress(Iod_hinstLib, "getNumberOfReactions");
+    if (Iod_getNumberOfReactions == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionID = (getReactionIDProc)GetProcAddress(hinstLib, "getReactionID");
-    if (getReactionID == NULL)
+    Iod_getReactionID = (getReactionIDProc)GetProcAddress(Iod_hinstLib, "getReactionID");
+    if (Iod_getReactionID == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionRateLaw = (getReactionRateLawProc)GetProcAddress(hinstLib, "getReactionRateLaw");
-    if (getReactionRateLaw == NULL)
+    Iod_getReactionRateLaw = (getReactionRateLawProc)GetProcAddress(Iod_hinstLib, "getReactionRateLaw");
+    if (Iod_getReactionRateLaw == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionFillColor = (getReactionFillColorProc)GetProcAddress(hinstLib, "getReactionFillColor");
-    if (getReactionFillColor == NULL)
+    Iod_getReactionFillColor = (getReactionFillColorProc)GetProcAddress(Iod_hinstLib, "getReactionFillColor");
+    if (Iod_getReactionFillColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionLineThickness = (getReactionLineThicknessProc)GetProcAddress(hinstLib, "getReactionLineThickness");
-    if (getReactionLineThickness == NULL)
+    Iod_getReactionLineThickness = (getReactionLineThicknessProc)GetProcAddress(Iod_hinstLib, "getReactionLineThickness");
+    if (Iod_getReactionLineThickness == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionSrcNodeStoich = (getReactionSrcNodeStoichProc)GetProcAddress(hinstLib, "getReactionSrcNodeStoich");
-    if (getReactionSrcNodeStoich == NULL)
+    Iod_getReactionSrcNodeStoich = (getReactionSrcNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionSrcNodeStoich");
+    if (Iod_getReactionSrcNodeStoich == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionDestNodeStoich = (getReactionDestNodeStoichProc)GetProcAddress(hinstLib, "getReactionDestNodeStoich");
-    if (getReactionDestNodeStoich == NULL)
+    Iod_getReactionDestNodeStoich = (getReactionDestNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionDestNodeStoich");
+    if (Iod_getReactionDestNodeStoich == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNumberOfSrcNodes = (getNumberOfSrcNodesProc)GetProcAddress(hinstLib, "getNumberOfSrcNodes");
-    if (getNumberOfSrcNodes == NULL)
+    Iod_getNumberOfSrcNodes = (getNumberOfSrcNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfSrcNodes");
+    if (Iod_getNumberOfSrcNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getNumberOfDestNodes = (getNumberOfDestNodesProc)GetProcAddress(hinstLib, "getNumberOfDestNodes");
-    if (getNumberOfDestNodes == NULL)
+    Iod_getNumberOfDestNodes = (getNumberOfDestNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfDestNodes");
+    if (Iod_getNumberOfDestNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getListOfReactionSrcNodes = (getListOfReactionSrcNodesProc)GetProcAddress(hinstLib, "getListOfReactionSrcNodes");
-    if (getListOfReactionSrcNodes == NULL)
+    Iod_getListOfReactionSrcNodes = (getListOfReactionSrcNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionSrcNodes");
+    if (Iod_getListOfReactionSrcNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getListOfReactionDestNodes = (getListOfReactionDestNodesProc)GetProcAddress(hinstLib, "getListOfReactionDestNodes");
-    if (getListOfReactionDestNodes == NULL)
+    Iod_getListOfReactionDestNodes = (getListOfReactionDestNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionDestNodes");
+    if (Iod_getListOfReactionDestNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    getReactionNodeID = (getReactionNodeIDProc)GetProcAddress(hinstLib, "getReactionNodeID");
-    if (getReactionNodeID == NULL)
+    Iod_getReactionNodeID = (getReactionNodeIDProc)GetProcAddress(Iod_hinstLib, "getReactionNodeID");
+    if (Iod_getReactionNodeID == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    addSrcNode = (addSrcNodeProc)GetProcAddress(hinstLib, "addSrcNode");
-    if (addSrcNode == NULL)
+    Iod_addSrcNode = (addSrcNodeProc)GetProcAddress(Iod_hinstLib, "addSrcNode");
+    if (Iod_addSrcNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    addDestNode = (addDestNodeProc)GetProcAddress(hinstLib, "addDestNode");
-    if (addDestNode == NULL)
+    Iod_addDestNode = (addDestNodeProc)GetProcAddress(Iod_hinstLib, "addDestNode");
+    if (Iod_addDestNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    deleteSrcNode = (deleteSrcNodeProc)GetProcAddress(hinstLib, "deleteSrcNode");
-    if (deleteSrcNode == NULL)
+    Iod_deleteSrcNode = (deleteSrcNodeProc)GetProcAddress(Iod_hinstLib, "deleteSrcNode");
+    if (Iod_deleteSrcNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    deleteDestNode = (deleteDestNodeProc)GetProcAddress(hinstLib, "deleteDestNode");
-    if (deleteDestNode == NULL)
+    Iod_deleteDestNode = (deleteDestNodeProc)GetProcAddress(Iod_hinstLib, "deleteDestNode");
+    if (Iod_deleteDestNode == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setRateLaw = (setRateLawProc)GetProcAddress(hinstLib, "setRateLaw");
-    if (setRateLaw == NULL)
+    Iod_setRateLaw = (setRateLawProc)GetProcAddress(Iod_hinstLib, "setRateLaw");
+    if (Iod_setRateLaw == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setReactionFillColor = (setReactionFillColorProc)GetProcAddress(hinstLib, "setReactionFillColor");
-    if (setReactionFillColor == NULL)
+    Iod_setReactionFillColor = (setReactionFillColorProc)GetProcAddress(Iod_hinstLib, "setReactionFillColor");
+    if (Iod_setReactionFillColor == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    setReactionLineThickness = (setReactionLineThicknessProc)GetProcAddress(hinstLib, "setReactionLineThickness");
-    if (setReactionLineThickness == NULL)
+    Iod_setReactionLineThickness = (setReactionLineThicknessProc)GetProcAddress(Iod_hinstLib, "setReactionLineThickness");
+    if (Iod_setReactionLineThickness == NULL)
     {
         *errorCode = -13;
         return FALSE;

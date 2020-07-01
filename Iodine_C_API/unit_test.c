@@ -3,14 +3,14 @@
 
 void test_setup()
 {
-    newNetwork("network1");
-    newNetwork("network2");
+    Iod_newNetwork("network1");
+    Iod_newNetwork("network2");
     // printf("setup\n");
 }
 
 void test_tear_down()
 {
-    clearNetworks();
+    Iod_clearNetworks();
     // printf("tear down\n");
 }
 
@@ -31,7 +31,7 @@ char *Failed_FUNCTIONS[100];
 char **p = Failed_FUNCTIONS;
 void (*function)(void);
 
-(*function) **function[100];
+// (*function) **function[100];
 
 
 bool assertError(int errCode, int expectValue)
@@ -45,11 +45,11 @@ bool assertError(int errCode, int expectValue)
 void test_newNetwork(){
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
-    int err = newNetwork("network1");
+    int err = Iod_newNetwork("network1");
     ERR = ERR && assertError(err,-3);
-    err = newNetwork("network3");
+    err = Iod_newNetwork("network3");
     ERR = ERR && assertError(err, 0);
-    err = newNetwork("network4");
+    err = Iod_newNetwork("network4");
     ERR = ERR && assertError(err, 0);
 
     if (ERR == TRUE){
@@ -57,7 +57,7 @@ void test_newNetwork(){
     }else{
         printf("X");
         COUNT_FAIL++;
-        *p = "newNetwork";
+        *p = "Iod_newNetwork";
         p++;
     }
 
@@ -67,11 +67,11 @@ void test_newNetwork2()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
-    int err = newNetwork("network1");
+    int err = Iod_newNetwork("network1");
     ERR = ERR && assertError(err, -3);
-    err = newNetwork("network3");
+    err = Iod_newNetwork("network3");
     ERR = ERR && assertError(err, -2);//error
-    err = newNetwork("network4");
+    err = Iod_newNetwork("network4");
     ERR = ERR && assertError(err, 0);
 
     if (ERR == TRUE)
@@ -82,7 +82,7 @@ void test_newNetwork2()
     {
         printf("X");
         COUNT_FAIL++;
-        *p = "newNetwork2";
+        *p = "Iod_newNetwork2";
         p++;
     }
 }
@@ -91,11 +91,11 @@ void test_newNetwork3()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
-    int err = newNetwork("network1");
+    int err = Iod_newNetwork("network1");
     ERR = ERR && assertError(err, -3);
-    err = newNetwork("network3");
+    err = Iod_newNetwork("network3");
     ERR = ERR && assertError(err, -2); //error
-    err = newNetwork("network4");
+    err = Iod_newNetwork("network4");
     ERR = ERR && assertError(err, 0);
 
     if (ERR == TRUE)
@@ -106,7 +106,7 @@ void test_newNetwork3()
     {
         printf("X");
         COUNT_FAIL++;
-        *p = "newNetwork3";
+        *p = "Iod_newNetwork3";
         p++;
     }
 }
