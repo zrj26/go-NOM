@@ -46,7 +46,7 @@ void test_newNetwork(){
     }else{
         printf("X");
         COUNT_FAIL++;
-        strcpy(*p, __FUNCTION__);
+        *p = (char *)__FUNCTION__;
         p++;
     }
 
@@ -71,34 +71,12 @@ void test_newNetwork2()
     {
         printf("X");
         COUNT_FAIL++;
-        strcpy(*p, __FUNCTION__);
+        *p = (char *)__FUNCTION__;
         p++;
     }
 }
 
-void test_newNetwork3()
-{
-    COUNT_FUNCTIONS++;
-    bool ERR = TRUE;
-    int err = Iod_newNetwork("network1");
-    ERR = ERR && assertError(err, -3);
-    err = Iod_newNetwork("network3");
-    ERR = ERR && assertError(err, -1);
-    err = Iod_newNetwork("network4");
-    ERR = ERR && assertError(err, 0);
 
-    if (ERR == TRUE)
-    {
-        printf(".");
-    }
-    else
-    {
-        printf("X");
-        COUNT_FAIL++;
-        strcpy(*p, __FUNCTION__);
-        p++;
-    }
-}
 
     // with self.assertRaises(IodineAPI.StackEmptyError):
     //     IodineAPI.redo()
@@ -133,7 +111,7 @@ int main(void)
         (func_array[i])();
         test_tear_down;
     }
-    
+
     // printf(__FUNCTION__,"\n");
     printf("\nYou tested %d functions, %d of them failed.\n", COUNT_FUNCTIONS, COUNT_FAIL);
     if (COUNT_FAIL != 0){
@@ -144,4 +122,6 @@ int main(void)
             printf("%s\t",Failed_FUNCTIONS[i]);
         }
     }
+    printf("\n");
+
 }

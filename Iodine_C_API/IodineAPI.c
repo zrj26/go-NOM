@@ -9,15 +9,15 @@ typedef int (*newNetworkProc)(const char *netID);
 typedef int (*getNetworkIndexProc)(const char *netID);
 typedef int (*saveNetworkAsJSONProc)(int netIndex, const char *fileName);
 typedef int (*readNetworkFromJSONProc)(const char *path);
-typedef int(*deleteNetworkProc)(int netIndex);
-typedef void(*clearNetworksProc)();
-typedef int(*getNumberOfNetworksProc)();
+typedef int (*deleteNetworkProc)(int netIndex);
+typedef void (*clearNetworksProc)();
+typedef int (*getNumberOfNetworksProc)();
 typedef char *(*getNetworkIDProc)(int netIndex);
 typedef int (*addNodeProc)(int netIndex, const char *nodeName, float x, float y, float w, float h);
 typedef int (*getNodeIndexProc)(int netIndex, const char *nodeID);
-typedef int(*deleteNodeProc)(int netIndex, int nodeIndex);
-typedef int(*clearNetworkProc)(int netIndex);
-typedef int(*getNumberOfNodesProc)(int netIndex);
+typedef int (*deleteNodeProc)(int netIndex, int nodeIndex);
+typedef int (*clearNetworkProc)(int netIndex);
+typedef int (*getNumberOfNodesProc)(int netIndex);
 typedef float (*getNodeCenterXProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeCenterYProc)(int netIndex, int nodeIndex);
 typedef char *(*getNodeIDProc)(int netIndex, int nodeIndex);
@@ -101,9 +101,9 @@ getReactionSrcNodeStoichProc Iod_getReactionSrcNodeStoich;
 getReactionDestNodeStoichProc Iod_getReactionDestNodeStoich;
 getNumberOfSrcNodesProc Iod_getNumberOfSrcNodes;
 getNumberOfDestNodesProc Iod_getNumberOfDestNodes;
-getListOfReactionSrcNodesProc Iod_getListOfReactionSrcNodes;
-getListOfReactionDestNodesProc Iod_getListOfReactionDestNodes;
-getReactionNodeIDProc Iod_getReactionNodeID;
+getListOfReactionSrcNodesProc getListOfReactionSrcNodes;
+getListOfReactionDestNodesProc getListOfReactionDestNodes;
+getReactionNodeIDProc getReactionNodeID;
 addSrcNodeProc Iod_addSrcNode;
 addDestNodeProc Iod_addDestNode;
 deleteSrcNodeProc Iod_deleteSrcNode;
@@ -114,22 +114,38 @@ setReactionLineThicknessProc Iod_setReactionLineThickness;
 
 const char *Iod_getErrorMessage(int errCode)
 {
-    switch(errCode){
-        case  0 :  return "ok";
-        case -1 :  return "other";
-        case -2 :  return "id not found: ";
-        case -3 :  return "id repeat: ";
-        case -4 :  return "node is not free: ";
-        case -5 :  return "net index out of range: ";
-        case -6 :  return "reaction index out of range: ";
-        case -7 :  return "node index out of range: ";
-        case -8 :  return "wrong stoich: stoich has to be positive: ";
-        case -9 :  return "stack is empty";
-        case -10 : return "Json convert error";
-        case -11 : return "File error";
-        case -12 : return "Variable out of range: ";
-        case -13 : return "Loading DLL error";
-        default  : return "Other error";
+    switch (errCode)
+    {
+    case 0:
+        return "ok";
+    case -1:
+        return "other";
+    case -2:
+        return "id not found: ";
+    case -3:
+        return "id repeat: ";
+    case -4:
+        return "node is not free: ";
+    case -5:
+        return "net index out of range: ";
+    case -6:
+        return "reaction index out of range: ";
+    case -7:
+        return "node index out of range: ";
+    case -8:
+        return "wrong stoich: stoich has to be positive: ";
+    case -9:
+        return "stack is empty";
+    case -10:
+        return "Json convert error";
+    case -11:
+        return "File error";
+    case -12:
+        return "Variable out of range: ";
+    case -13:
+        return "Loading DLL error";
+    default:
+        return "Other error";
     }
 }
 
@@ -409,20 +425,20 @@ bool loadDll(int *errorCode)
         *errorCode = -13;
         return FALSE;
     }
-    Iod_getListOfReactionSrcNodes = (getListOfReactionSrcNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionSrcNodes");
-    if (Iod_getListOfReactionSrcNodes == NULL)
+    getListOfReactionSrcNodes = (getListOfReactionSrcNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionSrcNodes");
+    if (getListOfReactionSrcNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    Iod_getListOfReactionDestNodes = (getListOfReactionDestNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionDestNodes");
-    if (Iod_getListOfReactionDestNodes == NULL)
+    getListOfReactionDestNodes = (getListOfReactionDestNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionDestNodes");
+    if (getListOfReactionDestNodes == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
-    Iod_getReactionNodeID = (getReactionNodeIDProc)GetProcAddress(Iod_hinstLib, "getReactionNodeID");
-    if (Iod_getReactionNodeID == NULL)
+    getReactionNodeID = (getReactionNodeIDProc)GetProcAddress(Iod_hinstLib, "getReactionNodeID");
+    if (getReactionNodeID == NULL)
     {
         *errorCode = -13;
         return FALSE;
@@ -472,7 +488,135 @@ bool loadDll(int *errorCode)
     return TRUE;
 }
 
-// char* getListofNetworks(){
+char *ListOfIDs[100];
 
-//     int a = getNumberOfNetworks()
-// }
+char **Iod_getListofNetworks()
+{
+    memset(ListOfIDs, 0, 100);
+    int a = Iod_getNumberOfNetworks();
+    for (int i = 0; i < a; i++)
+    {
+        ListOfIDs[i] = Iod_getNetworkID(i);
+    }
+    return &ListOfIDs[0];
+}
+
+char **Iod_getListOfNodesIDs(int netIndex)
+{
+    memset(ListOfIDs, 0, 100);
+    int a = Iod_getNumberOfNodes(netIndex);
+    for (int i = 0; i < a; i++)
+    {
+        ListOfIDs[i] = Iod_getNodeID(netIndex, i);
+    }
+    return &ListOfIDs[0];
+}
+
+char **Iod_getListOfReactionIDs(int netIndex)
+{
+    memset(ListOfIDs, 0, 100);
+    int a = Iod_getNumberOfReactions(netIndex);
+    for (int i = 0; i < a; i++)
+    {
+        ListOfIDs[i] = Iod_getReactionID(netIndex, i);
+    }
+    return &ListOfIDs[0];
+}
+
+char **Iod_getListOfReactionSrcNodes(int netIndex, int reactionIndex)
+{
+    memset(ListOfIDs, 0, 100);
+    getListOfReactionSrcNodes(netIndex, reactionIndex);
+    int a = Iod_getNumberOfSrcNodes(netIndex, reactionIndex);
+    for (int i = 0; i < a; i++)
+    {
+        ListOfIDs[i] = getReactionNodeID(i);
+    }
+    return &ListOfIDs[0];
+}
+
+char **Iod_getListOfReactionDestNodes(int netIndex, int reactionIndex)
+{
+    memset(ListOfIDs, 0, 100);
+    getListOfReactionDestNodes(netIndex, reactionIndex);
+    int a = Iod_getNumberOfDestNodes(netIndex, reactionIndex);
+    for (int i = 0; i < a; i++)
+    {
+        ListOfIDs[i] = getReactionNodeID(i);
+    }
+    return &ListOfIDs[0];
+}
+
+float ListOfStoich[100];
+
+float *Iod_getListOfReactionSrcStoich(int netIndex, int reactionIndex)
+{
+    memset(ListOfStoich, 0, 100);
+    Iod_getListOfReactionSrcNodes(netIndex, reactionIndex);
+    for (int i = 0; i < 100; i++)
+    { //100 is the length of "ListOfIDs" in IodineAPI.c.
+        if (ListOfIDs[i] != NULL)
+        {
+            ListOfStoich[i] = Iod_getReactionSrcNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+        }
+    }
+    return &ListOfStoich[0];
+}
+
+float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
+{
+    memset(ListOfStoich, 0, 100);
+    Iod_getListOfReactionDestNodes(netIndex, reactionIndex);
+    for (int i = 0; i < 100; i++)
+    { //100 is the length of "ListOfIDs" in IodineAPI.c.
+        if (ListOfIDs[i] != NULL)
+        {
+            ListOfStoich[i] = Iod_getReactionDestNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+        }
+    }
+    return &ListOfStoich[0];
+}
+
+void Iod_createUniUni(int neti, const char *reaID, const char *rateLaw, int srci, int desti, float srcStoich, float destStoich)
+{
+    Iod_createReaction(neti, reaID);
+    int reai = Iod_getReactionIndex(neti, reaID);
+
+    Iod_addSrcNode(neti, reai, srci, srcStoich);
+    Iod_addDestNode(neti, reai, desti, destStoich);
+    Iod_setRateLaw(neti, reai, rateLaw);
+}
+
+void Iod_createUniBi(int neti, const char *reaID, const char *rateLaw, int srci, int dest1i, int dest2i, float srcStoich, float dest1Stoich, float dest2Stoich)
+{
+    Iod_createReaction(neti, reaID);
+    int reai = Iod_getReactionIndex(neti, reaID);
+
+    Iod_addSrcNode(neti, reai, srci, srcStoich);
+    Iod_addDestNode(neti, reai, dest1i, dest1Stoich);
+    Iod_addDestNode(neti, reai, dest2i, dest2Stoich);
+    Iod_setRateLaw(neti, reai, rateLaw);
+}
+
+void Iod_createBiUni(int neti, const char *reaID, const char *rateLaw, int src1i, int src2i, int desti, float src1Stoich, float src2Stoich, float destStoich)
+{
+    Iod_createReaction(neti, reaID);
+    int reai = Iod_getReactionIndex(neti, reaID);
+
+    Iod_addSrcNode(neti, reai, src1i, src1Stoich);
+    Iod_addSrcNode(neti, reai, src2i, src2Stoich);
+    Iod_addDestNode(neti, reai, desti, destStoich);
+    Iod_setRateLaw(neti, reai, rateLaw);
+}
+
+void Iod_createBiBi(int neti, const char *reaID, const char *rateLaw, int src1i, int src2i, int dest1i, int dest2i, float src1Stoich, float src2Stoich, float dest1Stoich, float dest2Stoich)
+{
+    Iod_createReaction(neti, reaID);
+    int reai = Iod_getReactionIndex(neti, reaID);
+
+    Iod_addSrcNode(neti, reai, src1i, src1Stoich);
+    Iod_addSrcNode(neti, reai, src2i, src2Stoich);
+    Iod_addDestNode(neti, reai, dest1i, dest1Stoich);
+    Iod_addDestNode(neti, reai, dest2i, dest2Stoich);
+    Iod_setRateLaw(neti, reai, rateLaw);
+}
