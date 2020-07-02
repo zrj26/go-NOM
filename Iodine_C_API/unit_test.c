@@ -14,24 +14,13 @@ void test_tear_down()
     // printf("tear down\n");
 }
 
-// enum DAY
-// {
-//     MON = 1,
-//     TUE,
-//     WED,
-//     THU,
-//     FRI,
-//     SAT,
-//     SUN
-// };
+
 
 int COUNT_FAIL =0;
 int COUNT_FUNCTIONS = 0;
 char *Failed_FUNCTIONS[100];
 char **p = Failed_FUNCTIONS;
-void (*function)(void);
 
-// (*function) **function[100];
 
 
 bool assertError(int errCode, int expectValue)
@@ -57,7 +46,7 @@ void test_newNetwork(){
     }else{
         printf("X");
         COUNT_FAIL++;
-        *p = "Iod_newNetwork";
+        strcpy(*p, __FUNCTION__);
         p++;
     }
 
@@ -70,9 +59,9 @@ void test_newNetwork2()
     int err = Iod_newNetwork("network1");
     ERR = ERR && assertError(err, -3);
     err = Iod_newNetwork("network3");
-    ERR = ERR && assertError(err, -2);//error
-    err = Iod_newNetwork("network4");
     ERR = ERR && assertError(err, 0);
+    err = Iod_newNetwork("network4");
+    ERR = ERR && assertError(err, 10);
 
     if (ERR == TRUE)
     {
@@ -82,7 +71,7 @@ void test_newNetwork2()
     {
         printf("X");
         COUNT_FAIL++;
-        *p = "Iod_newNetwork2";
+        strcpy(*p, __FUNCTION__);
         p++;
     }
 }
@@ -94,7 +83,7 @@ void test_newNetwork3()
     int err = Iod_newNetwork("network1");
     ERR = ERR && assertError(err, -3);
     err = Iod_newNetwork("network3");
-    ERR = ERR && assertError(err, -2); //error
+    ERR = ERR && assertError(err, -1);
     err = Iod_newNetwork("network4");
     ERR = ERR && assertError(err, 0);
 
@@ -106,10 +95,11 @@ void test_newNetwork3()
     {
         printf("X");
         COUNT_FAIL++;
-        *p = "Iod_newNetwork3";
+        strcpy(*p, __FUNCTION__);
         p++;
     }
 }
+
     // with self.assertRaises(IodineAPI.StackEmptyError):
     //     IodineAPI.redo()
     // self.assertEqual(IodineAPI.getListOfNetworks(),
@@ -121,28 +111,31 @@ void test_newNetwork3()
     // self.assertEqual(IodineAPI.getListOfNetworks(),
     //                     ['network1', "network2", "network3", "network4"])
 
+void (*func_array[])() = {
+    test_newNetwork,
+    test_newNetwork2,
+    test_newNetwork3,
+    };
+
 int main(void)
 {
     int errorCode;
     int err;
+    int i;
+    int func_array_size = sizeof(func_array) / sizeof(func_array[0]);
     err = loadDll(&errorCode);
-    if (!err)
-    {
+    if (!err){
         return -1; //can't load the lib
     }
-    test_setup();
-    test_newNetwork();
-    test_tear_down();
 
-    test_setup();
-    test_newNetwork2();
-    test_tear_down();
-
-    test_setup();
-    test_newNetwork3();
-    test_tear_down();
-
-    printf("\nYou tested %d functions, %d of them failed.\n", COUNT_FUNCTIONS,COUNT_FAIL);
+    for (i = 0; i < func_array_size; i++){
+        test_setup();
+        (func_array[i])();
+        test_tear_down;
+    }
+    
+    // printf(__FUNCTION__,"\n");
+    printf("\nYou tested %d functions, %d of them failed.\n", COUNT_FUNCTIONS, COUNT_FAIL);
     if (COUNT_FAIL != 0){
         printf("They are: \n");
     }

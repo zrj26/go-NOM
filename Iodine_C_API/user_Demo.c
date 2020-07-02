@@ -4,7 +4,7 @@ int main()
 {
     int errorCode;
     int err;
-    char *Id;
+    const char *Id;
     err = loadDll(&errorCode);
     if (!err){
         return -1;//can't load the lib

@@ -5,16 +5,16 @@ HINSTANCE Iod_hinstLib;
 typedef int (*getErrorCodeProc)();
 typedef int (*undoProc)();
 typedef int (*redoProc)();
-typedef int (*newNetworkProc)(char *netID);
-typedef int(*getNetworkIndexProc)(char *netID);
-typedef int(*saveNetworkAsJSONProc)(int netIndex, char *fileName);
-typedef int(*readNetworkFromJSONProc)(char *path);
+typedef int (*newNetworkProc)(const char *netID);
+typedef int (*getNetworkIndexProc)(const char *netID);
+typedef int (*saveNetworkAsJSONProc)(int netIndex, const char *fileName);
+typedef int (*readNetworkFromJSONProc)(const char *path);
 typedef int(*deleteNetworkProc)(int netIndex);
 typedef void(*clearNetworksProc)();
 typedef int(*getNumberOfNetworksProc)();
 typedef char *(*getNetworkIDProc)(int netIndex);
-typedef int(*addNodeProc)(int netIndex, char *nodeName, float x, float y, float w, float h);
-typedef int(*getNodeIndexProc)(int netIndex, char *nodeID);
+typedef int (*addNodeProc)(int netIndex, const char *nodeName, float x, float y, float w, float h);
+typedef int (*getNodeIndexProc)(int netIndex, const char *nodeID);
 typedef int(*deleteNodeProc)(int netIndex, int nodeIndex);
 typedef int(*clearNetworkProc)(int netIndex);
 typedef int(*getNumberOfNodesProc)(int netIndex);
@@ -28,13 +28,13 @@ typedef float (*getNodeHProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeFillColorProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeOutlineColorProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
-typedef int (*setNodeIDProc)(int netIndex, int nodeIndex, char *newID);
+typedef int (*setNodeIDProc)(int netIndex, int nodeIndex, const char *newID);
 typedef int (*setNodeCoordinateAndSizeProc)(int netIndex, int nodeIndex, float x, float y, float w, float h);
 typedef int (*setNodeFillColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
 typedef int (*setNodeOutlineColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
 typedef int (*setNodeOutlineThicknessProc)(int netIndex, int nodeIndex, int thickness);
-typedef int (*createReactionProc)(int netIndex, char *reactionID);
-typedef int (*getReactionIndexProc)(int netIndex, char *reactionID);
+typedef int (*createReactionProc)(int netIndex, const char *reactionID);
+typedef int (*getReactionIndexProc)(int netIndex, const char *reactionID);
 typedef int (*deleteReactionProc)(int netIndex, int reactionIndex);
 typedef int (*clearReactionsProc)(int netIndex);
 typedef int (*getNumberOfReactionsProc)(int netIndex);
@@ -42,8 +42,8 @@ typedef char *(*getReactionIDProc)(int netIndex, int reactionIndex);
 typedef char *(*getReactionRateLawProc)(int netIndex, int reactionIndex);
 typedef unsigned int (*getReactionFillColorProc)(int netIndex, int reactionIndex);
 typedef int (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
-typedef float (*getReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, char *srcNodeID);
-typedef float (*getReactionDestNodeStoichProc)(int netIndex, int reactionIndex, char *destNodeID);
+typedef float (*getReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID);
+typedef float (*getReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID);
 typedef int (*getNumberOfSrcNodesProc)(int netIndex, int reactionIndex);
 typedef int (*getNumberOfDestNodesProc)(int netIndex, int reactionIndex);
 typedef int (*getListOfReactionSrcNodesProc)(int netIndex, int reactionIndex);
@@ -51,9 +51,9 @@ typedef int (*getListOfReactionDestNodesProc)(int netIndex, int reactionIndex);
 typedef char *(*getReactionNodeIDProc)(int index);
 typedef int (*addSrcNodeProc)(int netIndex, int reactionIndex, int nodeIndex, float stoich);
 typedef int (*addDestNodeProc)(int netIndex, int reactionIndex, int nodeIndex, float stoich);
-typedef int (*deleteSrcNodeProc)(int netIndex, int reactionIndex, char *nodeID);
-typedef int (*deleteDestNodeProc)(int netIndex, int reactionIndex, char *nodeID);
-typedef int (*setRateLawProc)(int netIndex, int reactionIndex, char *rateLaw);
+typedef int (*deleteSrcNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
+typedef int (*deleteDestNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
+typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateLaw);
 typedef int (*setReactionFillColorProc)(int netIndex, int reactionIndex, int R, int G, int B, int A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
 
@@ -112,7 +112,7 @@ setRateLawProc Iod_setRateLaw;
 setReactionFillColorProc Iod_setReactionFillColor;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
 
-char *Iod_getErrorMessage(int errCode)
+const char *Iod_getErrorMessage(int errCode)
 {
     switch(errCode){
         case  0 :  return "ok";
@@ -133,7 +133,8 @@ char *Iod_getErrorMessage(int errCode)
     }
 }
 
-// Returns TRUE if successful else returns FALSE
+// Returns TRUE if successful load dll file and all functions in it.
+// else returns FALSE
 bool loadDll(int *errorCode)
 {
     Iod_hinstLib = LoadLibrary("../Iodine_Dll/Iodine.dll");
@@ -468,9 +469,10 @@ bool loadDll(int *errorCode)
         *errorCode = -13;
         return FALSE;
     }
-
-
-
     return TRUE;
 }
 
+// char* getListofNetworks(){
+
+//     int a = getNumberOfNetworks()
+// }
