@@ -53,6 +53,9 @@ int main()
 
     char **List1;
     List1 = Iod_getListofNetworks();
+    //List1 is an array with 100 elements. if the network has 3 element, the 4th element: List1[3]==NULL.
+    //As the result, Iod_getListOfXX()functions can only support maximum  99 elements. The final element should be NULL.
+    //You can change the maximum number of elements manually in "ListOfIDs" or"ListOfStoich" in IodineAPI.c.
     printf("getListOfNetworks: \n");
     for (int i = 0; i < 100; i++)
     { //100 is the length of "ListOfIDs" in IodineAPI.c.
@@ -99,6 +102,10 @@ int main()
     }
     printf("\n");
 
+    char *List2[100]={"node1","node2"};
+    //100 is recommended because List1 is an array with 100 element.
+    printf("Equal?: %d\n",Iod_strArrayEqual(List1, &List2[0]));
+
     List1 = Iod_getListOfReactionDestNodes(0, 0);
     //SrcNodes and DestNodes aren't stored in order,
     //so the list of ids will be sorted in alphabetical order.
@@ -112,32 +119,35 @@ int main()
     }
     printf("\n");
 
-    float *list2;
-    list2 = Iod_getListOfReactionSrcStoich(0, 0);
+    float *List3;
+    List3 = Iod_getListOfReactionSrcStoich(0, 0);
     //SrcNodes and DestNodes are sorted in alphabetical order,
     //so the list of stoich will be sorted in the same order--the first '2.2' is the stoich of node1.
     printf("getListOfReactionSrcStoich in network[0], reaction[0]: \n");
     for (int i = 0; i < 100; i++)
     { //100 is the length of "ListOfStoich" in IodineAPI.c.
-        if (list2[i] != 0.0)
+        if (List3[i] != 0.0)
         {
-        printf("%f\t", list2[i]);
+            printf("%f\t", List3[i]);
         }
     }
     printf("\n");
 
-    list2 = Iod_getListOfReactionDestStoich(0, 0);
+    List3 = Iod_getListOfReactionDestStoich(0, 0);
     //SrcNodes and DestNodes are sorted in alphabetical order,
     //so the list of stoich will be sorted in the same order.
     printf("getListOfReactionDestStoich in network[0], reaction[0]: \n");
     for (int i = 0; i < 100; i++)
     { //100 is the length of "ListOfStoich" in IodineAPI.c.
-        if (list2[i] != 0.0)
+        if (List3[i] != 0.0)
         {
-            printf("%f\t", list2[i]);
+            printf("%f\t", List3[i]);
         }
     }
     printf("\n");
+
+    float List4[100]= {3.2,4.2};
+    printf("Equal?: %d\n", Iod_stoichArrayEqual(List3, &List4[0],0.01));
 
     //###########################################################
     //need free library manually at the end of the program.

@@ -1,10 +1,10 @@
 package main
 
-// import "fmt"
-import (
-	"C"
-	Iodine "IodinePkg/Iodine_GO"
-)
+// #include <stdio.h>
+// #include <stdlib.h>
+import "C"
+import "unsafe"
+import Iodine "IodinePkg/Iodine_GO"
 
 var errCode int = 0
 var networkSet = Iodine.GetNetworkSet()
@@ -22,6 +22,11 @@ func undo() C.int {
 //export redo
 func redo() C.int {
 	return C.int(Iodine.Redo())
+}
+
+//export cFree
+func cFree(cs *C.char){
+	C.free(unsafe.Pointer(cs))
 }
 
 //export newNetwork
@@ -78,7 +83,8 @@ func getNumberOfNetworks() C.int {
 //errCode: 0:ok, -5: net index out of range
 func getNetworkID(neti C.int) *C.char {
 	netI := int(neti)
-	return C.CString(Iodine.GetNetworkID(netI, &errCode))
+	iodineCString := C.CString(Iodine.GetNetworkID(netI, &errCode))
+	return iodineCString
 }
 
 //export addNode
@@ -161,7 +167,8 @@ func getNodeID(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	ID := Iodine.GetNodeID(netI, nodeI, &errCode)
-	return C.CString(ID)
+	iodineCString :=  C.CString(ID)
+	return iodineCString
 }
 
 //export getNodeX
@@ -363,7 +370,8 @@ func getReactionID(neti, reai C.int) *C.char {
 	netI := int(neti)
 	reaI := int(reai)
 	ID := Iodine.GetReactionID(netI, reaI, &errCode)
-	return C.CString(ID)
+	iodineCString :=  C.CString(ID)
+	return iodineCString
 }
 
 //export getReactionRateLaw
@@ -374,7 +382,8 @@ func getReactionRateLaw(neti, reai C.int) *C.char {
 	netI := int(neti)
 	reaI := int(reai)
 	rateLaw := Iodine.GetReactionRateLaw(netI, reaI, &errCode)
-	return C.CString(rateLaw)
+	iodineCString :=  C.CString(rateLaw)
+	return iodineCString
 }
 
 //export getReactionFillColor
@@ -471,7 +480,8 @@ func getListOfReactionDestNodes(neti, reai C.int) C.int {
 //used in python APi functions getListOfReactionSrc/DestNodes()
 func getReactionNodeID(index int) *C.char {
 	id := nodeList[index]
-	return C.CString(id)
+	iodineCString := C.CString(id)
+	return iodineCString
 }
 
 //export addSrcNode

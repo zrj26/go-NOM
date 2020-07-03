@@ -1,10 +1,12 @@
 #include <windows.h>
 #include <stdio.h>
+#include <math.h>
 #include <stdbool.h>
 HINSTANCE Iod_hinstLib;
 typedef int (*getErrorCodeProc)();
 typedef int (*undoProc)();
 typedef int (*redoProc)();
+typedef int (*cFreeProc)(const char *cString);
 typedef int (*newNetworkProc)(const char *netID);
 typedef int (*getNetworkIndexProc)(const char *netID);
 typedef int (*saveNetworkAsJSONProc)(int netIndex, const char *fileName);
@@ -60,6 +62,7 @@ typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int
 getErrorCodeProc Iod_getErrorCode;
 undoProc Iod_undo;
 redoProc Iod_redo;
+cFreeProc Iod_cFree;
 newNetworkProc Iod_newNetwork;
 getNetworkIndexProc Iod_getNetworkIndex;
 saveNetworkAsJSONProc Iod_saveNetworkAsJSON;
@@ -175,6 +178,12 @@ bool loadDll(int *errorCode)
     }
     Iod_redo = (redoProc)GetProcAddress(Iod_hinstLib, "redo");
     if (Iod_redo == NULL)
+    {
+        *errorCode = -13;
+        return FALSE;
+    }
+    Iod_cFree = (cFreeProc)GetProcAddress(Iod_hinstLib, "cFree");
+    if (Iod_cFree == NULL)
     {
         *errorCode = -13;
         return FALSE;
@@ -619,4 +628,46 @@ void Iod_createBiBi(int neti, const char *reaID, const char *rateLaw, int src1i,
     Iod_addDestNode(neti, reai, dest1i, dest1Stoich);
     Iod_addDestNode(neti, reai, dest2i, dest2Stoich);
     Iod_setRateLaw(neti, reai, rateLaw);
+}
+
+bool Iod_strArrayEqual(char **array1,char **array2)
+{   
+    bool equal= TRUE;
+
+    for (int i = 0; i < 100; i++)
+    {
+        if (array1[i]!=NULL && array2[i]!=NULL)
+        {
+            if (strcmp(array1[i], array2[i]) != 0)
+            {
+                equal = FALSE;
+                return equal;
+            }
+        }
+        else if (array1[i] == NULL && array2[i] == NULL)
+        {
+            break;
+        }
+        else
+        {
+            equal = FALSE;
+            return equal;
+        }
+    }
+    return equal;
+}
+
+bool Iod_stoichArrayEqual(float *array1, float *array2,float dicimal)
+{
+    bool equal = TRUE;
+
+    for (int i = 0; i < 100; i++)
+    {
+        if (fabs(array1[i] - array2[i]) > dicimal)
+        {
+            equal = FALSE;
+            return equal;
+        }
+    }
+    return equal;
 }

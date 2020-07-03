@@ -3,6 +3,7 @@ import ctypes
 libIodine = ctypes.cdll.LoadLibrary('../Iodine_Dll/Iodine.dll')
 
 #########################   argtypes   #########################
+libIodine.cFree.argtypes = [ctypes.c_char_p]
 libIodine.newNetwork.argtypes = [ctypes.c_char_p]
 libIodine.getNetworkIndex.argtypes = [ctypes.c_char_p]
 libIodine.saveNetworkAsJSON.argtypes = [
@@ -226,6 +227,10 @@ def redo():
     errCode = libIodine.redo()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode])
+
+
+def cFree(cString):
+    libIodine.cFree(cString)
 
 
 def newNetwork(netId):
