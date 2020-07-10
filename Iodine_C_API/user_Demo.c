@@ -5,7 +5,7 @@ int main()
     int errorCode;
     int err;
     const char *Id;
-    err = loadDll(&errorCode);
+    err = loadDll(&errorCode, "../Iodine_Dll/Iodine.dll");
     if (!err)
     {
         return -1; //can't load the lib
@@ -119,35 +119,35 @@ int main()
     }
     printf("\n");
 
-    float *List3;
-    List3 = Iod_getListOfReactionSrcStoich(0, 0);
-    //SrcNodes and DestNodes are sorted in alphabetical order,
-    //so the list of stoich will be sorted in the same order--the first '2.2' is the stoich of node1.
-    printf("getListOfReactionSrcStoich in network[0], reaction[0]: \n");
-    for (int i = 0; i < 100; i++)
-    { //100 is the length of "ListOfStoich" in IodineAPI.c.
-        if (List3[i] != 0.0)
-        {
-            printf("%f\t", List3[i]);
-        }
-    }
-    printf("\n");
+    // float *List3;
+    // List3 = Iod_getListOfReactionSrcStoich(0, 0);
+    // //SrcNodes and DestNodes are sorted in alphabetical order,
+    // //so the list of stoich will be sorted in the same order--the first '2.2' is the stoich of node1.
+    // printf("getListOfReactionSrcStoich in network[0], reaction[0]: \n");
+    // for (int i = 0; i < 100; i++)
+    // { //100 is the length of "ListOfStoich" in IodineAPI.c.
+    //     if (List3[i] != 0.0)
+    //     {
+    //         printf("%f\t", List3[i]);
+    //     }
+    // }
+    // printf("\n");
 
-    List3 = Iod_getListOfReactionDestStoich(0, 0);
-    //SrcNodes and DestNodes are sorted in alphabetical order,
-    //so the list of stoich will be sorted in the same order.
-    printf("getListOfReactionDestStoich in network[0], reaction[0]: \n");
-    for (int i = 0; i < 100; i++)
-    { //100 is the length of "ListOfStoich" in IodineAPI.c.
-        if (List3[i] != 0.0)
-        {
-            printf("%f\t", List3[i]);
-        }
-    }
-    printf("\n");
+    // List3 = Iod_getListOfReactionDestStoich(0, 0);
+    // //SrcNodes and DestNodes are sorted in alphabetical order,
+    // //so the list of stoich will be sorted in the same order.
+    // printf("getListOfReactionDestStoich in network[0], reaction[0]: \n");
+    // for (int i = 0; i < 100; i++)
+    // { //100 is the length of "ListOfStoich" in IodineAPI.c.
+    //     if (List3[i] != 0.0)
+    //     {
+    //         printf("%f\t", List3[i]);
+    //     }
+    // }
+    // printf("\n");
 
-    float List4[100]= {3.2,4.2};
-    printf("Equal?: %d\n", Iod_stoichArrayEqual(List3, &List4[0],0.01));
+    // float List4[100]= {3.2,4.2};
+    // printf("Equal?: %d\n", Iod_floatArrayEqual(List3, &List4[0],0.01));
 
     //###########################################################
     //need free library manually at the end of the program.

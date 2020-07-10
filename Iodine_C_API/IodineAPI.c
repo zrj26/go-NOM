@@ -59,7 +59,7 @@ typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateL
 typedef int (*setReactionFillColorProc)(int netIndex, int reactionIndex, int R, int G, int B, int A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
 
-getErrorCodeProc Iod_getErrorCode;
+getErrorCodeProc getErrorCode;
 undoProc Iod_undo;
 redoProc Iod_redo;
 cFreeProc Iod_cFree;
@@ -146,7 +146,7 @@ const char *Iod_getErrorMessage(int errCode)
     case -12:
         return "Variable out of range: ";
     case -13:
-        return "Loading DLL error";
+        return "Iodine DLL missing";
     default:
         return "Other error";
     }
@@ -154,17 +154,17 @@ const char *Iod_getErrorMessage(int errCode)
 
 // Returns TRUE if successful load dll file and all functions in it.
 // else returns FALSE
-bool loadDll(int *errorCode)
+bool loadDll(int *errorCode,const char *pathToDll)
 {
-    Iod_hinstLib = LoadLibrary("../Iodine_Dll/Iodine.dll");
+    Iod_hinstLib = LoadLibrary(pathToDll);
     if (Iod_hinstLib == NULL)
     {
         *errorCode = -13;
         return FALSE;
     }
 
-    Iod_getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
-    if (Iod_getErrorCode == NULL)
+    getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
+    if (getErrorCode == NULL)
     {
         *errorCode = -13;
         return FALSE;
@@ -497,6 +497,22 @@ bool loadDll(int *errorCode)
     return TRUE;
 }
 
+int Iod_ERR =0;
+
+int Iod_getErrorCode()
+{
+    int err = getErrorCode();
+    if (err<0)
+    {
+        return err;
+    }
+    if (Iod_ERR<0)
+    {
+        return Iod_ERR;
+    }
+    return 0;
+}
+
 char *ListOfIDs[100];
 
 char **Iod_getListofNetworks()
@@ -513,7 +529,13 @@ char **Iod_getListofNetworks()
 char **Iod_getListOfNodesIDs(int netIndex)
 {
     memset(ListOfIDs, 0, 100);
+    Iod_ERR =0;
     int a = Iod_getNumberOfNodes(netIndex);
+    if (a<0)
+    {
+        Iod_ERR = a;
+        return &ListOfIDs[0];
+    }
     for (int i = 0; i < a; i++)
     {
         ListOfIDs[i] = Iod_getNodeID(netIndex, i);
@@ -524,7 +546,13 @@ char **Iod_getListOfNodesIDs(int netIndex)
 char **Iod_getListOfReactionIDs(int netIndex)
 {
     memset(ListOfIDs, 0, 100);
+    Iod_ERR = 0;
     int a = Iod_getNumberOfReactions(netIndex);
+    if (a < 0)
+    {
+        Iod_ERR = a;
+        return &ListOfIDs[0];
+    }
     for (int i = 0; i < a; i++)
     {
         ListOfIDs[i] = Iod_getReactionID(netIndex, i);
@@ -535,7 +563,14 @@ char **Iod_getListOfReactionIDs(int netIndex)
 char **Iod_getListOfReactionSrcNodes(int netIndex, int reactionIndex)
 {
     memset(ListOfIDs, 0, 100);
-    getListOfReactionSrcNodes(netIndex, reactionIndex);
+    Iod_ERR = 0;
+
+    int a0 = getListOfReactionSrcNodes(netIndex, reactionIndex);
+    if (a0 < 0)
+    {
+        Iod_ERR = a0;
+        return &ListOfIDs[0];
+    }
     int a = Iod_getNumberOfSrcNodes(netIndex, reactionIndex);
     for (int i = 0; i < a; i++)
     {
@@ -547,7 +582,14 @@ char **Iod_getListOfReactionSrcNodes(int netIndex, int reactionIndex)
 char **Iod_getListOfReactionDestNodes(int netIndex, int reactionIndex)
 {
     memset(ListOfIDs, 0, 100);
-    getListOfReactionDestNodes(netIndex, reactionIndex);
+    Iod_ERR = 0;
+
+    int a0 = getListOfReactionDestNodes(netIndex, reactionIndex);
+    if (a0 < 0)
+    {
+        Iod_ERR = a0;
+        return &ListOfIDs[0];
+    }
     int a = Iod_getNumberOfDestNodes(netIndex, reactionIndex);
     for (int i = 0; i < a; i++)
     {
@@ -558,33 +600,48 @@ char **Iod_getListOfReactionDestNodes(int netIndex, int reactionIndex)
 
 float ListOfStoich[100];
 
-float *Iod_getListOfReactionSrcStoich(int netIndex, int reactionIndex)
-{
-    memset(ListOfStoich, 0, 100);
-    Iod_getListOfReactionSrcNodes(netIndex, reactionIndex);
-    for (int i = 0; i < 100; i++)
-    { //100 is the length of "ListOfIDs" in IodineAPI.c.
-        if (ListOfIDs[i] != NULL)
-        {
-            ListOfStoich[i] = Iod_getReactionSrcNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
-        }
-    }
-    return &ListOfStoich[0];
-}
+// float *Iod_getListOfReactionSrcStoich(int netIndex, int reactionIndex)
+// {
+//     memset(ListOfStoich, 0, 100);
+//     Iod_ERR = 0;
 
-float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
-{
-    memset(ListOfStoich, 0, 100);
-    Iod_getListOfReactionDestNodes(netIndex, reactionIndex);
-    for (int i = 0; i < 100; i++)
-    { //100 is the length of "ListOfIDs" in IodineAPI.c.
-        if (ListOfIDs[i] != NULL)
-        {
-            ListOfStoich[i] = Iod_getReactionDestNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
-        }
-    }
-    return &ListOfStoich[0];
-}
+//     int a = Iod_getListOfReactionSrcNodes(netIndex, reactionIndex);
+//     if (a < 0)
+//     {
+//         Iod_ERR = a;
+//         return &ListOfStoich[0];
+//     }
+//     for (int i = 0; i < 100; i++)
+//     { //100 is the length of "ListOfIDs" in IodineAPI.c.
+//         if (ListOfIDs[i] != NULL)
+//         {
+//             ListOfStoich[i] = Iod_getReactionSrcNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+//         }
+//     }
+//     return &ListOfStoich[0];
+// }
+
+// float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
+// {
+//     memset(ListOfStoich, 0, 100);
+//     Iod_ERR = 0;
+
+//     int a = Iod_getListOfReactionDestNodes(netIndex, reactionIndex);
+//     if (a < 0)
+//     {
+//         Iod_ERR = a;
+//         return &ListOfStoich[0];
+//     }
+
+//     for (int i = 0; i < 100; i++)
+//     { //100 is the length of "ListOfIDs" in IodineAPI.c.
+//         if (ListOfIDs[i] != NULL)
+//         {
+//             ListOfStoich[i] = Iod_getReactionDestNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+//         }
+//     }
+//     return &ListOfStoich[0];
+// }
 
 void Iod_createUniUni(int neti, const char *reaID, const char *rateLaw, int srci, int desti, float srcStoich, float destStoich)
 {
@@ -657,7 +714,7 @@ bool Iod_strArrayEqual(char **array1,char **array2)
     return equal;
 }
 
-bool Iod_stoichArrayEqual(float *array1, float *array2,float dicimal)
+bool Iod_floatArrayEqual(float *array1, float *array2,float dicimal)
 {
     bool equal = TRUE;
 
@@ -671,3 +728,16 @@ bool Iod_stoichArrayEqual(float *array1, float *array2,float dicimal)
     }
     return equal;
 }
+
+bool Iod_floatEqual(float float1, const float float2, float dicimal)
+{
+    bool equal = TRUE;
+    if (fabs(float1 - float2) > dicimal)
+    {
+        equal = FALSE;
+        return equal;
+    }
+    return equal;
+}
+
+

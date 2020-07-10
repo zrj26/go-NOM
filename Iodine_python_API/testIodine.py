@@ -106,9 +106,9 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.IdRepeatError):
             IodineAPI.addNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.addNode(-1, "node2", 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.addNode(-1, "node5", 1.2, 3.2, 2.5, 4.1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.addNode(2, "node2", 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.addNode(2, "node5", 1.2, 3.2, 2.5, 4.1)
         
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
             IodineAPI.addNode(0, "node5", -1, 2.5, 5.4, 6.4)
@@ -184,7 +184,12 @@ class TestNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getListOfNodesIds(0), [])
         self.assertEqual(IodineAPI.getListOfReactionIds(0), [])
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.clearNetwork(-1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.clearNetwork(2)
 
+            
     def test_getNumberOfNodes(self):
         self.assertEqual(IodineAPI.getNumberOfNodes(0), 3)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
