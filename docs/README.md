@@ -26,7 +26,7 @@ Provide an example of using the library from C
 
 The library has been precompiled as a 64-bit DLL, iodine.dll. This can be used directly in a host application. The iodine.h is header file and contains all the C method signatures.
 
-Should provide a C loader application.
+see [user_Demo.c](https://github.com/zrj26/go-NOM/blob/master/Iodine_C_API/user_Demo.c)
 
 ## Example of using the Python interface
 
@@ -34,7 +34,9 @@ Provide an example of using the library from Python
 
 ## Running the Tests
 
-Explain how to run the Python tests
+see [testIodine.py](https://github.com/zrj26/go-NOM/blob/master/Iodine_python_API/testIodine.py)
+
+see [unit_test.c](https://github.com/zrj26/go-NOM/blob/master/Iodine_C_API/unit_test.c)
 
 # API Documenation
 
