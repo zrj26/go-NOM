@@ -76,6 +76,10 @@ extern "C" {
 
 extern int getErrorCode();
 
+//designed for C api
+
+extern void setErrorCode(int p0);
+
 extern int undo();
 
 extern int redo();

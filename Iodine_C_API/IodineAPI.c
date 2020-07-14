@@ -4,6 +4,7 @@
 #include <stdbool.h>
 HINSTANCE Iod_hinstLib;
 typedef int (*getErrorCodeProc)();
+typedef void (*setErrorCodeProc)(int err);
 typedef int (*undoProc)();
 typedef int (*redoProc)();
 typedef int (*cFreeProc)(const char *cString);
@@ -59,7 +60,8 @@ typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateL
 typedef int (*setReactionFillColorProc)(int netIndex, int reactionIndex, int R, int G, int B, int A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
 
-getErrorCodeProc getErrorCode;
+getErrorCodeProc Iod_getErrorCode;
+setErrorCodeProc setErrorCode;
 undoProc Iod_undo;
 redoProc Iod_redo;
 cFreeProc Iod_cFree;
@@ -146,6 +148,8 @@ const char *Iod_getErrorMessage(int errCode)
     case -12:
         return "Variable out of range: ";
     case -13:
+        return "can't find function in dll";
+    case -14:
         return "Iodine DLL missing";
     default:
         return "Other error";
@@ -154,361 +158,295 @@ const char *Iod_getErrorMessage(int errCode)
 
 // Returns TRUE if successful load dll file and all functions in it.
 // else returns FALSE
-bool loadDll(int *errorCode,const char *pathToDll)
+int loadDll(const char *pathToDll)
 {
     Iod_hinstLib = LoadLibrary(pathToDll);
     if (Iod_hinstLib == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -14;
     }
 
-    getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
-    if (getErrorCode == NULL)
+    Iod_getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
+    if (Iod_getErrorCode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
+    }
+
+    setErrorCode = (setErrorCodeProc)GetProcAddress(Iod_hinstLib, "setErrorCode");
+    if (setErrorCode == NULL)
+    {
+        return -13;
     }
 
     Iod_undo = (undoProc)GetProcAddress(Iod_hinstLib, "undo");
     if (Iod_undo == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_redo = (redoProc)GetProcAddress(Iod_hinstLib, "redo");
     if (Iod_redo == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_cFree = (cFreeProc)GetProcAddress(Iod_hinstLib, "cFree");
     if (Iod_cFree == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_newNetwork = (newNetworkProc)GetProcAddress(Iod_hinstLib, "newNetwork");
     if (Iod_newNetwork == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNetworkIndex = (getNetworkIndexProc)GetProcAddress(Iod_hinstLib, "getNetworkIndex");
     if (Iod_getNetworkIndex == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_saveNetworkAsJSON = (saveNetworkAsJSONProc)GetProcAddress(Iod_hinstLib, "saveNetworkAsJSON");
     if (Iod_saveNetworkAsJSON == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_readNetworkFromJSON = (readNetworkFromJSONProc)GetProcAddress(Iod_hinstLib, "readNetworkFromJSON");
     if (Iod_readNetworkFromJSON == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_deleteNetwork = (deleteNetworkProc)GetProcAddress(Iod_hinstLib, "deleteNetwork");
     if (Iod_deleteNetwork == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_clearNetworks = (clearNetworksProc)GetProcAddress(Iod_hinstLib, "clearNetworks");
     if (Iod_clearNetworks == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNumberOfNetworks = (getNumberOfNetworksProc)GetProcAddress(Iod_hinstLib, "getNumberOfNetworks");
     if (Iod_getNumberOfNetworks == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNetworkID = (getNetworkIDProc)GetProcAddress(Iod_hinstLib, "getNetworkID");
     if (Iod_getNetworkID == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_addNode = (addNodeProc)GetProcAddress(Iod_hinstLib, "addNode");
     if (Iod_addNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeIndex = (getNodeIndexProc)GetProcAddress(Iod_hinstLib, "getNodeIndex");
     if (Iod_getNodeIndex == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_deleteNode = (deleteNodeProc)GetProcAddress(Iod_hinstLib, "deleteNode");
     if (Iod_deleteNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_clearNetwork = (clearNetworkProc)GetProcAddress(Iod_hinstLib, "clearNetwork");
     if (Iod_clearNetwork == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNumberOfNodes = (getNumberOfNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfNodes");
     if (Iod_getNumberOfNodes == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeCenterX = (getNodeCenterXProc)GetProcAddress(Iod_hinstLib, "getNodeCenterX");
     if (Iod_getNodeCenterX == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeCenterY = (getNodeCenterYProc)GetProcAddress(Iod_hinstLib, "getNodeCenterY");
     if (Iod_getNodeCenterY == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeID = (getNodeIDProc)GetProcAddress(Iod_hinstLib, "getNodeID");
     if (Iod_getNodeID == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeX = (getNodeXProc)GetProcAddress(Iod_hinstLib, "getNodeX");
     if (Iod_getNodeX == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeY = (getNodeYProc)GetProcAddress(Iod_hinstLib, "getNodeY");
     if (Iod_getNodeY == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeW = (getNodeWProc)GetProcAddress(Iod_hinstLib, "getNodeW");
     if (Iod_getNodeW == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeH = (getNodeHProc)GetProcAddress(Iod_hinstLib, "getNodeH");
     if (Iod_getNodeH == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeFillColor = (getNodeFillColorProc)GetProcAddress(Iod_hinstLib, "getNodeFillColor");
     if (Iod_getNodeFillColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeOutlineColor = (getNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineColor");
     if (Iod_getNodeOutlineColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNodeOutlineThickness = (getNodeOutlineThicknessProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineThickness");
     if (Iod_getNodeOutlineThickness == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setNodeID = (setNodeIDProc)GetProcAddress(Iod_hinstLib, "setNodeID");
     if (Iod_setNodeID == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setNodeCoordinateAndSize = (setNodeCoordinateAndSizeProc)GetProcAddress(Iod_hinstLib, "setNodeCoordinateAndSize");
     if (Iod_setNodeCoordinateAndSize == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setNodeFillColor = (setNodeFillColorProc)GetProcAddress(Iod_hinstLib, "setNodeFillColor");
     if (Iod_setNodeFillColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setNodeOutlineColor = (setNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineColor");
     if (Iod_setNodeOutlineColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setNodeOutlineThickness = (setNodeOutlineThicknessProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineThickness");
     if (Iod_setNodeOutlineThickness == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_createReaction = (createReactionProc)GetProcAddress(Iod_hinstLib, "createReaction");
     if (Iod_createReaction == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionIndex = (getReactionIndexProc)GetProcAddress(Iod_hinstLib, "getReactionIndex");
     if (Iod_getReactionIndex == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_deleteReaction = (deleteReactionProc)GetProcAddress(Iod_hinstLib, "deleteReaction");
     if (Iod_deleteReaction == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_clearReactions = (clearReactionsProc)GetProcAddress(Iod_hinstLib, "clearReactions");
     if (Iod_clearReactions == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNumberOfReactions = (getNumberOfReactionsProc)GetProcAddress(Iod_hinstLib, "getNumberOfReactions");
     if (Iod_getNumberOfReactions == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionID = (getReactionIDProc)GetProcAddress(Iod_hinstLib, "getReactionID");
     if (Iod_getReactionID == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionRateLaw = (getReactionRateLawProc)GetProcAddress(Iod_hinstLib, "getReactionRateLaw");
     if (Iod_getReactionRateLaw == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionFillColor = (getReactionFillColorProc)GetProcAddress(Iod_hinstLib, "getReactionFillColor");
     if (Iod_getReactionFillColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionLineThickness = (getReactionLineThicknessProc)GetProcAddress(Iod_hinstLib, "getReactionLineThickness");
     if (Iod_getReactionLineThickness == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionSrcNodeStoich = (getReactionSrcNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionSrcNodeStoich");
     if (Iod_getReactionSrcNodeStoich == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getReactionDestNodeStoich = (getReactionDestNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionDestNodeStoich");
     if (Iod_getReactionDestNodeStoich == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNumberOfSrcNodes = (getNumberOfSrcNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfSrcNodes");
     if (Iod_getNumberOfSrcNodes == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_getNumberOfDestNodes = (getNumberOfDestNodesProc)GetProcAddress(Iod_hinstLib, "getNumberOfDestNodes");
     if (Iod_getNumberOfDestNodes == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     getListOfReactionSrcNodes = (getListOfReactionSrcNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionSrcNodes");
     if (getListOfReactionSrcNodes == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     getListOfReactionDestNodes = (getListOfReactionDestNodesProc)GetProcAddress(Iod_hinstLib, "getListOfReactionDestNodes");
     if (getListOfReactionDestNodes == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     getReactionNodeID = (getReactionNodeIDProc)GetProcAddress(Iod_hinstLib, "getReactionNodeID");
     if (getReactionNodeID == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_addSrcNode = (addSrcNodeProc)GetProcAddress(Iod_hinstLib, "addSrcNode");
     if (Iod_addSrcNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_addDestNode = (addDestNodeProc)GetProcAddress(Iod_hinstLib, "addDestNode");
     if (Iod_addDestNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_deleteSrcNode = (deleteSrcNodeProc)GetProcAddress(Iod_hinstLib, "deleteSrcNode");
     if (Iod_deleteSrcNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_deleteDestNode = (deleteDestNodeProc)GetProcAddress(Iod_hinstLib, "deleteDestNode");
     if (Iod_deleteDestNode == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setRateLaw = (setRateLawProc)GetProcAddress(Iod_hinstLib, "setRateLaw");
     if (Iod_setRateLaw == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setReactionFillColor = (setReactionFillColorProc)GetProcAddress(Iod_hinstLib, "setReactionFillColor");
     if (Iod_setReactionFillColor == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
+        return -13;
     }
     Iod_setReactionLineThickness = (setReactionLineThicknessProc)GetProcAddress(Iod_hinstLib, "setReactionLineThickness");
     if (Iod_setReactionLineThickness == NULL)
     {
-        *errorCode = -13;
-        return FALSE;
-    }
-    return TRUE;
-}
-
-int Iod_ERR =0;
-
-int Iod_getErrorCode()
-{
-    int err = getErrorCode();
-    if (err<0)
-    {
-        return err;
-    }
-    if (Iod_ERR<0)
-    {
-        return Iod_ERR;
+        return -13;
     }
     return 0;
 }
@@ -529,11 +467,11 @@ char **Iod_getListofNetworks()
 char **Iod_getListOfNodesIDs(int netIndex)
 {
     memset(ListOfIDs, 0, 100);
-    Iod_ERR =0;
+    setErrorCode(0);
     int a = Iod_getNumberOfNodes(netIndex);
-    if (a<0)
+    if (a < 0)
     {
-        Iod_ERR = a;
+        setErrorCode(a);
         return &ListOfIDs[0];
     }
     for (int i = 0; i < a; i++)
@@ -546,11 +484,11 @@ char **Iod_getListOfNodesIDs(int netIndex)
 char **Iod_getListOfReactionIDs(int netIndex)
 {
     memset(ListOfIDs, 0, 100);
-    Iod_ERR = 0;
+    setErrorCode(0);
     int a = Iod_getNumberOfReactions(netIndex);
     if (a < 0)
     {
-        Iod_ERR = a;
+        setErrorCode(a);
         return &ListOfIDs[0];
     }
     for (int i = 0; i < a; i++)
@@ -563,12 +501,12 @@ char **Iod_getListOfReactionIDs(int netIndex)
 char **Iod_getListOfReactionSrcNodes(int netIndex, int reactionIndex)
 {
     memset(ListOfIDs, 0, 100);
-    Iod_ERR = 0;
+    setErrorCode(0);
 
     int a0 = getListOfReactionSrcNodes(netIndex, reactionIndex);
     if (a0 < 0)
     {
-        Iod_ERR = a0;
+        setErrorCode(a0);
         return &ListOfIDs[0];
     }
     int a = Iod_getNumberOfSrcNodes(netIndex, reactionIndex);
@@ -582,12 +520,12 @@ char **Iod_getListOfReactionSrcNodes(int netIndex, int reactionIndex)
 char **Iod_getListOfReactionDestNodes(int netIndex, int reactionIndex)
 {
     memset(ListOfIDs, 0, 100);
-    Iod_ERR = 0;
+    setErrorCode(0);
 
     int a0 = getListOfReactionDestNodes(netIndex, reactionIndex);
     if (a0 < 0)
     {
-        Iod_ERR = a0;
+        setErrorCode(a0);
         return &ListOfIDs[0];
     }
     int a = Iod_getNumberOfDestNodes(netIndex, reactionIndex);
@@ -600,48 +538,49 @@ char **Iod_getListOfReactionDestNodes(int netIndex, int reactionIndex)
 
 float ListOfStoich[100];
 
-// float *Iod_getListOfReactionSrcStoich(int netIndex, int reactionIndex)
-// {
-//     memset(ListOfStoich, 0, 100);
-//     Iod_ERR = 0;
+float *Iod_getListOfReactionSrcStoich(int netIndex, int reactionIndex)
+{
+    memset(ListOfStoich, 0, 100);
+    setErrorCode(0);
 
-//     int a = Iod_getListOfReactionSrcNodes(netIndex, reactionIndex);
-//     if (a < 0)
-//     {
-//         Iod_ERR = a;
-//         return &ListOfStoich[0];
-//     }
-//     for (int i = 0; i < 100; i++)
-//     { //100 is the length of "ListOfIDs" in IodineAPI.c.
-//         if (ListOfIDs[i] != NULL)
-//         {
-//             ListOfStoich[i] = Iod_getReactionSrcNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
-//         }
-//     }
-//     return &ListOfStoich[0];
-// }
+    Iod_getListOfReactionSrcNodes(netIndex, reactionIndex);
+    int a = Iod_getErrorCode();
+    if (a < 0)
+    {
+        return &ListOfStoich[0];
+    }
+    for (int i = 0; i < 100; i++)
+    { //100 is the length of "ListOfIDs" in IodineAPI.c.
+        if (ListOfIDs[i] != NULL)
+        {
+            ListOfStoich[i] = Iod_getReactionSrcNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+        }
+    }
+    return &ListOfStoich[0];
+}
 
-// float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
-// {
-//     memset(ListOfStoich, 0, 100);
-//     Iod_ERR = 0;
+float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
+{
+    memset(ListOfStoich, 0, 100);
+    setErrorCode(0);
 
-//     int a = Iod_getListOfReactionDestNodes(netIndex, reactionIndex);
-//     if (a < 0)
-//     {
-//         Iod_ERR = a;
-//         return &ListOfStoich[0];
-//     }
+    Iod_getListOfReactionDestNodes(netIndex, reactionIndex);
+    int a = Iod_getErrorCode();
+    if (a < 0)
+    {
+        setErrorCode(a);
+        return &ListOfStoich[0];
+    }
 
-//     for (int i = 0; i < 100; i++)
-//     { //100 is the length of "ListOfIDs" in IodineAPI.c.
-//         if (ListOfIDs[i] != NULL)
-//         {
-//             ListOfStoich[i] = Iod_getReactionDestNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
-//         }
-//     }
-//     return &ListOfStoich[0];
-// }
+    for (int i = 0; i < 100; i++)
+    { //100 is the length of "ListOfIDs" in IodineAPI.c.
+        if (ListOfIDs[i] != NULL)
+        {
+            ListOfStoich[i] = Iod_getReactionDestNodeStoich(netIndex, reactionIndex, ListOfIDs[i]);
+        }
+    }
+    return &ListOfStoich[0];
+}
 
 void Iod_createUniUni(int neti, const char *reaID, const char *rateLaw, int srci, int desti, float srcStoich, float destStoich)
 {
@@ -687,13 +626,13 @@ void Iod_createBiBi(int neti, const char *reaID, const char *rateLaw, int src1i,
     Iod_setRateLaw(neti, reai, rateLaw);
 }
 
-bool Iod_strArrayEqual(char **array1,char **array2)
-{   
-    bool equal= TRUE;
+bool Iod_strArrayEqual(char **array1, char **array2)
+{
+    bool equal = TRUE;
 
     for (int i = 0; i < 100; i++)
     {
-        if (array1[i]!=NULL && array2[i]!=NULL)
+        if (array1[i] != NULL && array2[i] != NULL)
         {
             if (strcmp(array1[i], array2[i]) != 0)
             {
@@ -714,7 +653,7 @@ bool Iod_strArrayEqual(char **array1,char **array2)
     return equal;
 }
 
-bool Iod_floatArrayEqual(float *array1, float *array2,float dicimal)
+bool Iod_floatArrayEqual(float *array1, float *array2, float dicimal)
 {
     bool equal = TRUE;
 
@@ -739,5 +678,3 @@ bool Iod_floatEqual(float float1, const float float2, float dicimal)
     }
     return equal;
 }
-
-

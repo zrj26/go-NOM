@@ -14,6 +14,13 @@ func getErrorCode() C.int {
 	return C.int(errCode)
 }
 
+
+//export setErrorCode
+//designed for C api
+func setErrorCode(err C.int){
+	errCode = int(err)
+} 
+
 //export undo
 func undo() C.int {
 	return C.int(Iodine.Undo())
