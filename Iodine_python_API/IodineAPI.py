@@ -228,6 +228,11 @@ def redo():
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode])
 
+def startGroup():
+    libIodine.startGroup()
+
+def endGroup():
+    libIodine.endGroup()
 
 def cFree(cString):
     libIodine.cFree(cString)
@@ -634,15 +639,18 @@ def setReactionLineThickness(neti, reai, thickness):
 
 
 def createUniUni(neti, reaId, rateLaw, srci, desti, srcStoich, destStoich):
+    startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
 
     addSrcNode(neti, reai, srci, srcStoich)
     addDestNode(neti, reai, desti, destStoich)
     setRateLaw(neti, reai, rateLaw)
+    endGroup()
 
 
 def CreateUniBi(neti, reaId, rateLaw, srci, dest1i, dest2i, srcStoich, dest1Stoich, dest2Stoich):
+    startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
 
@@ -650,9 +658,10 @@ def CreateUniBi(neti, reaId, rateLaw, srci, dest1i, dest2i, srcStoich, dest1Stoi
     addDestNode(neti, reai, dest1i, dest1Stoich)
     addDestNode(neti, reai, dest2i, dest2Stoich)
     setRateLaw(neti, reai, rateLaw)
-
+    endGroup()
 
 def CreateBiUni(neti, reaId, rateLaw, src1i, src2i, desti, src1Stoich, src2Stoich, destStoich):
+    startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
 
@@ -660,9 +669,10 @@ def CreateBiUni(neti, reaId, rateLaw, src1i, src2i, desti, src1Stoich, src2Stoic
     addSrcNode(neti, reai, src2i, src2Stoich)
     addDestNode(neti, reai, desti, destStoich)
     setRateLaw(neti, reai, rateLaw)
-
+    endGroup()
 
 def CreateBiBi(neti, reaId, rateLaw, src1i, src2i, dest1i, dest2i, src1Stoich, src2Stoich, dest1Stoich, dest2Stoich):
+    startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
 
@@ -671,4 +681,4 @@ def CreateBiBi(neti, reaId, rateLaw, src1i, src2i, dest1i, dest2i, src1Stoich, s
     addDestNode(neti, reai, dest1i, dest1Stoich)
     addDestNode(neti, reai, dest2i, dest2Stoich)
     setRateLaw(neti, reai, rateLaw)
-
+    endGroup()

@@ -84,6 +84,10 @@ extern int undo();
 
 extern int redo();
 
+extern void startGroup();
+
+extern void endGroup();
+
 extern void cFree(char* p0);
 
 //errCode -3: ID repeat, 0 :ok

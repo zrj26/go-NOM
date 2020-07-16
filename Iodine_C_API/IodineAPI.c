@@ -7,6 +7,8 @@ typedef int (*getErrorCodeProc)();
 typedef void (*setErrorCodeProc)(int err);
 typedef int (*undoProc)();
 typedef int (*redoProc)();
+typedef void (*startGroupProc)();
+typedef void (*endGroupProc)();
 typedef int (*cFreeProc)(const char *cString);
 typedef int (*newNetworkProc)(const char *netID);
 typedef int (*getNetworkIndexProc)(const char *netID);
@@ -64,6 +66,8 @@ getErrorCodeProc Iod_getErrorCode;
 setErrorCodeProc setErrorCode;
 undoProc Iod_undo;
 redoProc Iod_redo;
+startGroupProc Iod_startGroup;
+endGroupProc Iod_endGroup;
 cFreeProc Iod_cFree;
 newNetworkProc Iod_newNetwork;
 getNetworkIndexProc Iod_getNetworkIndex;
@@ -185,6 +189,16 @@ int loadDll(const char *pathToDll)
     }
     Iod_redo = (redoProc)GetProcAddress(Iod_hinstLib, "redo");
     if (Iod_redo == NULL)
+    {
+        return -13;
+    }
+    Iod_startGroup = (startGroupProc)GetProcAddress(Iod_hinstLib, "startGroup");
+    if (Iod_startGroup == NULL)
+    {
+        return -13;
+    }
+    Iod_endGroup = (endGroupProc)GetProcAddress(Iod_hinstLib, "endGroup");
+    if (Iod_endGroup == NULL)
     {
         return -13;
     }
@@ -584,16 +598,19 @@ float *Iod_getListOfReactionDestStoich(int netIndex, int reactionIndex)
 
 void Iod_createUniUni(int neti, const char *reaID, const char *rateLaw, int srci, int desti, float srcStoich, float destStoich)
 {
+    Iod_startGroup();
     Iod_createReaction(neti, reaID);
     int reai = Iod_getReactionIndex(neti, reaID);
 
     Iod_addSrcNode(neti, reai, srci, srcStoich);
     Iod_addDestNode(neti, reai, desti, destStoich);
     Iod_setRateLaw(neti, reai, rateLaw);
+    Iod_endGroup();
 }
 
 void Iod_createUniBi(int neti, const char *reaID, const char *rateLaw, int srci, int dest1i, int dest2i, float srcStoich, float dest1Stoich, float dest2Stoich)
 {
+    Iod_startGroup();
     Iod_createReaction(neti, reaID);
     int reai = Iod_getReactionIndex(neti, reaID);
 
@@ -601,10 +618,12 @@ void Iod_createUniBi(int neti, const char *reaID, const char *rateLaw, int srci,
     Iod_addDestNode(neti, reai, dest1i, dest1Stoich);
     Iod_addDestNode(neti, reai, dest2i, dest2Stoich);
     Iod_setRateLaw(neti, reai, rateLaw);
+    Iod_endGroup();
 }
 
 void Iod_createBiUni(int neti, const char *reaID, const char *rateLaw, int src1i, int src2i, int desti, float src1Stoich, float src2Stoich, float destStoich)
 {
+    Iod_startGroup();
     Iod_createReaction(neti, reaID);
     int reai = Iod_getReactionIndex(neti, reaID);
 
@@ -612,10 +631,12 @@ void Iod_createBiUni(int neti, const char *reaID, const char *rateLaw, int src1i
     Iod_addSrcNode(neti, reai, src2i, src2Stoich);
     Iod_addDestNode(neti, reai, desti, destStoich);
     Iod_setRateLaw(neti, reai, rateLaw);
+    Iod_endGroup();
 }
 
 void Iod_createBiBi(int neti, const char *reaID, const char *rateLaw, int src1i, int src2i, int dest1i, int dest2i, float src1Stoich, float src2Stoich, float dest1Stoich, float dest2Stoich)
 {
+    Iod_startGroup();
     Iod_createReaction(neti, reaID);
     int reai = Iod_getReactionIndex(neti, reaID);
 
@@ -624,6 +645,7 @@ void Iod_createBiBi(int neti, const char *reaID, const char *rateLaw, int src1i,
     Iod_addDestNode(neti, reai, dest1i, dest1Stoich);
     Iod_addDestNode(neti, reai, dest2i, dest2Stoich);
     Iod_setRateLaw(neti, reai, rateLaw);
+    Iod_endGroup();
 }
 
 bool Iod_strArrayEqual(char **array1, char **array2)

@@ -7,10 +7,9 @@ import (
 	"image/color"
 	"io/ioutil"
 	"sort"
-	// "github.com/llgcode/draw2d/draw2dimg"
-	// "image"
 )
 
+var stackFlag bool = true
 var netSetStack TNetSetStack
 var redoStack TNetSetStack
 var networkSet TNetworkSet
@@ -156,6 +155,18 @@ func Redo() int {
 	return 0
 }
 
+//StartGroup used at the start of a group operaction or secondary function.
+func StartGroup(){
+	redoStack = TNetSetStack{}
+	netSetStack.push(networkSet)
+	stackFlag = false
+}
+
+//EndGroup used at the end of a group operaction or secondary function.
+func EndGroup(){
+	stackFlag = true
+}
+
 //NewNetwork Create a new network
 //errCode -3: id repeat, 0 :ok
 func NewNetwork(id string) int {
@@ -166,8 +177,10 @@ func NewNetwork(id string) int {
 			return errCode
 		}
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	newNetwork := TNetwork{MagicIdentifier: "NM01", ID: id}
 	networkSet = append(networkSet, newNetwork)
 	return errCode
@@ -231,8 +244,10 @@ func ReadNetworkFromJSON(filePath string) int {
 		}
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	networkSet = append(networkSet, newNet)
 	// fmt.Println(networkSet)
 	return errCode
@@ -247,8 +262,10 @@ func DeleteNetwork(neti int) int {
 		return errCode
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	if neti == 0 {
 		networkSet = networkSet[1:]
 	} else if neti == len(networkSet)-1 {
@@ -261,8 +278,10 @@ func DeleteNetwork(neti int) int {
 
 //ClearNetworks ClearNetworks
 func ClearNetworks() {
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	networkSet = TNetworkSet{}
 }
 
@@ -305,8 +324,10 @@ func AddNode(neti int, id string, x, y, w, h float64) int {
 		return errCode
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	newNode := TNode{ID: id, X: x, Y: y, W: w, H: h,
 		FillColor:        color.RGBA{R: 255, G: 150, B: 80, A: 255},
@@ -386,8 +407,10 @@ func DeleteNode(neti, nodei int) int {
 	if errCode == -4 {
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	if nodei == 0 {
 		n.Nodes = n.Nodes[1:]
@@ -408,8 +431,10 @@ func ClearNetwork(neti int) int {
 		errCode = -5
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	networkSet[neti].Nodes = make([]TNode, 0)
 	networkSet[neti].ReactionSet = make([]TReaction, 0)
 	return errCode
@@ -626,8 +651,10 @@ func SetNodeID(neti, nodei int, newID string) int {
 			return errCode
 		}
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	n.Nodes[nodei].ID = newID
 	return errCode
@@ -653,8 +680,10 @@ func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
 		return errCode
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	n.Nodes[nodei].X = x
 	n.Nodes[nodei].Y = y
@@ -683,8 +712,10 @@ func SetNodeFillColor(neti, nodei, r, g, b, a int) int {
 		errCode = -12
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	R1 := uint8(r)
 	G1 := uint8(g)
 	B1 := uint8(b)
@@ -716,8 +747,10 @@ func SetNodeOutlineColor(neti, nodei, r, g, b, a int) int {
 		errCode = -12
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	R1 := uint8(r)
 	G1 := uint8(g)
 	B1 := uint8(b)
@@ -749,8 +782,10 @@ func SetNodeOutlineThickness(neti, nodei, thickness int) int {
 		errCode = -12
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	n.Nodes[nodei].OutlineThickness = thickness
 	return errCode
@@ -772,9 +807,11 @@ func CreateReaction(neti int, id string) int {
 			return errCode
 		}
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
-
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+	
 	newReact := TReaction{ID: id,
 		FillColor: color.RGBA{R: 255, G: 150, B: 80, A: 255},
 		Thickness: 3,
@@ -820,8 +857,10 @@ func DeleteReaction(neti, reai int) int {
 		errCode = -6
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	if reai == 0 {
 		r = r[1:]
 	} else if reai == len(r)-1 {
@@ -842,8 +881,10 @@ func ClearReactions(neti int) int {
 		errCode = -5
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	networkSet[neti].ReactionSet = make([]TReaction, 0)
 	return errCode
 }
@@ -1080,8 +1121,10 @@ func AddSrcNode(neti, reai, nodei int, stoich float64) int {
 		return errCode
 	}
 	R := r[reai]
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	srcNodeID := networkSet[neti].Nodes[nodei].ID
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -1122,8 +1165,10 @@ func AddDestNode(neti, reai, nodei int, stoich float64) int {
 		return errCode
 	}
 	R := r[reai]
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	destNodeID := networkSet[neti].Nodes[nodei].ID
 	_, ok := R.Species[1][destNodeID]
@@ -1159,8 +1204,10 @@ func DeleteSrcNode(neti, reai int, srcNodeID string) int {
 		return errCode
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	delete(R.Species[0], srcNodeID)
 	networkSet[neti].ReactionSet[reai] = R
@@ -1189,8 +1236,10 @@ func DeleteDestNode(neti, reai int, destNodeID string) int {
 		return errCode
 	}
 
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	delete(R.Species[1], destNodeID)
 	networkSet[neti].ReactionSet[reai] = R
@@ -1211,8 +1260,11 @@ func SetRateLaw(neti, reai int, rateLaw string) int {
 		errCode = -6
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
 	networkSet[neti].ReactionSet[reai].RateLaw = rateLaw
 	return errCode
 }
@@ -1236,8 +1288,10 @@ func SetReactionFillColor(neti, reai, R, G, B, A int) int {
 		errCode = -12
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 	R1 := uint8(R)
 	G1 := uint8(G)
 	B1 := uint8(B)
@@ -1269,14 +1323,18 @@ func SetReactionLineThickness(neti, reai, thickness int) int {
 		errCode = -12
 		return errCode
 	}
-	redoStack = TNetSetStack{}
-	netSetStack.push(networkSet)
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
 
 	networkSet[neti].ReactionSet[reai].Thickness = thickness
 	return errCode
 }
 
 func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i int, src1Stoich, src2Stoich, dest1Stoich, dest2Stoich float64) {
+	StartGroup()
+
 	CreateReaction(neti, reaID)
 	reai := GetReactionIndex(neti, reaID)
 
@@ -1285,24 +1343,23 @@ func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i in
 	AddDestNode(neti, reai, dest1i, dest1Stoich)
 	AddDestNode(neti, reai, dest2i, dest2Stoich)
 	SetRateLaw(neti, reai, rateLaw)
+	EndGroup()
 }
+
 
 //###################################################################
 
 // func main() {
-// err := 0
-// err:= ReadNetworkFromJSON("jstr.json")
-// err1:= SaveNetworkAsJSON(0,"jon.json")
-// fmt.Println(networkSet)
-// fmt.Println(err1)
-// NewNetwork("network1")
-// AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
-// AddNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
-// AddNode(0, "node3", 2.2, 3.1, 1.5, 4.5)
-// AddNode(0, "node4", 7.2, 3.5, 1.6, 4.8)
-// createBiBi(0, "Rea1", "k1*A",0, 1, 2, 3, 1.0, 2.0, 3.0, 4.0)
-// createBiBi(0, "Rea2", "k2*A",1, 3, 0, 2, 2.0, 5.0, 8.0, 7.0)
-
-// delete ClearNetwork()
-
+// 	NewNetwork("network1")
+// 	AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
+// 	AddNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
+// 	AddNode(0, "node3", 2.2, 3.1, 1.5, 4.5)
+// 	AddNode(0, "node4", 7.2, 3.5, 1.6, 4.8)
+// 	createBiBi(0, "Rea1", "k1*A",0, 1, 2, 3, 1.0, 2.0, 3.0, 4.0)
+// 	createBiBi(0, "Rea2", "k2*A",1, 3, 0, 2, 2.0, 5.0, 8.0, 7.0)
+// 	SaveNetworkAsJSON(0,"net1.json")
+// 	Undo()
+// 	SaveNetworkAsJSON(0,"net2.json")
+// 	Redo()
+// 	SaveNetworkAsJSON(0,"net3.json")
 // }

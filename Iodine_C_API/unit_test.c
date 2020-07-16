@@ -2118,7 +2118,44 @@ void test_saveNetworkAsJSON_readNetworkFromJSON()
     }
 }
 
+void test_startGroup_endGroup()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+    char **List1;
 
+    List1 = Iod_getListOfReactionIDs(0);
+    char *List2[100] = {"Rea1", "Rea2"};
+    bool equal1 = Iod_strArrayEqual(List1, &List2[0]);
+    ERR = ERR && assertIntEqual(equal1, 1);
+    Iod_undo();
+    char *List3[100] = {"Rea1"};
+    List1 = Iod_getListOfReactionIDs(0);
+    equal1 = Iod_strArrayEqual(List1, &List3[0]);
+    ERR = ERR && assertIntEqual(equal1, 1);
+    Iod_startGroup();
+    int err = Iod_createReaction(0,"rea2");
+    ERR = ERR && assertIntEqual(err, 0);
+    err = Iod_addSrcNode(0, 0, 4, 5.1);
+    ERR = ERR && assertIntEqual(err, 0);
+    Iod_endGroup();
+    Iod_undo();
+    List1 = Iod_getListOfReactionIDs(0);
+    equal1 = Iod_strArrayEqual(List1, &List3[0]);
+    ERR = ERR && assertIntEqual(equal1, 1);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
 
 void (*func_array1[])() = {
     test_newNetwork,
@@ -2180,6 +2217,7 @@ void (*func_array4[])() = {
     test_setReactionFillColor,
     test_setReactionLineThickness,
     test_saveNetworkAsJSON_readNetworkFromJSON,
+    test_startGroup_endGroup,
 };
 
 int main(void)

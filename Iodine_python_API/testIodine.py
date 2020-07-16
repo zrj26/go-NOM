@@ -934,6 +934,20 @@ class TestReactionNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.IdRepeatError):
             IodineAPI.readNetworkFromJSON("../JSON_files/testfile1.json")
 
+    def test_startGroup_endGroup(self):
+        self.assertEqual(IodineAPI.getListOfReactionIds(0),["Rea1", "Rea2"])
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getListOfReactionIds(0), ["Rea1"])
+        self.assertEqual(IodineAPI.startGroup(),None)
+        self.assertEqual(IodineAPI.createReaction(0, "rea2"),None)
+        self.assertEqual(IodineAPI.getListOfReactionIds(0), ["Rea1", "rea2"])
+        self.assertEqual(IodineAPI.addSrcNode(0, 0, 4, 5.1), None)
+        self.assertEqual(IodineAPI.endGroup(), None)
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getListOfReactionIds(0), ["Rea1"])
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

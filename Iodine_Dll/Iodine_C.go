@@ -31,6 +31,16 @@ func redo() C.int {
 	return C.int(Iodine.Redo())
 }
 
+//export startGroup
+func startGroup(){
+	Iodine.StartGroup()
+}
+
+//export endGroup
+func endGroup(){
+	Iodine.EndGroup()
+}
+
 //export cFree
 func cFree(cs *C.char){
 	C.free(unsafe.Pointer(cs))
