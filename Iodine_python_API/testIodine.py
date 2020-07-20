@@ -241,28 +241,51 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeCoordinateAndSize(1, 4)
 
-    def test_getNodeFillColor(self):
-        self.assertEqual(hex(IodineAPI.getNodeFillColor(0, 0,)), '0xff9650ff')
+    def test_getNodeFillColorRGB(self):
+        self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 0)), '0xff9650')
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getNodeFillColor(-1, 1)
+            IodineAPI.getNodeFillColorRGB(-1, 1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getNodeFillColor(3, 1)
+            IodineAPI.getNodeFillColorRGB(3, 1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.getNodeFillColor(1, -1)
+            IodineAPI.getNodeFillColorRGB(1, -1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.getNodeFillColor(1, 4)
+            IodineAPI.getNodeFillColorRGB(1, 4)
 
-    def test_getNodeOutlineColor(self):
+    def test_getNodeFillColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeFillColorAlpha(0, 0), 1, 2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFillColorAlpha(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFillColorAlpha(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFillColorAlpha(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFillColorAlpha(1, 4)
+
+
+    def test_getNodeOutlineColorRGB(self):
         self.assertEqual(
-            hex(IodineAPI.getNodeOutlineColor(0, 0)), '0xff6450ff')
+            hex(IodineAPI.getNodeOutlineColorRGB(0, 0)), '0xff6450')
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getNodeOutlineColor(-1, 1)
+            IodineAPI.getNodeOutlineColorRGB(-1, 1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getNodeOutlineColor(3, 1)
+            IodineAPI.getNodeOutlineColorRGB(3, 1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.getNodeOutlineColor(1, -1)
+            IodineAPI.getNodeOutlineColorRGB(1, -1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.getNodeOutlineColor(1, 4)
+            IodineAPI.getNodeOutlineColorRGB(1, 4)
+
+    def test_getNodeOutlineColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeOutlineColorAlpha(0, 0), 1, 2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColorAlpha(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColorAlpha(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColorAlpha(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColorAlpha(1, 4)
 
     def test_getNodeOutlineThickness(self):
         self.assertEqual(IodineAPI.getNodeOutlineThickness(0, 1), 3)
@@ -339,85 +362,132 @@ class TestNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
             0, 1), (1.1, 2.5, 5.4, 6.4))
 
-    def test_setNodeFillColor(self):
-        self.assertEqual(hex(IodineAPI.getNodeFillColor(0, 1)), '0xff9650ff')
-        self.assertEqual(IodineAPI.setNodeFillColor(
-            0, 1, 30, 180, 160, 255), None)
-        self.assertEqual(hex(IodineAPI.getNodeFillColor(0, 1)), '0x1eb4a0ff')
+    def test_setNodeFillColorRGB(self):
+        self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 1)), '0xff9650')
+        self.assertEqual(IodineAPI.setNodeFillColorRGB(
+            0, 1, 30, 180, 160), None)
+        self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 1)), '0x1eb4a0')
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeFillColor(-1, 1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(-1, 1, 30, 180, 160)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeFillColor(3, 1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(3, 1, 30, 180, 160)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeFillColor(1, -1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(1, -1, 30, 180, 160)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeFillColor(1, 4, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(1, 4, 30, 180, 160)
         
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, -1, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(0, 1, -1, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 256, 180, 160, 255)
+            IodineAPI.setNodeFillColorRGB(0, 1, 256, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, -1, 160, 255)
+            IodineAPI.setNodeFillColorRGB(0, 1, 30, -1, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, 256, 160, 255)
+            IodineAPI.setNodeFillColorRGB(0, 1, 30, 256, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, 180, -1, 255)
+            IodineAPI.setNodeFillColorRGB(0, 1, 30, 180, -1)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, 180, 256, 255)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, 180, 160, -1)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeFillColor(0, 1, 30, 180, 160, 256)
+            IodineAPI.setNodeFillColorRGB(0, 1, 30, 180, 256)
+
         
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
-        self.assertEqual(hex(IodineAPI.getNodeFillColor(0, 1)), '0xff9650ff')
+        self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 1)), '0xff9650')
         self.assertEqual(IodineAPI.redo(), None)
-        self.assertEqual(hex(IodineAPI.getNodeFillColor(0, 1)), '0x1eb4a0ff')
+        self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 1)), '0x1eb4a0')
 
-    def test_setNodeOutlineColor(self):
-        self.assertEqual(
-            hex(IodineAPI.getNodeOutlineColor(0, 1)), '0xff6450ff')
-        self.assertEqual(IodineAPI.setNodeOutlineColor(
-            0, 1, 30, 180, 160, 255), None)
-        self.assertEqual(
-            hex(IodineAPI.getNodeOutlineColor(0, 1)), '0x1eb4a0ff')
+    def test_setNodeFillColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeFillColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.setNodeFillColorAlpha(0, 1, 0.5), None)
+        self.assertAlmostEqual(IodineAPI.getNodeFillColorAlpha(0, 1), 0.5,2)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(-1, 1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorAlpha(-1, 1, 1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(3, 1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorAlpha(3, 1, 1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(1, -1, 30, 180, 160, 255)
+            IodineAPI.setNodeFillColorAlpha(1, -1, 1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(1, 4, 30, 180, 160, 255)
-        
+            IodineAPI.setNodeFillColorAlpha(1, 4, 1)
+
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, -1, 180, 160, 255)
+            IodineAPI.setNodeFillColorAlpha(0, 1, -0.1)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 256, 180, 160, 255)
+            IodineAPI.setNodeFillColorAlpha(0, 1, 1.1)
+
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertAlmostEqual(IodineAPI.getNodeFillColorAlpha(0, 1), 1,2)
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertAlmostEqual(IodineAPI.getNodeFillColorAlpha(0, 1), 0.5,2)
+
+    def test_setNodeOutlineColorRGB(self):
+        self.assertEqual(
+            hex(IodineAPI.getNodeOutlineColorRGB(0, 1)), '0xff6450')
+        self.assertEqual(IodineAPI.setNodeOutlineColorRGB(
+            0, 1, 30, 180, 160), None)
+        self.assertEqual(
+            hex(IodineAPI.getNodeOutlineColorRGB(0, 1)), '0x1eb4a0')
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorRGB(-1, 1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorRGB(3, 1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorRGB(1, -1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorRGB(1, 4, 30, 180, 160)
+
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, -1, 160, 255)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, -1, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, 256, 160, 255)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, 256, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, 180, -1, 255)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, 30, -1, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, 180, 256, 255)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, 30, 256, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, 180, 160, -1)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, 30, 180, -1)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeOutlineColor(0, 1, 30, 180, 160, 256)
+            IodineAPI.setNodeOutlineColorRGB(0, 1, 30, 180, 256)
+
 
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
         self.assertEqual(
-            hex(IodineAPI.getNodeOutlineColor(0, 1)), '0xff6450ff')
+            hex(IodineAPI.getNodeOutlineColorRGB(0, 1)), '0xff6450')
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(
-            hex(IodineAPI.getNodeOutlineColor(0, 1)), '0x1eb4a0ff')
+            hex(IodineAPI.getNodeOutlineColorRGB(0, 1)), '0x1eb4a0')
+
+
+    def test_setNodeOutlineColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeOutlineColorAlpha(0, 1), 1,2)
+        self.assertEqual(IodineAPI.setNodeOutlineColorAlpha(0, 1, 0.5), None)
+        self.assertAlmostEqual(IodineAPI.getNodeOutlineColorAlpha(0, 1), 0.5,2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(-1, 1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(3, 1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(1, -1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(1, 4, 1)
+        
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(0, 1, -0.1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeOutlineColorAlpha(0, 1, 1.1)
+
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertAlmostEqual(IodineAPI.getNodeOutlineColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertAlmostEqual(IodineAPI.getNodeOutlineColorAlpha(0, 1), 0.5, 2)
 
 
     def test_setNodeOutlineThickness(self):
@@ -567,17 +637,28 @@ class TestReactionFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
             IodineAPI.getReactionRateLaw(0, 2)
 
-    def test_getReactionFillColor(self):
+    def test_getReactionFillColorRGB(self):
         self.assertEqual(
-            hex(IodineAPI.getReactionFillColor(0, 0)), '0xff9650ff')
+            hex(IodineAPI.getReactionFillColorRGB(0, 0)), '0xff9650')
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getReactionFillColor(-1, 0)
+            IodineAPI.getReactionFillColorRGB(-1, 0)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getReactionFillColor(1, 0)
+            IodineAPI.getReactionFillColorRGB(1, 0)
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
-            IodineAPI.getReactionFillColor(0, -1)
+            IodineAPI.getReactionFillColorRGB(0, -1)
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
-            IodineAPI.getReactionFillColor(0, 2)
+            IodineAPI.getReactionFillColorRGB(0, 2)
+
+    def test_getReactionFillColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getReactionFillColorAlpha(0, 0),1,2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionFillColorAlpha(-1, 0)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionFillColorAlpha(1, 0)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionFillColorAlpha(0, -1)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionFillColorAlpha(0, 2)
 
     def test_getReactionLineThickness(self):
         self.assertEqual(IodineAPI.getReactionLineThickness(0, 0), 3)
@@ -858,48 +939,71 @@ class TestReactionNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getReactionRateLaw(0, 1), "ABC")
 
-    def test_setReactionFillColor(self):
+    def test_setReactionFillColorRGB(self):
         self.assertEqual(
-            hex(IodineAPI.getReactionFillColor(0, 1)), '0xff9650ff')
-        self.assertEqual(IodineAPI.setReactionFillColor(
-            0, 1, 30, 180, 160, 255), None)
+            hex(IodineAPI.getReactionFillColorRGB(0, 1)), '0xff9650')
+        self.assertEqual(IodineAPI.setReactionFillColorRGB(
+            0, 1, 30, 180, 160), None)
         self.assertEqual(
-            hex(IodineAPI.getReactionFillColor(0, 1)), '0x1eb4a0ff')
+            hex(IodineAPI.getReactionFillColorRGB(0, 1)), '0x1eb4a0')
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setReactionFillColor(-1, 1, 30, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(-1, 1, 30, 180, 160)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setReactionFillColor(3, 1, 30, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(3, 1, 30, 180, 160)
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, -1, 30, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, -1, 30, 180, 160)
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 4, 30, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, 4, 30, 180, 160)
         
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, -1, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, 1, -1, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 256, 180, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, 1, 256, 180, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, -1, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, 1, 30, -1, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, 256, 160, 255)
+            IodineAPI.setReactionFillColorRGB(0, 1, 30, 256, 160)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, 180, -1, 255)
+            IodineAPI.setReactionFillColorRGB(0, 1, 30, 180, -1)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, 180, 256, 255)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, 180, 160, -1)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setReactionFillColor(0, 1, 30, 180, 160, 256)
+            IodineAPI.setReactionFillColorRGB(0, 1, 30, 180, 256)
 
 
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
         self.assertEqual(
-            hex(IodineAPI.getReactionFillColor(0, 1)), '0xff9650ff')
+            hex(IodineAPI.getReactionFillColorRGB(0, 1)), '0xff9650')
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(
-            hex(IodineAPI.getReactionFillColor(0, 1)), '0x1eb4a0ff')
+            hex(IodineAPI.getReactionFillColorRGB(0, 1)), '0x1eb4a0')
+
+    def test_setReactionFillColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getReactionFillColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.setReactionFillColorAlpha(
+            0, 1, 0.5), None)
+        self.assertAlmostEqual(IodineAPI.getReactionFillColorAlpha(0, 1), 0.5, 2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(-1, 1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(3, 1, 1)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(0, -1, 1)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(0, 4, 1)
+
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(0, 1, -0.1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionFillColorAlpha(0, 1, 1.1)
+
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertAlmostEqual(IodineAPI.getReactionFillColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertAlmostEqual(IodineAPI.getReactionFillColorAlpha(0, 1), 0.5, 2)
 
     def test_setReactionLineThickness(self):
         self.assertEqual(IodineAPI.getReactionLineThickness(0, 1), 3)

@@ -30,13 +30,17 @@ typedef float (*getNodeXProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeYProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeWProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeHProc)(int netIndex, int nodeIndex);
-typedef unsigned int (*getNodeFillColorProc)(int netIndex, int nodeIndex);
-typedef unsigned int (*getNodeOutlineColorProc)(int netIndex, int nodeIndex);
+typedef unsigned int (*getNodeFillColorRGBProc)(int netIndex, int nodeIndex);
+typedef float (*getNodeFillColorAlphaProc)(int netIndex, int nodeIndex);
+typedef unsigned int (*getNodeOutlineColorRGBProc)(int netIndex, int nodeIndex);
+typedef float (*getNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
 typedef int (*setNodeIDProc)(int netIndex, int nodeIndex, const char *newID);
 typedef int (*setNodeCoordinateAndSizeProc)(int netIndex, int nodeIndex, float x, float y, float w, float h);
-typedef int (*setNodeFillColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
-typedef int (*setNodeOutlineColorProc)(int netIndex, int nodeIndex, int R, int G, int B, int A);
+typedef int (*setNodeFillColorRGBProc)(int netIndex, int nodeIndex, int R, int G, int B);
+typedef int (*setNodeFillColorAlphaProc)(int netIndex, int nodeIndex, float A);
+typedef int (*setNodeOutlineColorRGBProc)(int netIndex, int nodeIndex, int R, int G, int B);
+typedef int (*setNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex, float A);
 typedef int (*setNodeOutlineThicknessProc)(int netIndex, int nodeIndex, int thickness);
 typedef int (*createReactionProc)(int netIndex, const char *reactionID);
 typedef int (*getReactionIndexProc)(int netIndex, const char *reactionID);
@@ -45,7 +49,8 @@ typedef int (*clearReactionsProc)(int netIndex);
 typedef int (*getNumberOfReactionsProc)(int netIndex);
 typedef char *(*getReactionIDProc)(int netIndex, int reactionIndex);
 typedef char *(*getReactionRateLawProc)(int netIndex, int reactionIndex);
-typedef unsigned int (*getReactionFillColorProc)(int netIndex, int reactionIndex);
+typedef unsigned int (*getReactionFillColorRGBProc)(int netIndex, int reactionIndex);
+typedef float (*getReactionFillColorAlphaProc)(int netIndex, int reactionIndex);
 typedef int (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID);
 typedef float (*getReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID);
@@ -59,7 +64,8 @@ typedef int (*addDestNodeProc)(int netIndex, int reactionIndex, int nodeIndex, f
 typedef int (*deleteSrcNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
 typedef int (*deleteDestNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
 typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateLaw);
-typedef int (*setReactionFillColorProc)(int netIndex, int reactionIndex, int R, int G, int B, int A);
+typedef int (*setReactionFillColorRGBProc)(int netIndex, int reactionIndex, int R, int G, int B);
+typedef int (*setReactionFillColorAlphaProc)(int netIndex, int reactionIndex, float A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
 
 getErrorCodeProc Iod_getErrorCode;
@@ -89,13 +95,17 @@ getNodeXProc Iod_getNodeX;
 getNodeYProc Iod_getNodeY;
 getNodeWProc Iod_getNodeW;
 getNodeHProc Iod_getNodeH;
-getNodeFillColorProc Iod_getNodeFillColor;
-getNodeOutlineColorProc Iod_getNodeOutlineColor;
+getNodeFillColorRGBProc Iod_getNodeFillColorRGB;
+getNodeFillColorAlphaProc Iod_getNodeFillColorAlpha;
+getNodeOutlineColorRGBProc Iod_getNodeOutlineColorRGB;
+getNodeOutlineColorAlphaProc Iod_getNodeOutlineColorAlpha;
 getNodeOutlineThicknessProc Iod_getNodeOutlineThickness;
 setNodeIDProc Iod_setNodeID;
 setNodeCoordinateAndSizeProc Iod_setNodeCoordinateAndSize;
-setNodeFillColorProc Iod_setNodeFillColor;
-setNodeOutlineColorProc Iod_setNodeOutlineColor;
+setNodeFillColorRGBProc Iod_setNodeFillColorRGB;
+setNodeFillColorAlphaProc Iod_setNodeFillColorAlpha;
+setNodeOutlineColorRGBProc Iod_setNodeOutlineColorRGB;
+setNodeOutlineColorAlphaProc Iod_setNodeOutlineColorAlpha;
 setNodeOutlineThicknessProc Iod_setNodeOutlineThickness;
 createReactionProc Iod_createReaction;
 getReactionIndexProc Iod_getReactionIndex;
@@ -104,7 +114,8 @@ clearReactionsProc Iod_clearReactions;
 getNumberOfReactionsProc Iod_getNumberOfReactions;
 getReactionIDProc Iod_getReactionID;
 getReactionRateLawProc Iod_getReactionRateLaw;
-getReactionFillColorProc Iod_getReactionFillColor;
+getReactionFillColorRGBProc Iod_getReactionFillColorRGB;
+getReactionFillColorAlphaProc Iod_getReactionFillColorAlpha;
 getReactionLineThicknessProc Iod_getReactionLineThickness;
 getReactionSrcNodeStoichProc Iod_getReactionSrcNodeStoich;
 getReactionDestNodeStoichProc Iod_getReactionDestNodeStoich;
@@ -118,7 +129,8 @@ addDestNodeProc Iod_addDestNode;
 deleteSrcNodeProc Iod_deleteSrcNode;
 deleteDestNodeProc Iod_deleteDestNode;
 setRateLawProc Iod_setRateLaw;
-setReactionFillColorProc Iod_setReactionFillColor;
+setReactionFillColorRGBProc Iod_setReactionFillColorRGB;
+setReactionFillColorAlphaProc Iod_setReactionFillColorAlpha;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
 
 const char *Iod_getErrorMessage(int errCode)
@@ -307,13 +319,23 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
-    Iod_getNodeFillColor = (getNodeFillColorProc)GetProcAddress(Iod_hinstLib, "getNodeFillColor");
-    if (Iod_getNodeFillColor == NULL)
+    Iod_getNodeFillColorRGB = (getNodeFillColorRGBProc)GetProcAddress(Iod_hinstLib, "getNodeFillColorRGB");
+    if (Iod_getNodeFillColorRGB == NULL)
     {
         return -13;
     }
-    Iod_getNodeOutlineColor = (getNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineColor");
-    if (Iod_getNodeOutlineColor == NULL)
+    Iod_getNodeFillColorAlpha = (getNodeFillColorAlphaProc)GetProcAddress(Iod_hinstLib, "getNodeFillColorAlpha");
+    if (Iod_getNodeFillColorAlpha == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeOutlineColorRGB = (getNodeOutlineColorRGBProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineColorRGB");
+    if (Iod_getNodeOutlineColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeOutlineColorAlpha = (getNodeOutlineColorAlphaProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineColorAlpha");
+    if (Iod_getNodeOutlineColorAlpha == NULL)
     {
         return -13;
     }
@@ -332,13 +354,23 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
-    Iod_setNodeFillColor = (setNodeFillColorProc)GetProcAddress(Iod_hinstLib, "setNodeFillColor");
-    if (Iod_setNodeFillColor == NULL)
+    Iod_setNodeFillColorRGB = (setNodeFillColorRGBProc)GetProcAddress(Iod_hinstLib, "setNodeFillColorRGB");
+    if (Iod_setNodeFillColorRGB == NULL)
     {
         return -13;
     }
-    Iod_setNodeOutlineColor = (setNodeOutlineColorProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineColor");
-    if (Iod_setNodeOutlineColor == NULL)
+    Iod_setNodeFillColorAlpha = (setNodeFillColorAlphaProc)GetProcAddress(Iod_hinstLib, "setNodeFillColorAlpha");
+    if (Iod_setNodeFillColorAlpha == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeOutlineColorRGB = (setNodeOutlineColorRGBProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineColorRGB");
+    if (Iod_setNodeOutlineColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeOutlineColorAlpha = (setNodeOutlineColorAlphaProc)GetProcAddress(Iod_hinstLib, "setNodeOutlineColorAlpha");
+    if (Iod_setNodeOutlineColorAlpha == NULL)
     {
         return -13;
     }
@@ -382,8 +414,13 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
-    Iod_getReactionFillColor = (getReactionFillColorProc)GetProcAddress(Iod_hinstLib, "getReactionFillColor");
-    if (Iod_getReactionFillColor == NULL)
+    Iod_getReactionFillColorRGB = (getReactionFillColorRGBProc)GetProcAddress(Iod_hinstLib, "getReactionFillColorRGB");
+    if (Iod_getReactionFillColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionFillColorAlpha = (getReactionFillColorAlphaProc)GetProcAddress(Iod_hinstLib, "getReactionFillColorAlpha");
+    if (Iod_getReactionFillColorAlpha == NULL)
     {
         return -13;
     }
@@ -452,8 +489,13 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
-    Iod_setReactionFillColor = (setReactionFillColorProc)GetProcAddress(Iod_hinstLib, "setReactionFillColor");
-    if (Iod_setReactionFillColor == NULL)
+    Iod_setReactionFillColorRGB = (setReactionFillColorRGBProc)GetProcAddress(Iod_hinstLib, "setReactionFillColorRGB");
+    if (Iod_setReactionFillColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_setReactionFillColorAlpha = (setReactionFillColorAlphaProc)GetProcAddress(Iod_hinstLib, "setReactionFillColorAlpha");
+    if (Iod_setReactionFillColorAlpha == NULL)
     {
         return -13;
     }
@@ -690,10 +732,10 @@ bool Iod_floatArrayEqual(float *array1, float *array2, float dicimal)
     return equal;
 }
 
-bool Iod_floatEqual(float float1, const float float2, float dicimal)
+bool Iod_floatEqual(float float1, const float float2, float threshold)
 {
     bool equal = TRUE;
-    if (fabs(float1 - float2) > dicimal)
+    if (fabs(float1 - float2) > threshold)
     {
         equal = FALSE;
         return equal;

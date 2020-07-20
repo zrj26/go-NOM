@@ -570,10 +570,10 @@ func GetNodeH(neti, nodei int, errCode *int) float64 {
 	return n.Nodes[nodei].H
 }
 
-//GetNodeFillColor GetNodeFillColor
+//GetNodeFillColorRGB GetNodeFillColor rgb format
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-func GetNodeFillColor(neti, nodei int, errCode *int) uint32 {
+func GetNodeFillColorRGB(neti, nodei int, errCode *int) uint32 {
 	*errCode = 0
 	if neti < 0 || neti >= len(networkSet) {
 		*errCode = -5
@@ -587,14 +587,31 @@ func GetNodeFillColor(neti, nodei int, errCode *int) uint32 {
 	color1 := uint32(n.Nodes[nodei].FillColor.R)
 	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.G)
 	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.B)
-	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FillColor.A)
 	return color1
 }
 
-//GetNodeOutlineColor GetNodeOutlineColor
+//GetNodeFillColorAlpha GetNodeFillColorAlpha
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-func GetNodeOutlineColor(neti, nodei int, errCode *int) uint32 {
+func GetNodeFillColorAlpha(neti, nodei int, errCode *int) float64 {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	alpha1 := float64(n.Nodes[nodei].FillColor.A)/255
+	return alpha1
+}
+
+//GetNodeOutlineColorRGB GetNodeOutlineColorRGB
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeOutlineColorRGB(neti, nodei int, errCode *int) uint32 {
 	*errCode = 0
 	if neti < 0 || neti >= len(networkSet) {
 		*errCode = -5
@@ -608,8 +625,25 @@ func GetNodeOutlineColor(neti, nodei int, errCode *int) uint32 {
 	color1 := uint32(n.Nodes[nodei].OutlineColor.R)
 	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.G)
 	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.B)
-	color1 = (color1 << 8) | uint32(n.Nodes[nodei].OutlineColor.A)
 	return color1
+}
+
+//GetNodeOutlineColorAlpha GetNodeOutlineColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeOutlineColorAlpha(neti, nodei int, errCode *int) float64 {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	alpha1 := float64(n.Nodes[nodei].OutlineColor.A)/255
+	return alpha1
 }
 
 //GetNodeOutlineThickness GetNodeOutlineThickness
@@ -693,11 +727,11 @@ func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
 	return errCode
 }
 
-//SetNodeFillColor SetNodeFillColor
+//SetNodeFillColorRGB SetNodeFillColorRGB
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func SetNodeFillColor(neti, nodei, r, g, b, a int) int {
+func SetNodeFillColorRGB(neti, nodei, r, g, b int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -708,7 +742,7 @@ func SetNodeFillColor(neti, nodei, r, g, b, a int) int {
 		errCode = -7
 		return errCode
 	}
-	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255 {
+	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255{
 		errCode = -12
 		return errCode
 	}
@@ -719,20 +753,48 @@ func SetNodeFillColor(neti, nodei, r, g, b, a int) int {
 	R1 := uint8(r)
 	G1 := uint8(g)
 	B1 := uint8(b)
-	A1 := uint8(a)
 	n.Nodes[nodei].FillColor.R = R1
 	n.Nodes[nodei].FillColor.G = G1
 	n.Nodes[nodei].FillColor.B = B1
+
+	return errCode
+}
+
+//SetNodeFillColorAlpha SetNodeFillColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetNodeFillColorAlpha(neti, nodei int,a float64) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		return errCode
+	}
+	if a < 0 || a > 1 {
+		errCode = -12
+		return errCode
+	}
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	A1 := uint8(a*255)
 	n.Nodes[nodei].FillColor.A = A1
 
 	return errCode
 }
 
-//SetNodeOutlineColor SetNodeOutlineColor
+//SetNodeOutlineColorRGB SetNodeOutlineColorRGB
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func SetNodeOutlineColor(neti, nodei, r, g, b, a int) int {
+func SetNodeOutlineColorRGB(neti, nodei, r, g, b int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -743,7 +805,7 @@ func SetNodeOutlineColor(neti, nodei, r, g, b, a int) int {
 		errCode = -7
 		return errCode
 	}
-	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255 {
+	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
 		errCode = -12
 		return errCode
 	}
@@ -754,10 +816,38 @@ func SetNodeOutlineColor(neti, nodei, r, g, b, a int) int {
 	R1 := uint8(r)
 	G1 := uint8(g)
 	B1 := uint8(b)
-	A1 := uint8(a)
 	n.Nodes[nodei].OutlineColor.R = R1
 	n.Nodes[nodei].OutlineColor.G = G1
 	n.Nodes[nodei].OutlineColor.B = B1
+
+	return errCode
+}
+
+//SetNodeOutlineColorAlpha SetNodeOutlineColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetNodeOutlineColorAlpha(neti, nodei int, a float64) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		return errCode
+	}
+	if a < 0 || a > 1 {
+		errCode = -12
+		return errCode
+	}
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+	A1 := uint8(a*255)
+
 	n.Nodes[nodei].OutlineColor.A = A1
 
 	return errCode
@@ -934,10 +1024,10 @@ func GetReactionRateLaw(neti, reai int, errCode *int) string {
 	return r[reai].RateLaw
 }
 
-//GetReactionFillColor GetReactionFillColor
+//GetReactionFillColorRGB GetReactionFillColorRGB
 //errCode: 0:ok,  -6: reaction index out of range
 //-5: net index out of range
-func GetReactionFillColor(neti, reai int, errCode *int) uint32 {
+func GetReactionFillColorRGB(neti, reai int, errCode *int) uint32 {
 	*errCode = 0
 	if neti < 0 || neti >= len(networkSet) {
 		*errCode = -5
@@ -951,8 +1041,25 @@ func GetReactionFillColor(neti, reai int, errCode *int) uint32 {
 	color1 := uint32(r[reai].FillColor.R)
 	color1 = (color1 << 8) | uint32(r[reai].FillColor.G)
 	color1 = (color1 << 8) | uint32(r[reai].FillColor.B)
-	color1 = (color1 << 8) | uint32(r[reai].FillColor.A)
 	return color1
+}
+
+//GetReactionFillColorAlpha GetReactionFillColorAlpha
+//errCode: 0:ok,  -6: reaction index out of range
+//-5: net index out of range
+func GetReactionFillColorAlpha(neti, reai int, errCode *int) float64 {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	r := networkSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) {
+		*errCode = -6
+		return 0
+	}
+	alpha1 := float64(r[reai].FillColor.A)/255
+	return alpha1
 }
 
 //GetReactionLineThickness GetReactionLineThickness
@@ -1269,11 +1376,11 @@ func SetRateLaw(neti, reai int, rateLaw string) int {
 	return errCode
 }
 
-//SetReactionFillColor SetReactionFillColor
+//SetReactionFillColorRGB SetReactionFillColorRGB
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func SetReactionFillColor(neti, reai, R, G, B, A int) int {
+func SetReactionFillColorRGB(neti, reai, R, G, B int) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -1284,7 +1391,7 @@ func SetReactionFillColor(neti, reai, R, G, B, A int) int {
 		errCode = -6
 		return errCode
 	}
-	if R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255 || A < 0 || A > 255 {
+	if R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255 {
 		errCode = -12
 		return errCode
 	}
@@ -1295,12 +1402,39 @@ func SetReactionFillColor(neti, reai, R, G, B, A int) int {
 	R1 := uint8(R)
 	G1 := uint8(G)
 	B1 := uint8(B)
-	A1 := uint8(A)
 
 	r[reai].FillColor.R = R1
 	r[reai].FillColor.G = G1
 	r[reai].FillColor.B = B1
+	return errCode
+}
+
+//SetReactionFillColorAlpha SetReactionFillColorAlpha
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetReactionFillColorAlpha(neti, reai int, a float64) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		return errCode
+	}
+	r := networkSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) {
+		errCode = -6
+		return errCode
+	}
+	if a < 0 || a > 1 {
+		errCode = -12
+		return errCode
+	}
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+	A1 := uint8(a*255)
 	r[reai].FillColor.A = A1
+
 	return errCode
 }
 
@@ -1350,8 +1484,15 @@ func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i in
 //###################################################################
 
 // func main() {
+// 	err:= 0
 // 	NewNetwork("network1")
 // 	AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
+// 	SetNodeFillColorRGB(0,0,23,43,53)
+// 	SetNodeFillColorAlpha(0,0,1)
+// 	color1 := GetNodeFillColorRGB(0,0,&err)
+// 	alpha1 := GetNodeFillColorAlpha(0,0,&err)
+// 	fmt.Printf("%x\n",color1)
+// 	fmt.Println(alpha1)
 // 	AddNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
 // 	AddNode(0, "node3", 2.2, 3.1, 1.5, 4.5)
 // 	AddNode(0, "node4", 7.2, 3.5, 1.6, 4.8)

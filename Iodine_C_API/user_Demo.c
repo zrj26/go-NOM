@@ -37,7 +37,7 @@ int main()
     err = Iod_addNode(0, "node4", 1.1, 2.2, 3.3, 4.4);
 
     err = Iod_setNodeCoordinateAndSize(0, 0, 2.2, 2.2, 2.2, 2.2); //NetIndex, nodeIndex, x,y,w,h
-    err = Iod_setNodeFillColor(0, 0, 255, 255, 255, 255);         //netIndex, nodeIndex,R,G,B,A (range 0-255)
+    err = Iod_setNodeFillColorRGB(0, 0, 255, 255, 255);         //netIndex, nodeIndex,R,G,B (range 0-255)
 
     err = Iod_createReaction(0, "reaction1");
     err = Iod_setRateLaw(0, 0, "k1*A");

@@ -25,16 +25,22 @@ libIodine.getNodeX.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeY.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeW.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeH.argtypes = [ctypes.c_int, ctypes.c_int]
-libIodine.getNodeFillColor.argtypes = [ctypes.c_int, ctypes.c_int]
-libIodine.getNodeOutlineColor.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getNodeFillColorRGB.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getNodeFillColorAlpha.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getNodeOutlineColorRGB.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getNodeOutlineColorAlpha.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeOutlineThickness.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.setNodeID.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.setNodeCoordinateAndSize.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float]
-libIodine.setNodeFillColor.argtypes = [
-    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,]
-libIodine.setNodeOutlineColor.argtypes = [
-    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ctypes.c_int, ctypes.c_int]
+libIodine.setNodeFillColorRGB.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int]
+libIodine.setNodeFillColorAlpha.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_float]
+libIodine.setNodeOutlineColorRGB.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ctypes.c_int]
+libIodine.setNodeOutlineColorAlpha.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_float]
 libIodine.setNodeOutlineThickness.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_int]
 
@@ -45,7 +51,8 @@ libIodine.clearReactions.argtypes = [ctypes.c_int]
 libIodine.getNumberOfReactions.argtypes = [ctypes.c_int]
 libIodine.getReactionID.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionRateLaw.argtypes = [ctypes.c_int, ctypes.c_int]
-libIodine.getReactionFillColor.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getReactionFillColorRGB.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getReactionFillColorAlpha.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionLineThickness.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionSrcNodeStoich.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
@@ -67,8 +74,10 @@ libIodine.deleteSrcNode.argtypes = [
 libIodine.deleteDestNode.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.setRateLaw.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
-libIodine.setReactionFillColor.argtypes = [
-    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ctypes.c_int, ctypes.c_int]
+libIodine.setReactionFillColorRGB.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,ctypes.c_int]
+libIodine.setReactionFillColorAlpha.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_float]
 libIodine.setReactionLineThickness.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_int]
 
@@ -96,13 +105,17 @@ libIodine.getNodeX.restype = ctypes.c_float
 libIodine.getNodeY.restype = ctypes.c_float
 libIodine.getNodeW.restype = ctypes.c_float
 libIodine.getNodeH.restype = ctypes.c_float
-libIodine.getNodeFillColor.restype = ctypes.c_uint32
-libIodine.getNodeOutlineColor.restype = ctypes.c_uint32
+libIodine.getNodeFillColorRGB.restype = ctypes.c_uint32
+libIodine.getNodeFillColorAlpha.restype = ctypes.c_float
+libIodine.getNodeOutlineColorRGB.restype = ctypes.c_uint32
+libIodine.getNodeOutlineColorAlpha.restype = ctypes.c_float
 libIodine.getNodeOutlineThickness.restype = ctypes.c_int
 libIodine.setNodeID.restype = ctypes.c_int
 libIodine.setNodeCoordinateAndSize.restype = ctypes.c_int
-libIodine.setNodeFillColor.restype = ctypes.c_int
-libIodine.setNodeOutlineColor.restype = ctypes.c_int
+libIodine.setNodeFillColorRGB.restype = ctypes.c_int
+libIodine.setNodeFillColorAlpha.restype = ctypes.c_int
+libIodine.setNodeOutlineColorRGB.restype = ctypes.c_int
+libIodine.setNodeOutlineColorAlpha.restype = ctypes.c_int
 libIodine.setNodeOutlineThickness.restype = ctypes.c_int
 
 libIodine.createReaction.restype = ctypes.c_int
@@ -112,7 +125,8 @@ libIodine.clearReactions.restype = ctypes.c_int
 libIodine.getNumberOfReactions.restype = ctypes.c_int
 libIodine.getReactionID.restype = ctypes.c_char_p
 libIodine.getReactionRateLaw.restype = ctypes.c_char_p
-libIodine.getReactionFillColor.restype = ctypes.c_uint32
+libIodine.getReactionFillColorRGB.restype = ctypes.c_uint32
+libIodine.getReactionFillColorAlpha.restype = ctypes.c_float
 libIodine.getReactionLineThickness.restype = ctypes.c_int
 libIodine.getReactionSrcNodeStoich.restype = ctypes.c_float
 libIodine.getReactionDestNodeStoich.restype = ctypes.c_float
@@ -126,7 +140,8 @@ libIodine.addDestNode.restype = ctypes.c_int
 libIodine.deleteSrcNode.restype = ctypes.c_int
 libIodine.deleteDestNode.restype = ctypes.c_int
 libIodine.setRateLaw.restype = ctypes.c_int
-libIodine.setReactionFillColor.restype = ctypes.c_int
+libIodine.setReactionFillColorRGB.restype = ctypes.c_int
+libIodine.setReactionFillColorAlpha.restype = ctypes.c_int
 libIodine.setReactionLineThickness.restype = ctypes.c_int
 
 
@@ -371,21 +386,35 @@ def getNodeCoordinateAndSize(neti, nodei):
     return (X,Y,W,H)
 
 
-def getNodeFillColor(neti, nodei):
-    color1 = libIodine.getNodeFillColor(neti, nodei)
+def getNodeFillColorRGB(neti, nodei):
+    color1 = libIodine.getNodeFillColorRGB(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
     return color1
 
 
-def getNodeOutlineColor(neti, nodei):
-    color1 = libIodine.getNodeOutlineColor(neti, nodei)
+def getNodeFillColorAlpha(neti, nodei):
+    alpha1 = libIodine.getNodeFillColorAlpha(neti, nodei)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
+    return alpha1
+
+def getNodeOutlineColorRGB(neti, nodei):
+    color1 = libIodine.getNodeOutlineColorRGB(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
     return color1
 
+
+def getNodeOutlineColorAlpha(neti, nodei):
+    alpha1 = libIodine.getNodeOutlineColorAlpha(neti, nodei)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
+    return alpha1
 
 def getNodeOutlineThickness(neti, nodei):
     thickness = libIodine.getNodeOutlineThickness(neti, nodei)
@@ -406,14 +435,25 @@ def setNodeCoordinateAndSize(neti, nodei, x, y, w, h):
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def setNodeFillColor(neti, nodei, r, g, b, a):
-    errCode = libIodine.setNodeFillColor(neti, nodei, r, g, b, a)
+def setNodeFillColorRGB(neti, nodei, r, g, b):
+    errCode = libIodine.setNodeFillColorRGB(neti, nodei, r, g, b)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def setNodeOutlineColor(neti, nodei, r, g, b, a):
-    errCode = libIodine.setNodeOutlineColor(neti, nodei, r, g, b, a)
+def setNodeFillColorAlpha(neti, nodei, a):
+    errCode = libIodine.setNodeFillColorAlpha(neti, nodei, a)
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
+
+def setNodeOutlineColorRGB(neti, nodei, r, g, b):
+    errCode = libIodine.setNodeOutlineColorRGB(neti, nodei, r, g, b)
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
+
+
+def setNodeOutlineColorAlpha(neti, nodei, a):
+    errCode = libIodine.setNodeOutlineColorAlpha(neti, nodei, a)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
@@ -484,14 +524,22 @@ def getReactionRateLaw(neti, reai):
         return rateLaw
 
 
-def getReactionFillColor(neti, reai):
-    color1 = libIodine.getReactionFillColor(neti, reai)
+def getReactionFillColorRGB(neti, reai):
+    color1 = libIodine.getReactionFillColorRGB(neti, reai)
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai)
     else:
         return color1
 
+
+def getReactionFillColorAlpha(neti, reai):
+    alpha1 = libIodine.getReactionFillColorAlpha(neti, reai)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, reai)
+    else:
+        return alpha1
 
 def getReactionLineThickness(neti, reai):
     thickness = libIodine.getReactionLineThickness(neti, reai)
@@ -624,11 +672,17 @@ def setRateLaw(neti, reai, rateLaw):
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai, rateLaw)
 
 
-def setReactionFillColor(neti, reai, r, g, b, a):
-    errCode = libIodine.setReactionFillColor(neti, reai, r, g, b, a)
+def setReactionFillColorRGB(neti, reai, r, g, b):
+    errCode = libIodine.setReactionFillColorRGB(neti, reai, r, g, b)
     if errCode < 0:
-        raise ExceptionDict[errCode](errorDict[errCode], neti, reai,  r, g, b, a)
+        raise ExceptionDict[errCode](errorDict[errCode], neti, reai,  r, g, b)
 
+
+def setReactionFillColorAlpha(neti, reai, a):
+    errCode = libIodine.setReactionFillColorAlpha(neti, reai, a)
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, a)
 
 def setReactionLineThickness(neti, reai, thickness):
     errCode = libIodine.setReactionLineThickness(neti, reai, thickness)

@@ -194,13 +194,25 @@ extern float getNodeH(int p0, int p1);
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 
-extern unsigned int getNodeFillColor(int p0, int p1);
+extern unsigned int getNodeFillColorRGB(int p0, int p1);
 
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 
-extern unsigned int getNodeOutlineColor(int p0, int p1);
+extern float getNodeFillColorAlpha(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern unsigned int getNodeOutlineColorRGB(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern float getNodeOutlineColorAlpha(int p0, int p1);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
@@ -224,13 +236,25 @@ extern int setNodeCoordinateAndSize(int p0, int p1, float p2, float p3, float p4
 //-5: net index out of range
 //-12: Variable out of range:
 
-extern int setNodeFillColor(int p0, int p1, int p2, int p3, int p4, int p5);
+extern int setNodeFillColorRGB(int p0, int p1, int p2, int p3, int p4);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
 
-extern int setNodeOutlineColor(int p0, int p1, int p2, int p3, int p4, int p5);
+extern int setNodeFillColorAlpha(int p0, int p1, float p2);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+
+extern int setNodeOutlineColorRGB(int p0, int p1, int p2, int p3, int p4);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+
+extern int setNodeOutlineColorAlpha(int p0, int p1, float p2);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
@@ -275,7 +299,13 @@ extern char* getReactionRateLaw(int p0, int p1);
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
-extern unsigned int getReactionFillColor(int p0, int p1);
+extern unsigned int getReactionFillColorRGB(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+
+extern float getReactionFillColorAlpha(int p0, int p1);
 
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -6: reaction index out of range
@@ -355,7 +385,12 @@ extern int setRateLaw(int p0, int p1, char* p2);
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
-extern int setReactionFillColor(int p0, int p1, int p2, int p3, int p4, int p5);
+extern int setReactionFillColorRGB(int p0, int p1, int p2, int p3, int p4);
+
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+
+extern int setReactionFillColorAlpha(int p0, int p1, float p2);
 
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range

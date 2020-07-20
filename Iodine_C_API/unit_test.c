@@ -662,23 +662,23 @@ void test_getNodeCoordinateAndSize()
     }
 }
 
-void test_getNodeFillColor()
+void test_getNodeFillColorRGB()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1= Iod_getNodeFillColor(0,0);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
-    color1 = Iod_getNodeFillColor(-1, 1);
+    unsigned color1= Iod_getNodeFillColorRGB(0,0);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
+    color1 = Iod_getNodeFillColorRGB(-1, 1);
     int err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getNodeFillColor(3, 1);
+    color1 = Iod_getNodeFillColorRGB(3, 1);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getNodeFillColor(1, -1);
+    color1 = Iod_getNodeFillColorRGB(1, -1);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -7);
-    color1 = Iod_getNodeFillColor(1, 4);
+    color1 = Iod_getNodeFillColorRGB(1, 4);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -7);
 
@@ -695,23 +695,23 @@ void test_getNodeFillColor()
     }
 }
 
-void test_getNodeOutlineColor()
+void test_getNodeFillColorAlpha()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1 = Iod_getNodeOutlineColor(0, 0);
-    ERR = ERR && assertIntEqual((int)color1, 4284764415); //hex: '0xff6450ff'
-    color1 = Iod_getNodeOutlineColor(-1, 1);
+    float alpha1 = Iod_getNodeFillColorAlpha(0, 0);
+    ERR = ERR && Iod_floatEqual(alpha1,1.0, 0.01); 
+    alpha1 = Iod_getNodeFillColorAlpha(-1, 1);
     int err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getNodeOutlineColor(3, 1);
+    alpha1 = Iod_getNodeFillColorAlpha(3, 1);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getNodeOutlineColor(1, -1);
+    alpha1 = Iod_getNodeFillColorAlpha(1, -1);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -7);
-    color1 = Iod_getNodeOutlineColor(1, 4);
+    alpha1 = Iod_getNodeFillColorAlpha(1, 4);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -7);
 
@@ -727,6 +727,73 @@ void test_getNodeOutlineColor()
         p++;
     }
 }
+
+void test_getNodeOutlineColorRGB()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    unsigned color1 = Iod_getNodeOutlineColorRGB(0, 0);
+    ERR = ERR && assertIntEqual((int)color1, 16737360); //hex: '0xff6450'
+    color1 = Iod_getNodeOutlineColorRGB(-1, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    color1 = Iod_getNodeOutlineColorRGB(3, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    color1 = Iod_getNodeOutlineColorRGB(1, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    color1 = Iod_getNodeOutlineColorRGB(1, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeOutlineColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getNodeOutlineColorAlpha(0, 0);
+    ERR = ERR && Iod_floatEqual(alpha1,1, 0.01); //hex: '0xff6450'
+    alpha1 = Iod_getNodeOutlineColorAlpha(-1, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getNodeOutlineColorAlpha(3, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getNodeOutlineColorAlpha(1, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    alpha1 = Iod_getNodeOutlineColorAlpha(1, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
 void test_getNodeOutlineThickness()
 {
     COUNT_FUNCTIONS++;
@@ -866,54 +933,51 @@ void test_setNodeCoordinateAndSize()
     }
 }
 
-void test_setNodeFillColor()
+void test_setNodeFillColorRGB()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1 = Iod_getNodeFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
-    int err = Iod_setNodeFillColor(0, 1, 30, 180, 160, 255);
+    unsigned color1 = Iod_getNodeFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
+    int err = Iod_setNodeFillColorRGB(0, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
+    color1 = Iod_getNodeFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
     
-    err = Iod_setNodeFillColor(-1, 1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(-1, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setNodeFillColor(3, 1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(3, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setNodeFillColor(0, -1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, -1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -7);
-    err = Iod_setNodeFillColor(0, 4, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, 4, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -7);
 
-    err = Iod_setNodeFillColor(0, 1, -1, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, -1, 180, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 256, 180, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, 256, 180, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, -1, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, 30, -1, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, 256, 160, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, 30, 256, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, 180, -1, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, 30, 180, -1);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, 180, 256, 255);
+    err = Iod_setNodeFillColorRGB(0, 1, 30, 180, 256);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, 180, 160, -1);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeFillColor(0, 1, 30, 180, 160, 256);
-    ERR = ERR && assertIntEqual(err, -12);
+
 
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, -9);
     err = Iod_undo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
+    color1 = Iod_getNodeFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
+    color1 = Iod_getNodeFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
 
     if (ERR == TRUE)
     {
@@ -928,54 +992,153 @@ void test_setNodeFillColor()
     }
 }
 
-void test_setNodeOutlineColor()
+void test_setNodeFillColorAlpha()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1 = Iod_getNodeOutlineColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4284764415); //hex: '0xff6450ff'
-    int err = Iod_setNodeOutlineColor(0, 1, 30, 180, 160, 255);
+    float alpha1 = Iod_getNodeFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01); 
+    int err = Iod_setNodeFillColorAlpha(0, 1, 0.5);
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeOutlineColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
+    alpha1 = Iod_getNodeFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
 
-    err = Iod_setNodeOutlineColor(-1, 1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(-1, 1, 1);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setNodeOutlineColor(3, 1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(3, 1, 1);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setNodeOutlineColor(0, -1, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(0, -1, 1);
     ERR = ERR && assertIntEqual(err, -7);
-    err = Iod_setNodeOutlineColor(0, 4, 30, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(0, 4, 1);
     ERR = ERR && assertIntEqual(err, -7);
 
-    err = Iod_setNodeOutlineColor(0, 1, -1, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(0, 1, -0.1);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 256, 180, 160, 255);
+    err = Iod_setNodeFillColorAlpha(0, 1, 1.1);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, -1, 160, 255);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, 256, 160, 255);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, 180, -1, 255);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, 180, 256, 255);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, 180, 160, -1);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setNodeOutlineColor(0, 1, 30, 180, 160, 256);
-    ERR = ERR && assertIntEqual(err, -12);
+
 
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, -9);
     err = Iod_undo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeOutlineColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4284764415); //hex: '0xff6450ff'
+    alpha1 = Iod_getNodeFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getNodeOutlineColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
+    alpha1 = Iod_getNodeFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeOutlineColorRGB()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    unsigned color1 = Iod_getNodeOutlineColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16737360); //hex: '0xff6450'
+    int err = Iod_setNodeOutlineColorRGB(0, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeOutlineColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+
+    err = Iod_setNodeOutlineColorRGB(-1, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeOutlineColorRGB(3, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeOutlineColorRGB(0, -1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeOutlineColorRGB(0, 4, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -7);
+
+    err = Iod_setNodeOutlineColorRGB(0, 1, -1, 180, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorRGB(0, 1, 256, 180, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorRGB(0, 1, 30, -1, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorRGB(0, 1, 30, 256, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorRGB(0, 1, 30, 180, -1);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorRGB(0, 1, 30, 180, 256);
+    ERR = ERR && assertIntEqual(err, -12);
+
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeOutlineColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16737360); //hex: '0xff6450'
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeOutlineColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeOutlineColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getNodeOutlineColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    int err = Iod_setNodeOutlineColorAlpha(0, 1, 0.5);
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeOutlineColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
+
+    err = Iod_setNodeOutlineColorAlpha(-1, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeOutlineColorAlpha(3, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeOutlineColorAlpha(0, -1, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeOutlineColorAlpha(0, 4, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+
+    err = Iod_setNodeOutlineColorAlpha(0, 1, -0.1);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeOutlineColorAlpha(0, 1, 1.1);
+    ERR = ERR && assertIntEqual(err, -12);
+
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeOutlineColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeOutlineColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
 
     if (ERR == TRUE)
     {
@@ -1342,23 +1505,56 @@ void test_getReactionRateLaw()
     }
 }
 
-void test_getReactionFillColor()
+void test_getReactionFillColorRGB()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1 = Iod_getReactionFillColor(0, 0);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
-    color1 = Iod_getReactionFillColor(-1, 0);
+    unsigned color1 = Iod_getReactionFillColorRGB(0, 0);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
+    color1 = Iod_getReactionFillColorRGB(-1, 0);
     int err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getReactionFillColor(1, 0);
+    color1 = Iod_getReactionFillColorRGB(1, 0);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    color1 = Iod_getReactionFillColor(0, -1);
+    color1 = Iod_getReactionFillColorRGB(0, -1);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -6);
-    color1 = Iod_getReactionFillColor(0, 2);
+    color1 = Iod_getReactionFillColorRGB(0, 2);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -6);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getReactionFillColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getReactionFillColorAlpha(0, 0);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    alpha1 = Iod_getReactionFillColorAlpha(-1, 0);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getReactionFillColorAlpha(1, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getReactionFillColorAlpha(0, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -6);
+    alpha1 = Iod_getReactionFillColorAlpha(0, 2);
     err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -6);
 
@@ -1981,53 +2177,100 @@ void test_setRateLaw()
     }
 }
 
-void test_setReactionFillColor()
+void test_setReactionFillColorRGB()
 {
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    unsigned color1 = Iod_getReactionFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
-    int err = Iod_setReactionFillColor(0, 1, 30, 180, 160, 255);
+    unsigned color1 = Iod_getReactionFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
+    int err = Iod_setReactionFillColorRGB(0, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getReactionFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
-    err = Iod_setReactionFillColor(-1, 1, 30, 180, 160, 255);
+    color1 = Iod_getReactionFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+    err = Iod_setReactionFillColorRGB(-1, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setReactionFillColor(3, 1, 30, 180, 160, 255);
+    err = Iod_setReactionFillColorRGB(3, 1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setReactionFillColor(0, -1, 30, 180, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, -1, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -6);
-    err = Iod_setReactionFillColor(0, 4, 30, 180, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, 4, 30, 180, 160);
     ERR = ERR && assertIntEqual(err, -6);
 
-    err = Iod_setReactionFillColor(0, 1, -1, 180, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, -1, 180, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 256, 180, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, 256, 180, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, -1, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, 30, -1, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, 256, 160, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, 30, 256, 160);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, 180, -1, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, 30, 180, -1);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, 180, 256, 255);
+    err = Iod_setReactionFillColorRGB(0, 1, 30, 180, 256);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, 180, 160, -1);
-    ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionFillColor(0, 1, 30, 180, 160, 256);
-    ERR = ERR && assertIntEqual(err, -12);
+
 
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, -9);
     err = Iod_undo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getReactionFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 4288041215); //hex: '0xff9650ff'
+    color1 = Iod_getReactionFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 16750160); //hex: '0xff9650'
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, 0);
-    color1 = Iod_getReactionFillColor(0, 1);
-    ERR = ERR && assertIntEqual((int)color1, 515154175); //hex: '0x1eb4a0ff'
+    color1 = Iod_getReactionFillColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setReactionFillColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getReactionFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    int err = Iod_setReactionFillColorAlpha(0, 1, 0.5);
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getReactionFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
+    err = Iod_setReactionFillColorAlpha(-1, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionFillColorAlpha(3, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionFillColorAlpha(0, -1, 1);
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionFillColorAlpha(0, 4, 1);
+    ERR = ERR && assertIntEqual(err, -6);
+
+    err = Iod_setReactionFillColorAlpha(0, 1, -0.1);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setReactionFillColorAlpha(0, 1, 1.1);
+    ERR = ERR && assertIntEqual(err, -12);
+
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getReactionFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getReactionFillColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
 
     if (ERR == TRUE)
     {
@@ -2177,13 +2420,17 @@ void (*func_array2[])() = {
     test_getNodeID,
     test_getListOfNodesIDs,
     test_getNodeCoordinateAndSize,
-    test_getNodeFillColor,
-    test_getNodeOutlineColor,
+    test_getNodeFillColorRGB,
+    test_getNodeFillColorAlpha,
+    test_getNodeOutlineColorRGB,
+    test_getNodeOutlineColorAlpha,
     test_getNodeOutlineThickness,
     test_setNodeID,
     test_setNodeCoordinateAndSize,
-    test_setNodeFillColor,
-    test_setNodeOutlineColor,
+    test_setNodeFillColorRGB,
+    test_setNodeFillColorAlpha,
+    test_setNodeOutlineColorRGB,
+    test_setNodeOutlineColorAlpha,
     test_setNodeOutlineThickness,
 };
 
@@ -2196,7 +2443,8 @@ void (*func_array3[])() = {
     test_getReactionID,
     test_getListOfReactionIDs,
     test_getReactionRateLaw,
-    test_getReactionFillColor,
+    test_getReactionFillColorRGB,
+    test_getReactionFillColorAlpha,
     test_getReactionLineThickness,
     test_getReactionSrcNodeStoich,
     test_getReactionDestNodeStoich,
@@ -2214,7 +2462,8 @@ void (*func_array4[])() = {
     test_deleteSrcNode,
     test_deleteDestNode,
     test_setRateLaw,
-    test_setReactionFillColor,
+    test_setReactionFillColorRGB,
+    test_setReactionFillColorAlpha,
     test_setReactionLineThickness,
     test_saveNetworkAsJSON_readNetworkFromJSON,
     test_startGroup_endGroup,

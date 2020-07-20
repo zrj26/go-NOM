@@ -232,26 +232,48 @@ func getNodeH(neti, nodei C.int) C.float {
 	return C.float(h)
 }
 
-//export getNodeFillColor
+//export getNodeFillColorRGB
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-func getNodeFillColor(neti, nodei C.int) C.uint {
+func getNodeFillColorRGB(neti, nodei C.int) C.uint {
 	netI := int(neti)
 	nodeI := int(nodei)
-	color1 := Iodine.GetNodeFillColor(netI, nodeI, &errCode)
+	color1 := Iodine.GetNodeFillColorRGB(netI, nodeI, &errCode)
 	return C.uint(color1)
 }
 
-//export getNodeOutlineColor
+//export getNodeFillColorAlpha
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-func getNodeOutlineColor(neti, nodei C.int) C.uint {
+func getNodeFillColorAlpha(neti, nodei C.int) C.float {
 	netI := int(neti)
 	nodeI := int(nodei)
-	color1 := Iodine.GetNodeOutlineColor(netI, nodeI, &errCode)
+	alpha1 := Iodine.GetNodeFillColorAlpha(netI, nodeI, &errCode)
+	return C.float(alpha1)
+}
+
+//export getNodeOutlineColorRGB
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeOutlineColorRGB(neti, nodei C.int) C.uint {
+	netI := int(neti)
+	nodeI := int(nodei)
+	color1 := Iodine.GetNodeOutlineColorRGB(netI, nodeI, &errCode)
 	return C.uint(color1)
+}
+
+//export getNodeOutlineColorAlpha
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeOutlineColorAlpha(neti, nodei C.int) C.float {
+	netI := int(neti)
+	nodeI := int(nodei)
+	alpha1 := Iodine.GetNodeOutlineColorAlpha(netI, nodeI, &errCode)
+	return C.float(alpha1)
 }
 
 //export getNodeOutlineThickness
@@ -293,33 +315,55 @@ func setNodeCoordinateAndSize(neti, nodei C.int, x, y, w, h C.float) C.int {
 	return C.int(err)
 }
 
-//export setNodeFillColor
+//export setNodeFillColorRGB
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func setNodeFillColor(neti, nodei, r, g, b, a C.int) C.int {
+func setNodeFillColorRGB(neti, nodei, r, g, b C.int) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
 	R := int(r)
 	G := int(g)
 	B := int(b)
-	A := int(a)
-	err := Iodine.SetNodeFillColor(netI, nodeI, R, G, B, A)
+	err := Iodine.SetNodeFillColorRGB(netI, nodeI, R, G, B)
 	return C.int(err)
 }
 
-//export setNodeOutlineColor
+//export setNodeFillColorAlpha
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func setNodeOutlineColor(neti, nodei, r, g, b, a C.int) C.int {
+func setNodeFillColorAlpha(neti, nodei C.int, a C.float) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	A := float64(a)
+	err := Iodine.SetNodeFillColorAlpha(netI, nodeI, A)
+	return C.int(err)
+}
+
+//export setNodeOutlineColorRGB
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func setNodeOutlineColorRGB(neti, nodei, r, g, b C.int) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
 	R := int(r)
 	G := int(g)
 	B := int(b)
-	A := int(a)
-	err := Iodine.SetNodeOutlineColor(netI, nodeI, R, G, B, A)
+	err := Iodine.SetNodeOutlineColorRGB(netI, nodeI, R, G, B)
+	return C.int(err)
+}
+
+//export setNodeOutlineColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func setNodeOutlineColorAlpha(neti, nodei C.int, a C.float) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	A := float64(a)
+	err := Iodine.SetNodeOutlineColorAlpha(netI, nodeI, A)
 	return C.int(err)
 }
 
@@ -403,15 +447,26 @@ func getReactionRateLaw(neti, reai C.int) *C.char {
 	return iodineCString
 }
 
-//export getReactionFillColor
+//export getReactionFillColorRGB
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-func getReactionFillColor(neti, reai C.int) C.uint {
+func getReactionFillColorRGB(neti, reai C.int) C.uint {
 	netI := int(neti)
 	reaI := int(reai)
-	color1 := Iodine.GetReactionFillColor(netI, reaI, &errCode)
+	color1 := Iodine.GetReactionFillColorRGB(netI, reaI, &errCode)
 	return C.uint(color1)
+}
+
+//export getReactionFillColorAlpha
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+func getReactionFillColorAlpha(neti, reai C.int) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	alpha1 := Iodine.GetReactionFillColorAlpha(netI, reaI, &errCode)
+	return C.float(alpha1)
 }
 
 //export getReactionLineThickness
@@ -564,17 +619,27 @@ func setRateLaw(neti, reai C.int, ratelaw *C.char) C.int {
 	return C.int(err)
 }
 
-//export setReactionFillColor
+//export setReactionFillColorRGB
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-func setReactionFillColor(neti, reai, r, g, b, a C.int) C.int {
+func setReactionFillColorRGB(neti, reai, r, g, b C.int) C.int {
 	netI := int(neti)
 	reaI := int(reai)
 	R := int(r)
 	G := int(g)
 	B := int(b)
-	A := int(a)
-	err := Iodine.SetReactionFillColor(netI, reaI, R, G, B, A)
+	err := Iodine.SetReactionFillColorRGB(netI, reaI, R, G, B)
+	return C.int(err)
+}
+
+//export setReactionFillColorAlpha
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+func setReactionFillColorAlpha(neti, reai C.int, a C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	A := float64(a)
+	err := Iodine.SetReactionFillColorAlpha(netI, reaI, A)
 	return C.int(err)
 }
 
