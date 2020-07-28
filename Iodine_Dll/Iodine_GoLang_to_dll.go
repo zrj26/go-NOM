@@ -1,5 +1,9 @@
 package main
 
+//this package converts Iodine_GO to dll by:
+//go build -o Iodine.dll -buildmode=c-shared Iodine_GoLang_to_dll.go
+
+
 // #include <stdio.h>
 // #include <stdlib.h>
 import "C"
@@ -299,19 +303,32 @@ func setNodeID(neti, nodei C.int, newID *C.char) C.int {
 	return C.int(err)
 }
 
-//export setNodeCoordinateAndSize
+//export setNodeCoordinate
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func setNodeCoordinateAndSize(neti, nodei C.int, x, y, w, h C.float) C.int {
+func setNodeCoordinate(neti, nodei C.int, x, y C.float) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
 	x1 := float64(x)
 	y1 := float64(y)
+
+
+	err := Iodine.SetNodeCoordinate(netI, nodeI, x1, y1)
+	return C.int(err)
+}
+
+//export setNodeSize
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func setNodeSize(neti, nodei C.int, w, h C.float) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
 	w1 := float64(w)
 	h1 := float64(h)
 
-	err := Iodine.SetNodeCoordinateAndSize(netI, nodeI, x1, y1, w1, h1)
+	err := Iodine.SetNodeSize(netI, nodeI, w1, h1)
 	return C.int(err)
 }
 
@@ -655,4 +672,3 @@ func setReactionLineThickness(neti, reai, thickness C.int) C.int {
 }
 func main() {}
 
-//go build -o Iodine.dll -buildmode=c-shared Iodine_C.go

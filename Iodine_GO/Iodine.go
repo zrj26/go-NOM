@@ -694,11 +694,11 @@ func SetNodeID(neti, nodei int, newID string) int {
 	return errCode
 }
 
-//SetNodeCoordinateAndSize SetNodeCoordinateAndSize
+//SetNodeCoordinate SetNodeCoordinate
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range:
-func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
+func SetNodeCoordinate(neti, nodei int, x, y float64) int {
 	errCode := 0
 	if neti < 0 || neti >= len(networkSet) {
 		errCode = -5
@@ -709,7 +709,7 @@ func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
 		errCode = -7
 		return errCode
 	}
-	if x < 0 || y < 0 || w <= 0 || h <= 0 {
+	if x < 0 || y < 0 {
 		errCode = -12
 		return errCode
 	}
@@ -721,6 +721,35 @@ func SetNodeCoordinateAndSize(neti, nodei int, x, y, w, h float64) int {
 
 	n.Nodes[nodei].X = x
 	n.Nodes[nodei].Y = y
+
+	return errCode
+}
+
+//SetNodeSize SetNodeSize
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetNodeSize(neti, nodei int, w, h float64) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		return errCode
+	}
+	if w <= 0 || h <= 0 {
+		errCode = -12
+		return errCode
+	}
+
+	if stackFlag{
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
 	n.Nodes[nodei].W = w
 	n.Nodes[nodei].H = h
 

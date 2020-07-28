@@ -101,7 +101,7 @@ class TestNodeFunc(unittest.TestCase):
     def test_addNode(self):
         self.assertEqual(IodineAPI.addNode(
             0, "node4", 1.1, 2.5, 5.4, 6.4), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(
+        self.assertEqual(IodineAPI.getListOfNodeIds(
             0), ["node1", "node2", "node3", "node4"])
         with self.assertRaises(IodineAPI.IdRepeatError):
             IodineAPI.addNode(0, "node2", 1.2, 3.2, 2.5, 4.1)
@@ -126,10 +126,10 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0),
+        self.assertEqual(IodineAPI.getListOfNodeIds(0),
                          ["node1", "node2", "node3"])
         self.assertEqual(IodineAPI.redo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0), [
+        self.assertEqual(IodineAPI.getListOfNodeIds(0), [
                          "node1", "node2", "node3", "node4"])
 
     def test_getNodeIndex(self):
@@ -141,17 +141,17 @@ class TestNodeFunc(unittest.TestCase):
 
     def test_deleteNode(self):
         self.assertEqual(IodineAPI.deleteNode(0, 1), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(
+        self.assertEqual(IodineAPI.getListOfNodeIds(
             0), ["node1", "node3"])
         self.assertEqual(IodineAPI.deleteNode(1, 0), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(1), [])
+        self.assertEqual(IodineAPI.getListOfNodeIds(1), [])
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(1),
+        self.assertEqual(IodineAPI.getListOfNodeIds(1),
                          ["node1"])
         self.assertEqual(IodineAPI.redo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(1), [])
+        self.assertEqual(IodineAPI.getListOfNodeIds(1), [])
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
             IodineAPI.deleteNode(-1, 0)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
@@ -173,16 +173,16 @@ class TestNodeFunc(unittest.TestCase):
                              0, 1, 2, 1, 1, 2, 3, 4)
         self.assertEqual(IodineAPI.getListOfReactionIds(0), ["Rea1"])
         self.assertEqual(IodineAPI.clearNetwork(0), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0), [])
+        self.assertEqual(IodineAPI.getListOfNodeIds(0), [])
         self.assertEqual(IodineAPI.getListOfReactionIds(0), [])
         with self.assertRaises(IodineAPI.StackEmptyError):
             IodineAPI.redo()
         self.assertEqual(IodineAPI.undo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0),
+        self.assertEqual(IodineAPI.getListOfNodeIds(0),
                          ["node1", "node2", "node3"])
         self.assertEqual(IodineAPI.getListOfReactionIds(0), ["Rea1"])
         self.assertEqual(IodineAPI.redo(), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0), [])
+        self.assertEqual(IodineAPI.getListOfNodeIds(0), [])
         self.assertEqual(IodineAPI.getListOfReactionIds(0), [])
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
             IodineAPI.clearNetwork(-1)
@@ -219,15 +219,15 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeId(1, 4)
 
-    def test_getListOfNodesIds(self):
-        self.assertEqual(IodineAPI.getListOfNodesIds(
+    def test_getListOfNodeIds(self):
+        self.assertEqual(IodineAPI.getListOfNodeIds(
             0), ["node1", "node2", "node3"])
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getListOfNodesIds(-1)
+            IodineAPI.getListOfNodeIds(-1)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.getListOfNodesIds(2)
+            IodineAPI.getListOfNodeIds(2)
         self.assertEqual(IodineAPI.clearNetwork(0), None)
-        self.assertEqual(IodineAPI.getListOfNodesIds(0), [])
+        self.assertEqual(IodineAPI.getListOfNodeIds(0), [])
 
     def test_getNodeCoordinateAndSize(self):
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
@@ -240,6 +240,17 @@ class TestNodeFunc(unittest.TestCase):
             IodineAPI.getNodeCoordinateAndSize(1, -1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeCoordinateAndSize(1, 4)
+
+    def test_getNodeFillColor(self):
+        self.assertEqual(IodineAPI.getNodeFillColor(0, 0), (255, 150, 80, 1.0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFillColor(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFillColor(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFillColor(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFillColor(1, 4)
 
     def test_getNodeFillColorRGB(self):
         self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 0)), '0xff9650')
@@ -262,6 +273,19 @@ class TestNodeFunc(unittest.TestCase):
             IodineAPI.getNodeFillColorAlpha(1, -1)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeFillColorAlpha(1, 4)
+
+
+    def test_getNodeOutlineColor(self):
+        self.assertEqual(
+            IodineAPI.getNodeOutlineColor(0, 0), (255, 100, 80, 1.0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColor(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColor(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColor(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeOutlineColor(1, 4)
 
 
     def test_getNodeOutlineColorRGB(self):
@@ -323,34 +347,27 @@ class TestNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getNodeId(0, 1), "Node2")
 
 
-    def test_setNodeCoordinateAndSize(self):
+    def test_setNodeCoordinate(self):
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
             0, 1), (1.2, 3.2, 2.5, 4.1))
-        self.assertEqual(IodineAPI.setNodeCoordinateAndSize(
-            0, 1, 1.1, 2.5, 5.4, 6.4), None)
+        self.assertEqual(IodineAPI.setNodeCoordinate(
+            0, 1, 1.1, 2.5), None)
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
-            0, 1), (1.1, 2.5, 5.4, 6.4))
+            0, 1), (1.1, 2.5, 2.5, 4.1))
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(-1, 1, 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.setNodeCoordinate(-1, 1, 1.2, 3.2)
         with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(3, 1, 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.setNodeCoordinate(3, 1, 1.2, 3.2)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(1, -1, 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.setNodeCoordinate(1, -1, 1.2, 3.2)
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(1, 4, 1.2, 3.2, 2.5, 4.1)
+            IodineAPI.setNodeCoordinate(1, 4, 1.2, 3.2)
         
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, -1, 2.5, 5.4, 6.4)
+            IodineAPI.setNodeCoordinate(0, 1, -1, 2.5)
         with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, 1.1, -1, 5.4, 6.4)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, 1.1, 2.5, -1, 6.4)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, 1.1, 2.5, 0, 6.4)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, 1.1, 2.5, 5.4, -1)
-        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
-            IodineAPI.setNodeCoordinateAndSize(0, 1, 1.1, 2.5, 5.4, 0)
+            IodineAPI.setNodeCoordinate(0, 1, 1.1, -1)
+
 
         
         with self.assertRaises(IodineAPI.StackEmptyError):
@@ -360,7 +377,41 @@ class TestNodeFunc(unittest.TestCase):
             0, 1), (1.2, 3.2, 2.5, 4.1))
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
-            0, 1), (1.1, 2.5, 5.4, 6.4))
+            0, 1), (1.1, 2.5, 2.5, 4.1))
+
+    def test_setNodeSize(self):
+        self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
+            0, 1), (1.2, 3.2, 2.5, 4.1))
+        self.assertEqual(IodineAPI.setNodeSize(
+            0, 1, 5.4, 6.4), None)
+        self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
+            0, 1), (1.2, 3.2, 5.4, 6.4))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeSize(-1, 1, 2.5, 4.1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeSize(3, 1, 2.5, 4.1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeSize(1, -1, 2.5, 4.1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeSize(1, 4, 2.5, 4.1)
+
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeSize(0, 1, -1, 6.4)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeSize(0, 1, 0, 6.4)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeSize(0, 1, 5.4, -1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeSize(0, 1, 5.4, 0)
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
+            0, 1), (1.2, 3.2, 2.5, 4.1))
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeCoordinateAndSize(
+            0, 1), (1.2, 3.2, 5.4, 6.4))
 
     def test_setNodeFillColorRGB(self):
         self.assertEqual(hex(IodineAPI.getNodeFillColorRGB(0, 1)), '0xff9650')
@@ -636,6 +687,18 @@ class TestReactionFunc(unittest.TestCase):
             IodineAPI.getReactionRateLaw(0, -1)
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
             IodineAPI.getReactionRateLaw(0, 2)
+
+    def test_getReactionFillColor(self):
+        self.assertEqual(
+            IodineAPI.getReactionFillColor(0, 0), (255, 150, 80, 1.0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionFillColor(-1, 0)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionFillColor(1, 0)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionFillColor(0, -1)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionFillColor(0, 2)
 
     def test_getReactionFillColorRGB(self):
         self.assertEqual(

@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 3 "Iodine_C.go"
+#line 7 "Iodine_GoLang_to_dll.go"
  #include <stdio.h>
  #include <stdlib.h>
 
@@ -230,7 +230,13 @@ extern int setNodeID(int p0, int p1, char* p2);
 //-5: net index out of range
 //-12: Variable out of range:
 
-extern int setNodeCoordinateAndSize(int p0, int p1, float p2, float p3, float p4, float p5);
+extern int setNodeCoordinate(int p0, int p1, float p2, float p3);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+
+extern int setNodeSize(int p0, int p1, float p2, float p3);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
