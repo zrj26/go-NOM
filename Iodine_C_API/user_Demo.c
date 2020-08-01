@@ -7,7 +7,7 @@ int main()
     err = loadDll("../Iodine_Dll/Iodine.dll");
     if (err != 0)
     {
-        printf(Iod_getErrorMessage(err)); 
+        printf("%s", Iod_getErrorMessage());
         //two possible results: "can't find function in dll"; "Iodine DLL missing";
         return err; 
     }
@@ -15,7 +15,7 @@ int main()
     //I haven't added error handling now so you need to check it manually.
     if (err < 0)
     {
-        printf(Iod_getErrorMessage(err));
+        printf("%s", Iod_getErrorMessage());
     }
     err = Iod_newNetwork("net2"); //add another network.
     err = Iod_newNetwork("net3"); //add another network.
@@ -26,7 +26,7 @@ int main()
     err = Iod_getErrorCode();
     if (err < 0)
     {
-        printf(Iod_getErrorMessage(err));
+        printf("%s",Iod_getErrorMessage());
     }
     //for those functions return not an int, errCode can be got by getErrorCode()
     printf("Network[0] Id = %s\n", Id);
@@ -151,12 +151,16 @@ int main()
     float List4[100]= {3.2,4.2};
     printf("Equal?: %d\n", Iod_floatArrayEqual(List3, &List4[0],0.01));
 
+    err = Iod_addNode(0, "node5", 1.1, 2.2, 3.3, -1); //wrong stoich
+    printf("%s", Iod_getErrorMessage());
+    printf("%s", Iod_getDetailErrorMessage());
+
     //###########################################################
     //need free library manually at the end of the program.
     bool fFreeResult = FreeLibrary(Iod_hinstLib);
     if (!fFreeResult)
     {
-        printf("free error");
+        printf("FreeLibrary error");
     }
     //###########################################################
 

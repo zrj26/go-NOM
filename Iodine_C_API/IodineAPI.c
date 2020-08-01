@@ -10,6 +10,8 @@ typedef int (*redoProc)();
 typedef void (*startGroupProc)();
 typedef void (*endGroupProc)();
 typedef int (*cFreeProc)(const char *cString);
+typedef char *(*getErrorMessageProc)();
+typedef char *(*getDetailErrorMessageProc)();
 typedef int (*newNetworkProc)(const char *netID);
 typedef int (*getNetworkIndexProc)(const char *netID);
 typedef int (*saveNetworkAsJSONProc)(int netIndex, const char *fileName);
@@ -30,10 +32,8 @@ typedef float (*getNodeXProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeYProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeWProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeHProc)(int netIndex, int nodeIndex);
-// typedef struct Color (*getNodeFillColorProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeFillColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeFillColorAlphaProc)(int netIndex, int nodeIndex);
-// typedef struct Color (*getNodeOutlineColorProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeOutlineColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
@@ -52,7 +52,6 @@ typedef int (*clearReactionsProc)(int netIndex);
 typedef int (*getNumberOfReactionsProc)(int netIndex);
 typedef char *(*getReactionIDProc)(int netIndex, int reactionIndex);
 typedef char *(*getReactionRateLawProc)(int netIndex, int reactionIndex);
-// typedef struct Color (*getReactionFillColorProc)(int netIndex, int reactionIndex);
 typedef unsigned int (*getReactionFillColorRGBProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionFillColorAlphaProc)(int netIndex, int reactionIndex);
 typedef int (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
@@ -79,6 +78,8 @@ redoProc Iod_redo;
 startGroupProc Iod_startGroup;
 endGroupProc Iod_endGroup;
 cFreeProc Iod_cFree;
+getErrorMessageProc Iod_getErrorMessage;
+getDetailErrorMessageProc Iod_getDetailErrorMessage;
 newNetworkProc Iod_newNetwork;
 getNetworkIndexProc Iod_getNetworkIndex;
 saveNetworkAsJSONProc Iod_saveNetworkAsJSON;
@@ -99,10 +100,8 @@ getNodeXProc Iod_getNodeX;
 getNodeYProc Iod_getNodeY;
 getNodeWProc Iod_getNodeW;
 getNodeHProc Iod_getNodeH;
-// getNodeFillColorProc Iod_getNodeFillColor;
 getNodeFillColorRGBProc Iod_getNodeFillColorRGB;
 getNodeFillColorAlphaProc Iod_getNodeFillColorAlpha;
-// getNodeOutlineColorProc Iod_getNodeOutlineColor;
 getNodeOutlineColorRGBProc Iod_getNodeOutlineColorRGB;
 getNodeOutlineColorAlphaProc Iod_getNodeOutlineColorAlpha;
 getNodeOutlineThicknessProc Iod_getNodeOutlineThickness;
@@ -121,7 +120,6 @@ clearReactionsProc Iod_clearReactions;
 getNumberOfReactionsProc Iod_getNumberOfReactions;
 getReactionIDProc Iod_getReactionID;
 getReactionRateLawProc Iod_getReactionRateLaw;
-// getReactionFillColorProc Iod_getReactionFillColor;
 getReactionFillColorRGBProc Iod_getReactionFillColorRGB;
 getReactionFillColorAlphaProc Iod_getReactionFillColorAlpha;
 getReactionLineThicknessProc Iod_getReactionLineThickness;
@@ -141,44 +139,6 @@ setReactionFillColorRGBProc Iod_setReactionFillColorRGB;
 setReactionFillColorAlphaProc Iod_setReactionFillColorAlpha;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
 
-const char *Iod_getErrorMessage(int errCode)
-{
-    switch (errCode)
-    {
-    case 0:
-        return "ok";
-    case -1:
-        return "other";
-    case -2:
-        return "id not found: ";
-    case -3:
-        return "id repeat: ";
-    case -4:
-        return "node is not free: ";
-    case -5:
-        return "net index out of range: ";
-    case -6:
-        return "reaction index out of range: ";
-    case -7:
-        return "node index out of range: ";
-    case -8:
-        return "wrong stoich: stoich has to be positive: ";
-    case -9:
-        return "stack is empty";
-    case -10:
-        return "Json convert error";
-    case -11:
-        return "File error";
-    case -12:
-        return "Variable out of range: ";
-    case -13:
-        return "can't find function in dll";
-    case -14:
-        return "Iodine DLL missing";
-    default:
-        return "Other error";
-    }
-}
 
 typedef struct 
 {
@@ -195,7 +155,7 @@ int loadDll(const char *pathToDll)
     Iod_hinstLib = LoadLibrary(pathToDll);
     if (Iod_hinstLib == NULL)
     {
-        return -14;
+        return -11;
     }
 
     Iod_getErrorCode = (getErrorCodeProc)GetProcAddress(Iod_hinstLib, "getErrorCode");
@@ -231,6 +191,16 @@ int loadDll(const char *pathToDll)
         return -13;
     }
     Iod_cFree = (cFreeProc)GetProcAddress(Iod_hinstLib, "cFree");
+    if (Iod_cFree == NULL)
+    {
+        return -13;
+    }
+    Iod_getErrorMessage = (getErrorMessageProc)GetProcAddress(Iod_hinstLib, "getErrorMessage");
+    if (Iod_getErrorMessage == NULL)
+    {
+        return -13;
+    }
+    Iod_getDetailErrorMessage = (getDetailErrorMessageProc)GetProcAddress(Iod_hinstLib, "getDetailErrorMessage");
     if (Iod_cFree == NULL)
     {
         return -13;

@@ -2631,7 +2631,7 @@ int main(void)
     err = loadDll("../Iodine_Dll/Iodine.dll");
     if (err != 0)
     {
-        printf(Iod_getErrorMessage(err));
+        printf("can't find function in dll or Iodine DLL missing");
         //two possible results: "can't find function in dll"; "Iodine DLL missing";
         return err;
     }
@@ -2684,4 +2684,5 @@ int main(void)
         }
         printf("\n");
     }
+    return 0;
 }

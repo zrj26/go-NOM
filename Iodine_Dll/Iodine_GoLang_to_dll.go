@@ -50,6 +50,18 @@ func cFree(cs *C.char){
 	C.free(unsafe.Pointer(cs))
 }
 
+//export getErrorMessage
+func getErrorMessage()*C.char{
+	errorMessage := C.CString(Iodine.GetErrorMessage())
+	return errorMessage
+}
+
+//export getDetailErrorMessage
+func getDetailErrorMessage()*C.char{
+	errorMessage := C.CString(Iodine.GetDetailErrorMessage())
+	return errorMessage
+}
+
 //export newNetwork
 //errCode -3: ID repeat, 0 :ok
 func newNetwork(id *C.char) C.int {

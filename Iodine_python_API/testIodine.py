@@ -34,6 +34,7 @@ class TestNetworkFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getListOfNetworks(),
                          ['network1', "network2", "network3", "network4"])
 
+
     def test_getNetworkIndex(self):
         with self.assertRaises(IodineAPI.IdNotFoundError):
             IodineAPI.getNetworkIndex("network3")
@@ -138,6 +139,7 @@ class TestNodeFunc(unittest.TestCase):
             IodineAPI.getNodeIndex(-1, "node2")
         with self.assertRaises(IodineAPI.IdNotFoundError):
             IodineAPI.getNodeIndex(0, "node5")
+
 
     def test_deleteNode(self):
         self.assertEqual(IodineAPI.deleteNode(0, 1), None)
@@ -749,6 +751,8 @@ class TestReactionFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.IdNotFoundError):
             IodineAPI.getReactionSrcNodeStoich(0, 0, "node")
 
+
+
     def test_getReactionDestNodeStoich(self):
         self.assertEqual(
             IodineAPI.getReactionDestNodeStoich(0, 1, "node3"), 7.4)
@@ -762,6 +766,8 @@ class TestReactionFunc(unittest.TestCase):
             IodineAPI.getReactionDestNodeStoich(0, 2, "node1")
         with self.assertRaises(IodineAPI.IdNotFoundError):
             IodineAPI.getReactionDestNodeStoich(0, 0, "node")
+
+
 
     def test_getNumberOfSrcNodes(self):
         self.assertEqual(IodineAPI.getNumberOfSrcNodes(0, 1), 2)
@@ -954,6 +960,8 @@ class TestReactionNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getListOfReactionSrcNodes(0, 1),
                          ["node3", "node4", "node5"])
 
+                         
+
     def test_deleteDestNode(self):
         IodineAPI.addDestNode(0, 1, 5, 5.3)
         self.assertEqual(IodineAPI.getListOfReactionDestNodes(
@@ -980,6 +988,7 @@ class TestReactionNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getListOfReactionDestNodes(0, 1),
                          ["node3", "node6"])
 
+                         
     def test_setRateLaw(self):
         self.assertEqual(IodineAPI.getReactionRateLaw(
             0, 1), "k2*A")

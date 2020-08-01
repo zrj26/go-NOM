@@ -90,6 +90,10 @@ extern void endGroup();
 
 extern void cFree(char* p0);
 
+extern char* getErrorMessage();
+
+extern char* getDetailErrorMessage();
+
 //errCode -3: ID repeat, 0 :ok
 
 extern int newNetwork(char* p0);

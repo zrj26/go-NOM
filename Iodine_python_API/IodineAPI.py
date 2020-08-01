@@ -88,6 +88,8 @@ libIodine.setReactionLineThickness.argtypes = [
 libIodine.getErrorCode.restype = ctypes.c_int
 libIodine.undo.restype = ctypes.c_int
 libIodine.redo.restype = ctypes.c_int
+libIodine.getErrorMessage.restype = ctypes.c_char_p
+libIodine.getDetailErrorMessage.restype = ctypes.c_char_p
 libIodine.newNetwork.restype = ctypes.c_int
 libIodine.getNetworkIndex.restype = ctypes.c_int
 libIodine.saveNetworkAsJSON.restype = ctypes.c_int
@@ -255,6 +257,12 @@ def endGroup():
 def cFree(cString):
     libIodine.cFree(cString)
 
+
+def getErrorMessage():
+    return libIodine.getErrorMessage().decode("utf-8")
+
+def getDetailErrorMessage():
+    return libIodine.getDetailErrorMessage().decode("utf-8")
 
 def newNetwork(netId):
     errCode = libIodine.newNetwork(netId.encode())
