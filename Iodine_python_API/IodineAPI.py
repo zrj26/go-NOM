@@ -264,13 +264,13 @@ def getErrorMessage():
 def getDetailErrorMessage():
     return libIodine.getDetailErrorMessage().decode("utf-8")
 
-def newNetwork(netId):
+def newNetwork(netId:str):
     errCode = libIodine.newNetwork(netId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], netId)
 
 
-def getNetworkIndex(netId):
+def getNetworkIndex(netId:str):
     neti = libIodine.getNetworkIndex(netId.encode())
     if neti < 0:
         raise ExceptionDict[neti](errorDict[neti], netId)
@@ -278,20 +278,20 @@ def getNetworkIndex(netId):
         return neti
 
 
-def saveNetworkAsJSON(neti, fileName):
+def saveNetworkAsJSON(neti:int, fileName:str):
     errCode = libIodine.saveNetworkAsJSON(
         neti, fileName.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, fileName)
 
 
-def readNetworkFromJSON(filePath):
+def readNetworkFromJSON(filePath:str):
     errCode = libIodine.readNetworkFromJSON(filePath.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], filePath)
 
 
-def deleteNetwork(neti):
+def deleteNetwork(neti:int):
     errCode = libIodine.deleteNetwork(neti)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti)
@@ -305,7 +305,7 @@ def getNumberOfNetworks():
     return libIodine.getNumberOfNetworks()
 
 
-def getNetworkId(neti):
+def getNetworkId(neti:int):
     netId = libIodine.getNetworkID(neti).decode("utf-8")
     errCode = getErrorCode()
     if errCode < 0:
@@ -322,14 +322,14 @@ def getListOfNetworks():
     return idList
 
 
-def addNode(neti, nodeId, x, y, w, h):
+def addNode(neti: int, nodeId: str, x: float, y: float, w: float, h: float):
     errCode = libIodine.addNode(neti, nodeId.encode(), x, y, w, h)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, nodeId, x, y, w, h)
 
 
-def getNodeIndex(neti, nodeId):
+def getNodeIndex(neti:int, nodeId:str):
     nodei = libIodine.getNodeIndex(neti, nodeId.encode())
     if nodei < 0:
         raise ExceptionDict[nodei](errorDict[nodei], neti, nodeId)
@@ -337,19 +337,19 @@ def getNodeIndex(neti, nodeId):
         return nodei
 
 
-def deleteNode(neti, nodei):
+def deleteNode(neti:int, nodei:int):
     errCode = libIodine.deleteNode(neti, nodei)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def clearNetwork(neti):
+def clearNetwork(neti:int):
     errCode = libIodine.clearNetwork(neti)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti)
 
 
-def getNumberOfNodes(neti):
+def getNumberOfNodes(neti:int):
     num = libIodine.getNumberOfNodes(neti)
     if num < 0:
         raise ExceptionDict[num](errorDict[num], neti)
@@ -357,7 +357,7 @@ def getNumberOfNodes(neti):
         return num
 
 
-def getNodeCenter(neti, nodei):
+def getNodeCenter(neti:int, nodei:int):
     X = round(libIodine.getNodeCenterX(neti, nodei), 2)
     errCode = getErrorCode()
     if errCode < 0:
@@ -369,7 +369,7 @@ def getNodeCenter(neti, nodei):
     return (X, Y)
 
 
-def getNodeId(neti, nodei):
+def getNodeId(neti:int, nodei:int):
     nodeId = libIodine.getNodeID(neti, nodei).decode("utf-8")
     errCode = getErrorCode()
     if errCode < 0:
@@ -378,7 +378,7 @@ def getNodeId(neti, nodei):
         return nodeId
 
 
-def getListOfNodeIds(neti):
+def getListOfNodeIds(neti:int):
     n = getNumberOfNodes(neti)
     nodeList = []
     for nodei in range(n):
@@ -386,7 +386,7 @@ def getListOfNodeIds(neti):
     return nodeList
 
 
-def getNodeCoordinateAndSize(neti, nodei):
+def getNodeCoordinateAndSize(neti:int, nodei:int):
     X = round(libIodine.getNodeX(neti, nodei), 2)
     Y = round(libIodine.getNodeY(neti, nodei), 2)
     W = round(libIodine.getNodeW(neti, nodei), 2)
@@ -396,7 +396,7 @@ def getNodeCoordinateAndSize(neti, nodei):
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
     return (X,Y,W,H)
 
-def getNodeFillColor(neti, nodei):
+def getNodeFillColor(neti:int, nodei:int):
     rgb = libIodine.getNodeFillColorRGB(neti, nodei)
     a = libIodine.getNodeFillColorAlpha(neti, nodei)
     errCode = getErrorCode()
@@ -409,7 +409,7 @@ def getNodeFillColor(neti, nodei):
     return (r,g,b,a)
 
 
-def getNodeFillColorRGB(neti, nodei):
+def getNodeFillColorRGB(neti:int, nodei:int):
     color1 = libIodine.getNodeFillColorRGB(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
@@ -417,14 +417,14 @@ def getNodeFillColorRGB(neti, nodei):
     return color1
 
 
-def getNodeFillColorAlpha(neti, nodei):
+def getNodeFillColorAlpha(neti:int, nodei:int):
     alpha1 = libIodine.getNodeFillColorAlpha(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
     return alpha1
 
-def getNodeOutlineColor(neti, nodei):
+def getNodeOutlineColor(neti:int, nodei:int):
     rgb = libIodine.getNodeOutlineColorRGB(neti, nodei)
     a = libIodine.getNodeOutlineColorAlpha(neti, nodei)
     errCode = getErrorCode()
@@ -436,7 +436,7 @@ def getNodeOutlineColor(neti, nodei):
 
     return (r,g,b,a)
 
-def getNodeOutlineColorRGB(neti, nodei):
+def getNodeOutlineColorRGB(neti:int, nodei:int):
     color1 = libIodine.getNodeOutlineColorRGB(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
@@ -444,73 +444,75 @@ def getNodeOutlineColorRGB(neti, nodei):
     return color1
 
 
-def getNodeOutlineColorAlpha(neti, nodei):
+def getNodeOutlineColorAlpha(neti:int, nodei:int):
     alpha1 = libIodine.getNodeOutlineColorAlpha(neti, nodei)
     errCode = getErrorCode()
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
     return alpha1
 
-def getNodeOutlineThickness(neti, nodei):
+def getNodeOutlineThickness(neti:int, nodei:int):
     thickness = libIodine.getNodeOutlineThickness(neti, nodei)
     if thickness < 0:
         raise ExceptionDict[thickness](errorDict[thickness], neti, nodei)
     return thickness
 
 
-def setNodeId(neti, nodei, newId):
+def setNodeId(neti:int, nodei:int, newId:str):
     errCode = libIodine.setNodeID(neti, nodei, newId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei, newId)
 
 
-def setNodeCoordinate(neti, nodei, x, y):
+def setNodeCoordinate(neti:int, nodei:int, x:float, y:float):
     errCode = libIodine.setNodeCoordinate(neti, nodei, x, y)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei, x, y)
 
 
-def setNodeSize(neti, nodei, w, h):
+def setNodeSize(neti: int, nodei: int,  w:float, h:float):
     errCode = libIodine.setNodeSize(neti, nodei, w, h)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei, w, h)
 
-def setNodeFillColorRGB(neti, nodei, r, g, b):
+
+def setNodeFillColorRGB(neti: int, nodei: int,  r: int, g: int, b: int):
     errCode = libIodine.setNodeFillColorRGB(neti, nodei, r, g, b)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def setNodeFillColorAlpha(neti, nodei, a):
+def setNodeFillColorAlpha(neti: int, nodei: int,  a: float):
     errCode = libIodine.setNodeFillColorAlpha(neti, nodei, a)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
-def setNodeOutlineColorRGB(neti, nodei, r, g, b):
+
+def setNodeOutlineColorRGB(neti: int, nodei: int,  r: int, g: int, b: int):
     errCode = libIodine.setNodeOutlineColorRGB(neti, nodei, r, g, b)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def setNodeOutlineColorAlpha(neti, nodei, a):
+def setNodeOutlineColorAlpha(neti: int, nodei: int, a: float):
     errCode = libIodine.setNodeOutlineColorAlpha(neti, nodei, a)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def setNodeOutlineThickness(neti, nodei, thickness):
+def setNodeOutlineThickness(neti: int, nodei: int,  thickness: int):
     errCode = libIodine.setNodeOutlineThickness(neti, nodei, thickness)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, nodei)
 
 
-def createReaction(neti, reaId):
+def createReaction(neti:int, reaId:str):
     errCode = libIodine.createReaction(neti, reaId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reaId)
 
 
-def getReactionIndex(neti, reaId):
+def getReactionIndex(neti: int, reaId: str):
     reai = libIodine.getReactionIndex(neti, reaId.encode())
     if reai < 0:
         raise ExceptionDict[reai](errorDict[reai], neti, reaId)
@@ -518,19 +520,19 @@ def getReactionIndex(neti, reaId):
         return reai
 
 
-def deleteReaction(neti, reai):
+def deleteReaction(neti:int, reai:int):
     errCode = libIodine.deleteReaction(neti, reai)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai)
 
 
-def clearReactions(neti):
+def clearReactions(neti:int):
     errCode = libIodine.clearReactions(neti)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti)
 
 
-def getNumberOfReactions(neti):
+def getNumberOfReactions(neti:int):
     reaNum = libIodine.getNumberOfReactions(neti)
     if reaNum < 0:
         raise ExceptionDict[reaNum](errorDict[reaNum], neti)
@@ -538,7 +540,7 @@ def getNumberOfReactions(neti):
         return reaNum
 
 
-def getReactionId(neti, reai):
+def getReactionId(neti:int, reai:int):
     reaId = libIodine.getReactionID(neti, reai).decode("utf-8")
     errCode = getErrorCode()
     if errCode < 0:
@@ -547,7 +549,7 @@ def getReactionId(neti, reai):
         return reaId
 
 
-def getListOfReactionIds(neti):
+def getListOfReactionIds(neti:int):
     n = getNumberOfReactions(neti)
     reaList = []
     for i in range(n):
@@ -555,7 +557,7 @@ def getListOfReactionIds(neti):
     return reaList
 
 
-def getReactionRateLaw(neti, reai):
+def getReactionRateLaw(neti:int, reai:int):
     rateLaw = libIodine.getReactionRateLaw(neti, reai).decode("utf-8")
     errCode = getErrorCode()
     if errCode < 0:
@@ -564,7 +566,7 @@ def getReactionRateLaw(neti, reai):
         return rateLaw
 
 
-def getReactionFillColor(neti, reai):
+def getReactionFillColor(neti:int, reai:int):
     rgb = libIodine.getReactionFillColorRGB(neti, reai)
     a = libIodine.getReactionFillColorAlpha(neti, reai)
     errCode = getErrorCode()
@@ -577,7 +579,7 @@ def getReactionFillColor(neti, reai):
     return (r, g, b, a)
 
 
-def getReactionFillColorRGB(neti, reai):
+def getReactionFillColorRGB(neti:int, reai:int):
     color1 = libIodine.getReactionFillColorRGB(neti, reai)
     errCode = getErrorCode()
     if errCode < 0:
@@ -586,7 +588,7 @@ def getReactionFillColorRGB(neti, reai):
         return color1
 
 
-def getReactionFillColorAlpha(neti, reai):
+def getReactionFillColorAlpha(neti:int, reai:int):
     alpha1 = libIodine.getReactionFillColorAlpha(neti, reai)
     errCode = getErrorCode()
     if errCode < 0:
@@ -594,7 +596,7 @@ def getReactionFillColorAlpha(neti, reai):
     else:
         return alpha1
 
-def getReactionLineThickness(neti, reai):
+def getReactionLineThickness(neti:int, reai:int):
     thickness = libIodine.getReactionLineThickness(neti, reai)
     if thickness < 0:
         raise ExceptionDict[thickness](errorDict[thickness], neti, reai)
@@ -602,7 +604,7 @@ def getReactionLineThickness(neti, reai):
         return thickness
 
 
-def getReactionSrcNodeStoich(neti, reai, srcNodeId):
+def getReactionSrcNodeStoich(neti:int, reai:int, srcNodeId:str):
     SrcNodeStoich = libIodine.getReactionSrcNodeStoich(
         neti, reai, srcNodeId.encode())
     errCode = getErrorCode()
@@ -613,7 +615,7 @@ def getReactionSrcNodeStoich(neti, reai, srcNodeId):
         return round(SrcNodeStoich, 2)
 
 
-def getReactionDestNodeStoich(neti, reai, destNodeId):
+def getReactionDestNodeStoich(neti:int, reai:int, destNodeId:str):
     DestNodeStoich = libIodine.getReactionDestNodeStoich(
         neti, reai, destNodeId.encode())
     errCode = getErrorCode()
@@ -624,7 +626,7 @@ def getReactionDestNodeStoich(neti, reai, destNodeId):
         return round(DestNodeStoich, 2)
 
 
-def getNumberOfSrcNodes(neti, reai):
+def getNumberOfSrcNodes(neti:int, reai:int):
     Num = libIodine.getNumberOfSrcNodes(neti, reai)
     if Num < 0:
         raise ExceptionDict[Num](
@@ -633,7 +635,7 @@ def getNumberOfSrcNodes(neti, reai):
         return Num
 
 
-def getNumberOfDestNodes(neti, reai):
+def getNumberOfDestNodes(neti:int, reai:int):
     Num = libIodine.getNumberOfDestNodes(neti, reai)
     if Num < 0:
         raise ExceptionDict[Num](
@@ -642,7 +644,7 @@ def getNumberOfDestNodes(neti, reai):
         return Num
 
 
-def getListOfReactionSrcNodes(neti, reai):
+def getListOfReactionSrcNodes(neti:int, reai:int):
     errCode = libIodine.getListOfReactionSrcNodes(neti, reai)
     if errCode < 0:
         raise ExceptionDict[errCode](
@@ -654,7 +656,7 @@ def getListOfReactionSrcNodes(neti, reai):
     return nodeList
 
 
-def getListOfReactionDestNodes(neti, reai):
+def getListOfReactionDestNodes(neti:int, reai:int):
     errCode = libIodine.getListOfReactionDestNodes(neti, reai)
     if errCode < 0:
         raise ExceptionDict[errCode](
@@ -665,14 +667,14 @@ def getListOfReactionDestNodes(neti, reai):
         nodeList.append(libIodine.getReactionNodeID(i).decode("utf-8"))
     return nodeList
 
-def getListOfReactionSrcStoich(neti, reai):
+def getListOfReactionSrcStoich(neti:int, reai:int):
     n = getListOfReactionSrcNodes(neti, reai)
     srcStoichList = []
     for srcNodeId in n:
         srcStoichList.append(getReactionSrcNodeStoich(neti, reai, srcNodeId))
     return srcStoichList
 
-def getListOfReactionDestStoich(neti, reai):
+def getListOfReactionDestStoich(neti:int, reai:int):
     n = getListOfReactionDestNodes(neti, reai)
     destStoichList = []
     for destNodeId in n:
@@ -682,7 +684,7 @@ def getListOfReactionDestStoich(neti, reai):
 
 
 
-def printReactionInfo(neti, reai):
+def printReactionInfo(neti:int, reai:int):
     print("id:", getReactionId(neti, reai))
     print("rateLaw:", getReactionRateLaw(neti, reai))
     print("SrcNodes:", getListOfReactionSrcNodes(neti, reai))
@@ -691,27 +693,27 @@ def printReactionInfo(neti, reai):
     print("DestNodeStoichs:", getListOfReactionDestStoich(neti, reai))
 
 
-def addSrcNode(neti, reai, nodei, stoich):
+def addSrcNode(neti:int, reai:int, nodei:int, stoich:float):
     errCode = libIodine.addSrcNode(neti, reai, nodei, stoich)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, nodei, stoich)
 
 
-def addDestNode(neti, reai, nodei, stoich):
+def addDestNode(neti:int, reai:int,nodei:int, stoich:float):
     errCode = libIodine.addDestNode(neti, reai, nodei, stoich)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, nodei, stoich)
 
-def deleteSrcNode(neti, reai, srcNodeId):
+def deleteSrcNode(neti:int, reai:int, srcNodeId:str):
     errCode = libIodine.deleteSrcNode(
         neti, reai, srcNodeId.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai, srcNodeId)
 
 
-def deleteDestNode(neti, reai, destNodeId):
+def deleteDestNode(neti:int, reai:int, destNodeId:str):
     errCode = libIodine.deleteDestNode(
         neti, reai, destNodeId.encode())
     if errCode < 0:
@@ -719,33 +721,33 @@ def deleteDestNode(neti, reai, destNodeId):
             errorDict[errCode], neti, reai, destNodeId)
 
 
-def setRateLaw(neti, reai, rateLaw):
+def setRateLaw(neti:int, reai:int, rateLaw:str):
     errCode = libIodine.setRateLaw(neti, reai, rateLaw.encode())
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai, rateLaw)
 
 
-def setReactionFillColorRGB(neti, reai, r, g, b):
+def setReactionFillColorRGB(neti:int, reai:int, r:int, g:int, b:int):
     errCode = libIodine.setReactionFillColorRGB(neti, reai, r, g, b)
     if errCode < 0:
         raise ExceptionDict[errCode](errorDict[errCode], neti, reai,  r, g, b)
 
 
-def setReactionFillColorAlpha(neti, reai, a):
+def setReactionFillColorAlpha(neti:int, reai:int, a:float):
     errCode = libIodine.setReactionFillColorAlpha(neti, reai, a)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, a)
 
-def setReactionLineThickness(neti, reai, thickness):
+
+def setReactionLineThickness(neti: int, reai: int, thickness: int):
     errCode = libIodine.setReactionLineThickness(neti, reai, thickness)
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, thickness)
 
 
-
-def createUniUni(neti, reaId, rateLaw, srci, desti, srcStoich, destStoich):
+def createUniUni(neti: int, reaId: str, rateLaw: str, srci: int, desti: int, srcStoich: float, destStoich: float):
     startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
@@ -756,7 +758,7 @@ def createUniUni(neti, reaId, rateLaw, srci, desti, srcStoich, destStoich):
     endGroup()
 
 
-def CreateUniBi(neti, reaId, rateLaw, srci, dest1i, dest2i, srcStoich, dest1Stoich, dest2Stoich):
+def CreateUniBi(neti: int, reaId:str, rateLaw:str, srci: int, dest1i: int, dest2i: int, srcStoich:float, dest1Stoich:float, dest2Stoich:float):
     startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
@@ -767,7 +769,7 @@ def CreateUniBi(neti, reaId, rateLaw, srci, dest1i, dest2i, srcStoich, dest1Stoi
     setRateLaw(neti, reai, rateLaw)
     endGroup()
 
-def CreateBiUni(neti, reaId, rateLaw, src1i, src2i, desti, src1Stoich, src2Stoich, destStoich):
+def CreateBiUni(neti: int, reaId:str, rateLaw:str, src1i: int, src2i: int, desti: int, src1Stoich:float, src2Stoich:float, destStoich:float):
     startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
@@ -778,7 +780,8 @@ def CreateBiUni(neti, reaId, rateLaw, src1i, src2i, desti, src1Stoich, src2Stoic
     setRateLaw(neti, reai, rateLaw)
     endGroup()
 
-def CreateBiBi(neti, reaId, rateLaw, src1i, src2i, dest1i, dest2i, src1Stoich, src2Stoich, dest1Stoich, dest2Stoich):
+
+def CreateBiBi(neti: int, reaId: str, rateLaw: str, src1i: int, src2i: int, dest1i: int, dest2i: int, src1Stoich:float, src2Stoich:float, dest1Stoich:float, dest2Stoich:float):
     startGroup()
     createReaction(neti, reaId)
     reai = getReactionIndex(neti, reaId)
