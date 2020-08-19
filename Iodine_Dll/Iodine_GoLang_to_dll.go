@@ -302,6 +302,90 @@ func getNodeOutlineThickness(neti, nodei C.int) C.int {
 	return C.int(err)
 }
 
+//export getNodeFontPointSize
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontPointSize(neti, nodei C.int) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	err := Iodine.GetNodeFontPointSize(netI, nodeI)
+	return C.int(err)
+}
+
+
+//export getNodeFontFamily
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontFamily(neti, nodei C.int) *C.char {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontFamily := Iodine.GetNodeFontFamily(netI, nodeI, &errCode)
+	iodineCString :=  C.CString(FontFamily)
+	return iodineCString
+}
+
+
+//export getNodeFontStyle
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontStyle(neti, nodei C.int) *C.char {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontStyle := Iodine.GetNodeFontStyle(netI, nodeI, &errCode)
+	iodineCString :=  C.CString(FontStyle)
+	return iodineCString
+}
+
+
+//export getNodeFontWeight
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontWeight(neti, nodei C.int) *C.char {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontWeight := Iodine.GetNodeFontWeight(netI, nodeI, &errCode)
+	iodineCString :=  C.CString(FontWeight)
+	return iodineCString
+}
+
+//export getNodeFontName
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontName(neti, nodei C.int) *C.char {
+	netI := int(neti)
+	nodeI := int(nodei)
+	Name := Iodine.GetNodeFontName(netI, nodeI, &errCode)
+	iodineCString :=  C.CString(Name)
+	return iodineCString
+}
+
+
+//export getNodeFontColorRGB
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontColorRGB(neti, nodei C.int) C.uint {
+	netI := int(neti)
+	nodeI := int(nodei)
+	color1 := Iodine.GetNodeFontColorRGB(netI, nodeI, &errCode)
+	return C.uint(color1)
+}
+
+//export getNodeFontColorAlpha
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeFontColorAlpha(neti, nodei C.int) C.float {
+	netI := int(neti)
+	nodeI := int(nodei)
+	alpha1 := Iodine.GetNodeFontColorAlpha(netI, nodeI, &errCode)
+	return C.float(alpha1)
+}
+
 //export setNodeID
 //setNodeID set the id of a node
 //errCode -3: id repeat, 0 :ok
@@ -407,6 +491,96 @@ func setNodeOutlineThickness(neti, nodei, thickness C.int) C.int {
 	err := Iodine.SetNodeOutlineThickness(netI, nodeI, Thickness)
 	return C.int(err)
 }
+
+
+//export setNodeFontPointSize
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func setNodeFontPointSize(neti, nodei, fontPointSize C.int) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontPointSize := int(fontPointSize)
+	err := Iodine.SetNodeFontPointSize(netI, nodeI, FontPointSize)
+	return C.int(err)
+}
+
+
+//export setNodeFontFamily
+//setNodeFontFamily set the fontFamily of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+func setNodeFontFamily(neti, nodei C.int, fontFamily *C.char) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontFamily := C.GoString(fontFamily)
+	err := Iodine.SetNodeFontFamily(netI, nodeI, FontFamily)
+	return C.int(err)
+}
+
+
+//export setNodeFontStyle
+//setNodeFontStyle set the fontStyle of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+func setNodeFontStyle(neti, nodei C.int, fontStyle *C.char) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontStyle := C.GoString(fontStyle)
+	err := Iodine.SetNodeFontStyle(netI, nodeI, FontStyle)
+	return C.int(err)
+}
+
+//export setNodeFontWeight
+//setNodeFontWeight set the fontWeight of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+func setNodeFontWeight(neti, nodei C.int, fontWeight *C.char) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontWeight := C.GoString(fontWeight)
+	err := Iodine.SetNodeFontWeight(netI, nodeI, FontWeight)
+	return C.int(err)
+}
+//export setNodeFontName
+//setNodeFontName set the FontName of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+func setNodeFontName(neti, nodei C.int, fontName *C.char) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	FontName := C.GoString(fontName)
+	err := Iodine.SetNodeFontName(netI, nodeI, FontName)
+	return C.int(err)
+}
+
+
+//export setNodeFontColorRGB
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func setNodeFontColorRGB(neti, nodei, r, g, b C.int) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	R := int(r)
+	G := int(g)
+	B := int(b)
+	err := Iodine.SetNodeFontColorRGB(netI, nodeI, R, G, B)
+	return C.int(err)
+}
+
+//export setNodeFontColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func setNodeFontColorAlpha(neti, nodei C.int, a C.float) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	A := float64(a)
+	err := Iodine.SetNodeFontColorAlpha(netI, nodeI, A)
+	return C.int(err)
+}
+
 
 //export createReaction
 //errCode: 0: ok, -3: ID repeat

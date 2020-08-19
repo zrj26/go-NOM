@@ -324,6 +324,85 @@ class TestNodeFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
             IodineAPI.getNodeOutlineThickness(1, 4)
 
+    def test_getNodeFontPointSize(self):
+        self.assertEqual(IodineAPI.getNodeFontPointSize(0, 1), 20)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontPointSize(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontPointSize(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontPointSize(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontPointSize(1, 4)
+
+    def test_getNodeFontFamily(self):
+        self.assertEqual(IodineAPI.getNodeFontFamily(0, 0), "default")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontFamily(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontFamily(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontFamily(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontFamily(1, 4)
+
+    def test_getNodeFontStyle(self):
+        self.assertEqual(IodineAPI.getNodeFontStyle(0, 0), "normal")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontStyle(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontStyle(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontStyle(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontStyle(1, 4)
+
+    def test_getNodeFontWeight(self):
+        self.assertEqual(IodineAPI.getNodeFontWeight(0, 0), "default")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontWeight(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontWeight(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontWeight(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontWeight(1, 4)
+
+    def test_getNodeFontName(self):
+        self.assertEqual(IodineAPI.getNodeFontName(0, 0), "")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontName(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontName(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontName(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontName(1, 4)
+
+    def test_getNodeFontColorRGB(self):
+        self.assertEqual(
+            hex(IodineAPI.getNodeFontColorRGB(0, 0)), '0x0')
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorRGB(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorRGB(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorRGB(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorRGB(1, 4)
+
+    def test_getNodeFontColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeFontColorAlpha(0, 0), 1, 2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorAlpha(-1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorAlpha(3, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorAlpha(1, -1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.getNodeFontColorAlpha(1, 4)
+
+
     def test_setNodeId(self):
         self.assertEqual(IodineAPI.getNodeId(0, 1), "node2")
         self.assertEqual(IodineAPI.setNodeId(0, 1, "Node2"), None)
@@ -565,6 +644,124 @@ class TestNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getNodeOutlineThickness(0, 1), 3)
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getNodeOutlineThickness(0, 1), 1)
+
+    def test_setNodeFontPointSize(self):
+        self.assertEqual(IodineAPI.getNodeFontPointSize(0, 1), 20)
+        self.assertEqual(IodineAPI.setNodeFontPointSize(0, 1, 10), None)
+        self.assertEqual(IodineAPI.getNodeFontPointSize(0, 1), 10)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(-1, 1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(3, 1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(1, -1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(1, 4, 1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(0, 1, 0)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontPointSize(0, 1, -1)
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeFontPointSize(0, 1), 20)
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeFontPointSize(0, 1), 10)
+
+    def test_setNodeFontFamily(self):
+        self.assertEqual(IodineAPI.getNodeFontFamily(0, 1), "default")
+        self.assertEqual(IodineAPI.setNodeFontFamily(0, 1, "decorative"), None)
+        self.assertEqual(IodineAPI.getNodeFontFamily(0, 1), "decorative")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontFamily(-1, 1, "default")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontFamily(3, 1, "default")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontFamily(1, -1, "default")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontFamily(1, 1, "default")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontFamily(0, 1, "Aefault")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontFamily(0, 1, "normal")
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeFontFamily(0, 1), "default")
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeFontFamily(0, 1), "decorative")
+
+
+    def test_setNodeFontStyle(self):
+        self.assertEqual(IodineAPI.getNodeFontStyle(0, 1), "normal")
+        self.assertEqual(IodineAPI.setNodeFontStyle(0, 1, "italic"), None)
+        self.assertEqual(IodineAPI.getNodeFontStyle(0, 1), "italic")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontStyle(-1, 1, "normal")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontStyle(3, 1, "normal")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontStyle(1, -1, "normal")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontStyle(1, 1, "normal")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontStyle(0, 1, "default")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontStyle(0, 1, "Normal")
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeFontStyle(0, 1), "normal")
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeFontStyle(0, 1), "italic")
+
+    def test_setNodeFontWeight(self):
+        self.assertEqual(IodineAPI.getNodeFontWeight(0, 1), "default")
+        self.assertEqual(IodineAPI.setNodeFontWeight(0, 1, "bold"), None)
+        self.assertEqual(IodineAPI.getNodeFontWeight(0, 1), "bold")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontWeight(-1, 1, "default")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontWeight(3, 1, "default")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontWeight(1, -1, "default")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontWeight(1, 1, "default")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontWeight(0, 1, "Default")
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontWeight(0, 1, "normal")
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeFontWeight(0, 1), "default")
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeFontWeight(0, 1), "bold")
+
+
+    def test_setNodeFontName(self):
+        self.assertEqual(IodineAPI.getNodeFontName(0, 1), "")
+        self.assertEqual(IodineAPI.setNodeFontName(0, 1, "name1"), None)
+        self.assertEqual(IodineAPI.getNodeFontName(0, 1), "name1")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontName(-1, 1, "")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontName(3, 1, "")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontName(1, -1, "")
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontName(1, 1, "")
+
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getNodeFontName(0, 1), "")
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getNodeFontName(0, 1), "name1")
 
 
 class TestReactionFunc(unittest.TestCase):

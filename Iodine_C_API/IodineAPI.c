@@ -37,6 +37,13 @@ typedef float (*getNodeFillColorAlphaProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeOutlineColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
+typedef int (*getNodeFontPointSizeProc)(int netIndex, int nodeIndex);
+typedef int (*getNodeFontFamilyProc)(int netIndex, int nodeIndex);
+typedef int (*getNodeFontStyleProc)(int netIndex, int nodeIndex);
+typedef int (*getNodeFontWeightProc)(int netIndex, int nodeIndex);
+typedef char *(*getNodeFontNameProc)(int netIndex, int nodeIndex);
+typedef unsigned int (*getNodeFontColorRGBProc)(int netIndex, int nodeIndex);
+typedef float (*getNodeFontColorAlphaProc)(int netIndex, int nodeIndex);
 typedef int (*setNodeIDProc)(int netIndex, int nodeIndex, const char *newID);
 typedef int (*setNodeCoordinateProc)(int netIndex, int nodeIndex, float x, float y);
 typedef int (*setNodeSizeProc)(int netIndex, int nodeIndex, float w, float h);
@@ -45,6 +52,13 @@ typedef int (*setNodeFillColorAlphaProc)(int netIndex, int nodeIndex, float A);
 typedef int (*setNodeOutlineColorRGBProc)(int netIndex, int nodeIndex, int R, int G, int B);
 typedef int (*setNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex, float A);
 typedef int (*setNodeOutlineThicknessProc)(int netIndex, int nodeIndex, int thickness);
+typedef int (*setNodeFontPointSizeProc)(int netIndex, int nodeIndex, int fontPointSize);
+typedef int (*setNodeFontFamilyProc)(int netIndex, int nodeIndex, const char *fontFamily);
+typedef int (*setNodeFontStyleProc)(int netIndex, int nodeIndex, const char *fontStyle);
+typedef int (*setNodeFontWeightProc)(int netIndex, int nodeIndex, const char *fontWeight);
+typedef int (*setNodeFontNameProc)(int netIndex, int nodeIndex, const char *fontName);
+typedef int (*setNodeFontColorRGBProc)(int netIndex, int nodeIndex, int R, int G, int B);
+typedef int (*setNodeFontColorAlphaProc)(int netIndex, int nodeIndex, float A);
 typedef int (*createReactionProc)(int netIndex, const char *reactionID);
 typedef int (*getReactionIndexProc)(int netIndex, const char *reactionID);
 typedef int (*deleteReactionProc)(int netIndex, int reactionIndex);
@@ -105,6 +119,13 @@ getNodeFillColorAlphaProc Iod_getNodeFillColorAlpha;
 getNodeOutlineColorRGBProc Iod_getNodeOutlineColorRGB;
 getNodeOutlineColorAlphaProc Iod_getNodeOutlineColorAlpha;
 getNodeOutlineThicknessProc Iod_getNodeOutlineThickness;
+getNodeFontPointSizeProc Iod_getNodeFontPointSize;
+getNodeFontFamilyProc Iod_getNodeFontFamily;
+getNodeFontStyleProc Iod_getNodeFontStyle;
+getNodeFontWeightProc Iod_getNodeFontWeight;
+getNodeFontNameProc Iod_getNodeFontName;
+getNodeFontColorRGBProc Iod_getNodeFontColorRGB;
+getNodeFontColorAlphaProc Iod_getNodeFontColorAlpha;
 setNodeIDProc Iod_setNodeID;
 setNodeCoordinateProc Iod_setNodeCoordinate;
 setNodeSizeProc Iod_setNodeSize;
@@ -113,6 +134,13 @@ setNodeFillColorAlphaProc Iod_setNodeFillColorAlpha;
 setNodeOutlineColorRGBProc Iod_setNodeOutlineColorRGB;
 setNodeOutlineColorAlphaProc Iod_setNodeOutlineColorAlpha;
 setNodeOutlineThicknessProc Iod_setNodeOutlineThickness;
+setNodeFontPointSizeProc Iod_setNodeFontPointSize;
+setNodeFontFamilyProc Iod_setNodeFontFamily;
+setNodeFontStyleProc Iod_setNodeFontStyle;
+setNodeFontWeightProc Iod_setNodeFontWeight;
+setNodeFontNameProc Iod_setNodeFontName;
+setNodeFontColorRGBProc Iod_setNodeFontColorRGB;
+setNodeFontColorAlphaProc Iod_setNodeFontColorAlpha;
 createReactionProc Iod_createReaction;
 getReactionIndexProc Iod_getReactionIndex;
 deleteReactionProc Iod_deleteReaction;
@@ -327,6 +355,41 @@ int loadDll(const char *pathToDll)
     }
     Iod_getNodeOutlineThickness = (getNodeOutlineThicknessProc)GetProcAddress(Iod_hinstLib, "getNodeOutlineThickness");
     if (Iod_getNodeOutlineThickness == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontPointSize = (getNodeFontPointSizeProc)GetProcAddress(Iod_hinstLib, "getNodeFontPointSize");
+    if (Iod_getNodeFontPointSize == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontFamily = (getNodeFontFamilyProc)GetProcAddress(Iod_hinstLib, "getNodeFontFamily");
+    if (Iod_getNodeFontFamily == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontStyle = (getNodeFontStyleProc)GetProcAddress(Iod_hinstLib, "getNodeFontStyle");
+    if (Iod_getNodeFontStyle == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontWeight = (getNodeFontWeightProc)GetProcAddress(Iod_hinstLib, "getNodeFontWeight");
+    if (Iod_getNodeFontWeight == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontName = (getNodeFontNameProc)GetProcAddress(Iod_hinstLib, "getNodeFontName");
+    if (Iod_getNodeFontName == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontColorRGB = (getNodeFontColorRGBProc)GetProcAddress(Iod_hinstLib, "getNodeFontColorRGB");
+    if (Iod_getNodeFontColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_getNodeFontColorAlpha = (getNodeFontColorAlphaProc)GetProcAddress(Iod_hinstLib, "getNodeFontColorAlpha");
+    if (Iod_getNodeFontColorAlpha == NULL)
     {
         return -13;
     }

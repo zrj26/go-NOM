@@ -20,7 +20,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         },
         {
             "id": "node2",
@@ -40,7 +51,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         },
         {
             "id": "node3",
@@ -60,7 +82,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         },
         {
             "id": "node4",
@@ -80,7 +113,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         },
         {
             "id": "node5",
@@ -100,7 +144,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         },
         {
             "id": "node6",
@@ -120,7 +175,18 @@
                 "B": 80,
                 "A": 255
             },
-            "outlineThickness": 3
+            "outlineThickness": 3,
+            "fontPointSize": 20,
+            "fontFamily": "default",
+            "fontStyle": "normal",
+            "fontWeight": "default",
+            "fontName": "",
+            "fontColor": {
+                "R": 0,
+                "G": 0,
+                "B": 0,
+                "A": 255
+            }
         }
     ],
     "reactions": [

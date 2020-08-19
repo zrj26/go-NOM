@@ -223,6 +223,47 @@ extern float getNodeOutlineColorAlpha(int p0, int p1);
 
 extern int getNodeOutlineThickness(int p0, int p1);
 
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern int getNodeFontPointSize(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern char* getNodeFontFamily(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern char* getNodeFontStyle(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern char* getNodeFontWeight(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern char* getNodeFontName(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern unsigned int getNodeFontColorRGB(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+
+extern float getNodeFontColorAlpha(int p0, int p1);
+
 //setNodeID set the id of a node
 //errCode -3: id repeat, 0 :ok
 //-5: net index out of range
@@ -271,6 +312,48 @@ extern int setNodeOutlineColorAlpha(int p0, int p1, float p2);
 //-12: Variable out of range
 
 extern int setNodeOutlineThickness(int p0, int p1, int p2);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+
+extern int setNodeFontPointSize(int p0, int p1, int p2);
+
+//setNodeFontFamily set the fontFamily of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+
+extern int setNodeFontFamily(int p0, int p1, char* p2);
+
+//setNodeFontStyle set the fontStyle of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+
+extern int setNodeFontStyle(int p0, int p1, char* p2);
+
+//setNodeFontWeight set the fontWeight of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+
+extern int setNodeFontWeight(int p0, int p1, char* p2);
+
+//setNodeFontName set the FontName of a node
+//errCode 5: net index out of range
+//-12: Variable out of range
+
+extern int setNodeFontName(int p0, int p1, char* p2);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+
+extern int setNodeFontColorRGB(int p0, int p1, int p2, int p3, int p4);
+
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+
+extern int setNodeFontColorAlpha(int p0, int p1, float p2);
 
 //errCode: 0: ok, -3: ID repeat
 //-5: net index out of range

@@ -33,6 +33,12 @@ type TNode struct {
 	FillColor        color.RGBA `json:"fillColor"`
 	OutlineColor     color.RGBA `json:"outlineColor"`
 	OutlineThickness int        `json:"outlineThickness"`
+	FontPointSize    int        `json:"fontPointSize"`
+	FontFamily       string        `json:"fontFamily"`
+	FontStyle        string        `json:"fontStyle"`  //0: normal, 1: Italic
+	FontWeight       string        `json:"fontWeight"` //0: default, -1: light, 1: bold
+	FontName         string     `json:"fontName"`
+	FontColor        color.RGBA `json:"fontColor"`
 }
 
 //TNetwork The list of Nodes
@@ -86,6 +92,12 @@ func (n *TNetworkSet) deepcopy() TNetworkSet {
 				FillColor:        color.RGBA{},
 				OutlineColor:     color.RGBA{},
 				OutlineThickness: (*n)[i].Nodes[j].OutlineThickness,
+				FontPointSize:    (*n)[i].Nodes[j].FontPointSize,
+				FontFamily:       (*n)[i].Nodes[j].FontFamily,
+				FontStyle:        (*n)[i].Nodes[j].FontStyle,
+				FontWeight:       (*n)[i].Nodes[j].FontWeight,
+				FontName:         (*n)[i].Nodes[j].FontName,
+				FontColor:        color.RGBA{},
 			}
 			NewNodeX.FillColor.R = (*n)[i].Nodes[j].FillColor.R
 			NewNodeX.FillColor.G = (*n)[i].Nodes[j].FillColor.G
@@ -95,6 +107,10 @@ func (n *TNetworkSet) deepcopy() TNetworkSet {
 			NewNodeX.OutlineColor.G = (*n)[i].Nodes[j].OutlineColor.G
 			NewNodeX.OutlineColor.B = (*n)[i].Nodes[j].OutlineColor.B
 			NewNodeX.OutlineColor.A = (*n)[i].Nodes[j].OutlineColor.A
+			NewNodeX.FontColor.R = (*n)[i].Nodes[j].FontColor.R
+			NewNodeX.FontColor.G = (*n)[i].Nodes[j].FontColor.G
+			NewNodeX.FontColor.B = (*n)[i].Nodes[j].FontColor.B
+			NewNodeX.FontColor.A = (*n)[i].Nodes[j].FontColor.A
 
 			NewNetworkX.Nodes = append(NewNetworkX.Nodes, NewNodeX)
 		}
@@ -140,7 +156,7 @@ func GetNetworkSet() *TNetworkSet {
 func Undo() int {
 	if netSetStack.isEmpty() {
 		errCode := -9
-		addErrorMessage(errCode, "()","","")
+		addErrorMessage(errCode, "()", "", "")
 		return errCode
 	}
 	redoStack.push(networkSet)
@@ -153,7 +169,7 @@ func Undo() int {
 func Redo() int {
 	if redoStack.isEmpty() {
 		errCode := -9
-		addErrorMessage(errCode, "()","","")
+		addErrorMessage(errCode, "()", "", "")
 		return errCode
 	}
 	netSetStack.push(networkSet)
@@ -243,11 +259,11 @@ func addErrorMessage(errCode int, errorMessage1, errorMessage2, errorMessage3 st
 	case -12:
 		errMSG1 += errorMessage2
 		errMSG2 += errorMessage2
-		if errorMessage3 == "xy"{
+		if errorMessage3 == "xy" {
 			errMSG1 += ", x or y has to be non-negative.\n"
 			errMSG2 += ", x or y has to be non-negative.\n"
 		}
-		if errorMessage3 == "wh"{
+		if errorMessage3 == "wh" {
 			errMSG1 += ", w or h has to be positive.\n"
 			errMSG2 += ", w or h has to be positive.\n"
 		}
@@ -255,14 +271,38 @@ func addErrorMessage(errCode int, errorMessage1, errorMessage2, errorMessage3 st
 			errMSG1 += ", RGB range int[0,255]; alpha range float[0,1].\n"
 			errMSG2 += ", RGB range int[0,255]; alpha range float[0,1].\n"
 		}
-		if errorMessage3 == "thickness" {
-			errMSG1 += ", thickness has to be positive.\n"
-			errMSG2 += ", thickness has to be positive.\n"
+		if errorMessage3 == "positive" {
+			errMSG1 += ", thickness, fontPointSize has to be positive.\n"
+			errMSG2 += ", thickness, fontPointSize has to be positive.\n"
+		}
+		if errorMessage3 == "not found" {
+			errMSG1 += ", fontFamily, fontStyle or fontWeight not found in list.\n"
+			errMSG2 += ", fontFamily, fontStyle or fontWeight not found in list.\n"
 		}
 	default:
 		errMSG1 += "other error.\n"
 		errMSG2 += "other error.\n"
 	}
+}
+
+var fontFamilyDict map[string]int = map[string]int{
+	"default":0,
+	"decorative":1,
+	"roman":2,
+	"script":3,
+	"swiss":4,
+	"modern":5,
+}
+
+var fontStyleDict map[string]int = map[string]int{
+	"normal":0,
+	"italic":1,
+}
+
+var fontWeightDict map[string]int = map[string]int{
+	"default":0,
+	"light":1,
+	"bold":2,
 }
 
 // func getFuncName() string {
@@ -342,14 +382,14 @@ func ReadNetworkFromJSON(filePath string) int {
 	file, err1 := ioutil.ReadFile(filePath)
 	if err1 != nil {
 		errCode = -11
-		addErrorMessage(errCode, "(\"" + filePath + "\")", "", "")
+		addErrorMessage(errCode, "(\""+filePath+"\")", "", "")
 		return errCode
 	}
 	newNet := TNetwork{}
 	err2 := json.Unmarshal([]byte(file), &newNet)
 	if err2 != nil {
 		errCode = -10
-		addErrorMessage(errCode, "(\"" + filePath + "\")", "", "")
+		addErrorMessage(errCode, "(\""+filePath+"\")", "", "")
 		return errCode
 	}
 	for i := range networkSet {
@@ -440,19 +480,19 @@ func AddNode(neti int, id string, x, y, w, h float64) int {
 	for i := range n.Nodes {
 		if n.Nodes[i].ID == id {
 			errCode = -3
-			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) +", \""+ id + "\")"), id, "")
+			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", \"" + id + "\")"), id, "")
 			return errCode
 		}
 	}
 	if x < 0 || y < 0 {
 		errCode = -12
-		m2 := strconv.FormatFloat(x, 'f', 3, 64)+", "+strconv.FormatFloat(y, 'f', 3, 64)
+		m2 := strconv.FormatFloat(x, 'f', 3, 64) + ", " + strconv.FormatFloat(y, 'f', 3, 64)
 		addErrorMessage(errCode, "()", m2, "xy")
 		return errCode
 	}
 	if w <= 0 || h <= 0 {
 		errCode = -12
-		m2 := strconv.FormatFloat(w, 'f', 3, 64)+", "+strconv.FormatFloat(h, 'f', 3, 64)
+		m2 := strconv.FormatFloat(w, 'f', 3, 64) + ", " + strconv.FormatFloat(h, 'f', 3, 64)
 		addErrorMessage(errCode, "()", m2, "wh")
 		return errCode
 	}
@@ -464,7 +504,14 @@ func AddNode(neti int, id string, x, y, w, h float64) int {
 	newNode := TNode{ID: id, X: x, Y: y, W: w, H: h,
 		FillColor:        color.RGBA{R: 255, G: 150, B: 80, A: 255},
 		OutlineColor:     color.RGBA{R: 255, G: 100, B: 80, A: 255},
-		OutlineThickness: 3}
+		OutlineThickness: 3,
+		FontPointSize:    20,
+		FontFamily:       "default",
+		FontStyle:        "normal",
+		FontWeight:       "default",
+		FontName:         "",
+		FontColor:        color.RGBA{R: 0, G: 0, B: 0, A: 255},
+	}
 	n.Nodes = append(n.Nodes, newNode)
 	networkSet[neti] = n
 	return errCode
@@ -544,7 +591,7 @@ func DeleteNode(neti, nodei int) int {
 		}
 	}
 	if errCode == -4 {
-		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) +strconv.Itoa(nodei)), "node"+strconv.Itoa(nodei), "")
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + strconv.Itoa(nodei)), "node"+strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if stackFlag {
@@ -855,6 +902,159 @@ func GetNodeOutlineThickness(neti, nodei int) int {
 	return n.Nodes[nodei].OutlineThickness
 }
 
+//GetNodeFontPointSize GetNodeFontPointSize
+//errCode: -7: node index out of range
+//-5: net index out of range
+func GetNodeFontPointSize(neti, nodei int) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	return n.Nodes[nodei].FontPointSize
+}
+
+
+//GetNodeFontFamily Get the FontFamily of the node
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontFamily(neti, nodei int, errCode *int) string {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return "error" //meaningless string. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return "error"
+	}
+	return n.Nodes[nodei].FontFamily
+}
+
+
+//GetNodeFontStyle GetNodeFontStyle
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontStyle(neti, nodei int, errCode *int) string {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return "error" //meaningless string. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return "error"
+	}
+	return n.Nodes[nodei].FontStyle
+}
+
+//GetNodeFontWeight GetNodeFontWeight
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontWeight(neti, nodei int, errCode *int) string {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return "error" //meaningless string. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return "error"
+	}
+	return n.Nodes[nodei].FontWeight
+}
+
+//GetNodeFontName Get the fontName of the node
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontName(neti, nodei int, errCode *int) string {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return "error" //meaningless string. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return "error"
+	}
+	return n.Nodes[nodei].FontName
+}
+
+//GetNodeFontColorRGB GetNodeFontColorRGB
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontColorRGB(neti, nodei int, errCode *int) uint32 {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	color1 := uint32(n.Nodes[nodei].FontColor.R)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FontColor.G)
+	color1 = (color1 << 8) | uint32(n.Nodes[nodei].FontColor.B)
+	return color1
+}
+
+//GetNodeFontColorAlpha GetNodeFontColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func GetNodeFontColorAlpha(neti, nodei int, errCode *int) float64 {
+	*errCode = 0
+	if neti < 0 || neti >= len(networkSet) {
+		*errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		*errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		return 0 //meaningless number. won't be passed to next layer
+	}
+	alpha1 := float64(n.Nodes[nodei].FontColor.A) / 255
+	return alpha1
+}
+
 //SetNodeID set the id of a node
 //errCode -3: id repeat, 0 :ok
 //-5: net index out of range
@@ -877,7 +1077,7 @@ func SetNodeID(neti, nodei int, newID string) int {
 	for i := range n.Nodes {
 		if n.Nodes[i].ID == newID {
 			errCode = -3
-			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) +", "+ strconv.Itoa(nodei) +", \""+ newID +"\")"), newID, "")
+			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", " + strconv.Itoa(nodei) + ", \"" + newID + "\")"), newID, "")
 			return errCode
 		}
 	}
@@ -911,7 +1111,7 @@ func SetNodeCoordinate(neti, nodei int, x, y float64) int {
 	}
 	if x < 0 || y < 0 {
 		errCode = -12
-		m2 := strconv.FormatFloat(x, 'f', 3, 64)+", "+strconv.FormatFloat(y, 'f', 3, 64)
+		m2 := strconv.FormatFloat(x, 'f', 3, 64) + ", " + strconv.FormatFloat(y, 'f', 3, 64)
 		addErrorMessage(errCode, "()", m2, "xy")
 		return errCode
 	}
@@ -948,7 +1148,7 @@ func SetNodeSize(neti, nodei int, w, h float64) int {
 	}
 	if w <= 0 || h <= 0 {
 		errCode = -12
-		m2 := strconv.FormatFloat(w, 'f', 3, 64)+", "+strconv.FormatFloat(h, 'f', 3, 64)
+		m2 := strconv.FormatFloat(w, 'f', 3, 64) + ", " + strconv.FormatFloat(h, 'f', 3, 64)
 		addErrorMessage(errCode, "()", m2, "wh")
 		return errCode
 	}
@@ -985,7 +1185,7 @@ func SetNodeFillColorRGB(neti, nodei, r, g, b int) int {
 	}
 	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
 		errCode = -12
-		m2 := strconv.Itoa(r)+", "+strconv.Itoa(g)+", "+strconv.Itoa(b)
+		m2 := strconv.Itoa(r) + ", " + strconv.Itoa(g) + ", " + strconv.Itoa(b)
 		addErrorMessage(errCode, "()", m2, "color")
 		return errCode
 	}
@@ -1060,7 +1260,7 @@ func SetNodeOutlineColorRGB(neti, nodei, r, g, b int) int {
 	}
 	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
 		errCode = -12
-		m2 := strconv.Itoa(r)+", "+strconv.Itoa(g)+", "+strconv.Itoa(b)
+		m2 := strconv.Itoa(r) + ", " + strconv.Itoa(g) + ", " + strconv.Itoa(b)
 		addErrorMessage(errCode, "()", m2, "color")
 		return errCode
 	}
@@ -1136,7 +1336,7 @@ func SetNodeOutlineThickness(neti, nodei, thickness int) int {
 	if thickness <= 0 {
 		errCode = -12
 		m2 := strconv.Itoa(thickness)
-		addErrorMessage(errCode, "()", m2, "thickness")
+		addErrorMessage(errCode, "()", m2, "positive")
 		return errCode
 	}
 	if stackFlag {
@@ -1145,6 +1345,249 @@ func SetNodeOutlineThickness(neti, nodei, thickness int) int {
 	}
 
 	n.Nodes[nodei].OutlineThickness = thickness
+	return errCode
+}
+
+//SetNodeFontPointSize SetNodeFontPointSize
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func SetNodeFontPointSize(neti, nodei, fontPointSize int) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	if fontPointSize <= 0 {
+		errCode = -12
+		m2 := strconv.Itoa(fontPointSize)
+		addErrorMessage(errCode, "()", m2, "positive")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	n.Nodes[nodei].FontPointSize = fontPointSize
+	return errCode
+}
+
+
+//SetNodeFontFamily SetNodeFontFamily
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func SetNodeFontFamily(neti, nodei int, fontFamily string) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	_, ok := fontFamilyDict[fontFamily]
+	if ok == false{
+		errCode = -12
+		addErrorMessage(errCode, "()", fontFamily, "not found")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	n.Nodes[nodei].FontFamily = fontFamily
+	return errCode
+}
+
+
+
+//SetNodeFontStyle SetNodeFontStyle
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func SetNodeFontStyle(neti, nodei int, fontStyle string) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	_, ok := fontStyleDict[fontStyle]
+	if ok == false{
+		errCode = -12
+		addErrorMessage(errCode, "()", fontStyle, "not found")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	n.Nodes[nodei].FontStyle = fontStyle
+	return errCode
+}
+
+
+//SetNodeFontWeight SetNodeFontWeight
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func SetNodeFontWeight(neti, nodei int, fontWeight string) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	_, ok := fontWeightDict[fontWeight]
+	if ok == false{
+		errCode = -12
+		addErrorMessage(errCode, "()", fontWeight, "not found")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	n.Nodes[nodei].FontWeight = fontWeight
+	return errCode
+}
+
+//SetNodeFontName SetNodeFontName
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func SetNodeFontName(neti, nodei int, fontName string) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+
+	n.Nodes[nodei].FontName = fontName
+	return errCode
+}
+
+//SetNodeFontColorRGB SetNodeFontColorRGB
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetNodeFontColorRGB(neti, nodei, r, g, b int) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
+		errCode = -12
+		m2 := strconv.Itoa(r) + ", " + strconv.Itoa(g) + ", " + strconv.Itoa(b)
+		addErrorMessage(errCode, "()", m2, "color")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+	R1 := uint8(r)
+	G1 := uint8(g)
+	B1 := uint8(b)
+	n.Nodes[nodei].FontColor.R = R1
+	n.Nodes[nodei].FontColor.G = G1
+	n.Nodes[nodei].FontColor.B = B1
+
+	return errCode
+}
+
+//SetNodeFontColorAlpha SetNodeFontColorAlpha
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+//-12: Variable out of range:
+func SetNodeFontColorAlpha(neti, nodei int, a float64) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet) {
+		errCode = -5
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		return errCode
+	}
+	n := networkSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		return errCode
+	}
+	if a < 0 || a > 1 {
+		errCode = -12
+		m2 := strconv.FormatFloat(a, 'f', 3, 64)
+		addErrorMessage(errCode, "()", m2, "color")
+		return errCode
+	}
+	if stackFlag {
+		redoStack = TNetSetStack{}
+		netSetStack.push(networkSet)
+	}
+	A1 := uint8(a * 255)
+
+	n.Nodes[nodei].FontColor.A = A1
+
 	return errCode
 }
 
@@ -1163,7 +1606,7 @@ func CreateReaction(neti int, id string) int {
 	for i := range r {
 		if r[i].ID == id {
 			errCode = -3
-			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", \""+ id +"\")"), id, "")
+			addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", \"" + id + "\")"), id, "")
 			return errCode
 		}
 	}
@@ -1571,7 +2014,7 @@ func AddSrcNode(neti, reai, nodei int, stoich float64) int {
 	_, ok := r[reai].Species[0][srcNodeID]
 	if ok == true {
 		errCode = -3
-		addErrorMessage(errCode, ("(" + strconv.Itoa(neti)+", " +strconv.Itoa(reai)+", " +strconv.Itoa(nodei)+", " +strconv.FormatFloat(stoich, 'f', 3, 64)), srcNodeID, "")
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", " + strconv.Itoa(reai) + ", " + strconv.Itoa(nodei) + ", " + strconv.FormatFloat(stoich, 'f', 3, 64)), srcNodeID, "")
 		return errCode
 	}
 	R.Species[0][srcNodeID] = stoich
@@ -1623,7 +2066,7 @@ func AddDestNode(neti, reai, nodei int, stoich float64) int {
 	_, ok := R.Species[1][destNodeID]
 	if ok == true {
 		errCode = -3
-		addErrorMessage(errCode, ("(" + strconv.Itoa(neti)+", " +strconv.Itoa(reai)+", " +strconv.Itoa(nodei)+", " +strconv.FormatFloat(stoich, 'f', 3, 64)), destNodeID, "")
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", " + strconv.Itoa(reai) + ", " + strconv.Itoa(nodei) + ", " + strconv.FormatFloat(stoich, 'f', 3, 64)), destNodeID, "")
 		return errCode
 	}
 	R.Species[1][destNodeID] = stoich
@@ -1754,7 +2197,7 @@ func SetReactionFillColorRGB(neti, reai, R, G, B int) int {
 	}
 	if R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255 {
 		errCode = -12
-		m2 := strconv.Itoa(R)+", "+strconv.Itoa(G)+", "+strconv.Itoa(B)
+		m2 := strconv.Itoa(R) + ", " + strconv.Itoa(G) + ", " + strconv.Itoa(B)
 		addErrorMessage(errCode, "()", m2, "color")
 		return errCode
 	}
@@ -1829,7 +2272,7 @@ func SetReactionLineThickness(neti, reai, thickness int) int {
 	if thickness <= 0 {
 		errCode = -12
 		m2 := strconv.Itoa(thickness)
-		addErrorMessage(errCode, "()", m2, "thickness")
+		addErrorMessage(errCode, "()", m2, "positive")
 		return errCode
 	}
 	if stackFlag {
