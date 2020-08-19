@@ -763,6 +763,71 @@ class TestNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getNodeFontName(0, 1), "name1")
 
+    def test_setNodeFontColorRGB(self):
+        self.assertEqual(
+            hex(IodineAPI.getNodeFontColorRGB(0, 1)), '0x0')
+        self.assertEqual(IodineAPI.setNodeFontColorRGB(
+            0, 1, 30, 180, 160), None)
+        self.assertEqual(
+            hex(IodineAPI.getNodeFontColorRGB(0, 1)), '0x1eb4a0')
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(-1, 1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(3, 1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(1, -1, 30, 180, 160)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(1, 4, 30, 180, 160)
+
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, -1, 180, 160)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, 256, 180, 160)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, 30, -1, 160)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, 30, 256, 160)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, 30, 180, -1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorRGB(0, 1, 30, 180, 256)
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(
+            hex(IodineAPI.getNodeFontColorRGB(0, 1)), '0x0')
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(
+            hex(IodineAPI.getNodeFontColorRGB(0, 1)), '0x1eb4a0')
+
+    def test_setNodeFontColorAlpha(self):
+        self.assertAlmostEqual(IodineAPI.getNodeFontColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.setNodeFontColorAlpha(0, 1, 0.5), None)
+        self.assertAlmostEqual(
+            IodineAPI.getNodeFontColorAlpha(0, 1), 0.5, 2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(-1, 1, 1)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(3, 1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(1, -1, 1)
+        with self.assertRaises(IodineAPI.NodeIndexOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(1, 4, 1)
+
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(0, 1, -0.1)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setNodeFontColorAlpha(0, 1, 1.1)
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertAlmostEqual(IodineAPI.getNodeFontColorAlpha(0, 1), 1, 2)
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertAlmostEqual(
+            IodineAPI.getNodeFontColorAlpha(0, 1), 0.5, 2)
+
 
 class TestReactionFunc(unittest.TestCase):
     @classmethod
