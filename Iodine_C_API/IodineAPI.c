@@ -38,9 +38,9 @@ typedef unsigned int (*getNodeOutlineColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeFontPointSizeProc)(int netIndex, int nodeIndex);
-typedef int (*getNodeFontFamilyProc)(int netIndex, int nodeIndex);
-typedef int (*getNodeFontStyleProc)(int netIndex, int nodeIndex);
-typedef int (*getNodeFontWeightProc)(int netIndex, int nodeIndex);
+typedef char *(*getNodeFontFamilyProc)(int netIndex, int nodeIndex);
+typedef char *(*getNodeFontStyleProc)(int netIndex, int nodeIndex);
+typedef char *(*getNodeFontWeightProc)(int netIndex, int nodeIndex);
 typedef char *(*getNodeFontNameProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeFontColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeFontColorAlphaProc)(int netIndex, int nodeIndex);
@@ -167,8 +167,7 @@ setReactionFillColorRGBProc Iod_setReactionFillColorRGB;
 setReactionFillColorAlphaProc Iod_setReactionFillColorAlpha;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
 
-
-typedef struct 
+typedef struct
 {
     int r;
     int g;
@@ -433,6 +432,41 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
+    Iod_setNodeFontPointSize = (setNodeFontPointSizeProc)GetProcAddress(Iod_hinstLib, "setNodeFontPointSize");
+    if (Iod_setNodeFontPointSize == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontFamily = (setNodeFontFamilyProc)GetProcAddress(Iod_hinstLib, "setNodeFontFamily");
+    if (Iod_setNodeFontFamily == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontStyle = (setNodeFontStyleProc)GetProcAddress(Iod_hinstLib, "setNodeFontStyle");
+    if (Iod_setNodeFontStyle == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontWeight = (setNodeFontWeightProc)GetProcAddress(Iod_hinstLib, "setNodeFontWeight");
+    if (Iod_setNodeFontWeight == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontName = (setNodeFontNameProc)GetProcAddress(Iod_hinstLib, "setNodeFontName");
+    if (Iod_setNodeFontName == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontColorRGB = (setNodeFontColorRGBProc)GetProcAddress(Iod_hinstLib, "setNodeFontColorRGB");
+    if (Iod_setNodeFontColorRGB == NULL)
+    {
+        return -13;
+    }
+    Iod_setNodeFontColorAlpha = (setNodeFontColorAlphaProc)GetProcAddress(Iod_hinstLib, "setNodeFontColorAlpha");
+    if (Iod_setNodeFontColorAlpha == NULL)
+    {
+        return -13;
+    }
     Iod_createReaction = (createReactionProc)GetProcAddress(Iod_hinstLib, "createReaction");
     if (Iod_createReaction == NULL)
     {
@@ -565,7 +599,7 @@ Color color;
 
 void clearColor()
 {
-    color.r =0;
+    color.r = 0;
     color.g = 0;
     color.b = 0;
     color.a = 0;
@@ -581,9 +615,9 @@ Color *Iod_getNodeFillColor(int neti, int nodei)
     color.b = rgb - (rgb >> 8 << 8);
     color.a = a;
     return &color;
-} 
+}
 
-Color *Iod_getNodeOutlineColor(int neti,int nodei)
+Color *Iod_getNodeOutlineColor(int neti, int nodei)
 {
     int rgb = Iod_getNodeOutlineColorRGB(neti, nodei);
     int a = Iod_getNodeOutlineColorAlpha(neti, nodei);
@@ -846,7 +880,7 @@ bool Iod_floatEqual(float float1, const float float2, float threshold)
 bool Iod_colorEqual(Color *color1, Color *color2)
 {
     bool equal = FALSE;
-    if ((color1->r==color2->r)&&(color1->g == color2->g) && (color1->b == color2->b) && (color1->a == color2->a))
+    if ((color1->r == color2->r) && (color1->g == color2->g) && (color1->b == color2->b) && (color1->a == color2->a))
     {
         equal = TRUE;
     }

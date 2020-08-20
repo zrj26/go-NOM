@@ -3,12 +3,13 @@ package main
 //this package converts Iodine_GO to dll by:
 //go build -o Iodine.dll -buildmode=c-shared Iodine_GoLang_to_dll.go
 
-
 // #include <stdio.h>
 // #include <stdlib.h>
 import "C"
-import "unsafe"
-import Iodine "IodinePkg/Iodine_GO"
+import (
+	Iodine "IodinePkg/Iodine_GO"
+	"unsafe"
+)
 
 var errCode int = 0
 var networkSet = Iodine.GetNetworkSet()
@@ -18,12 +19,11 @@ func getErrorCode() C.int {
 	return C.int(errCode)
 }
 
-
 //export setErrorCode
 //designed for C api
-func setErrorCode(err C.int){
+func setErrorCode(err C.int) {
 	errCode = int(err)
-} 
+}
 
 //export undo
 func undo() C.int {
@@ -36,28 +36,28 @@ func redo() C.int {
 }
 
 //export startGroup
-func startGroup(){
+func startGroup() {
 	Iodine.StartGroup()
 }
 
 //export endGroup
-func endGroup(){
+func endGroup() {
 	Iodine.EndGroup()
 }
 
 //export cFree
-func cFree(cs *C.char){
+func cFree(cs *C.char) {
 	C.free(unsafe.Pointer(cs))
 }
 
 //export getErrorMessage
-func getErrorMessage()*C.char{
+func getErrorMessage() *C.char {
 	errorMessage := C.CString(Iodine.GetErrorMessage())
 	return errorMessage
 }
 
 //export getDetailErrorMessage
-func getDetailErrorMessage()*C.char{
+func getDetailErrorMessage() *C.char {
 	errorMessage := C.CString(Iodine.GetDetailErrorMessage())
 	return errorMessage
 }
@@ -200,7 +200,7 @@ func getNodeID(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	ID := Iodine.GetNodeID(netI, nodeI, &errCode)
-	iodineCString :=  C.CString(ID)
+	iodineCString := C.CString(ID)
 	return iodineCString
 }
 
@@ -312,7 +312,6 @@ func getNodeFontPointSize(neti, nodei C.int) C.int {
 	return C.int(err)
 }
 
-
 //export getNodeFontFamily
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -7: node index out of range
@@ -321,10 +320,9 @@ func getNodeFontFamily(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	FontFamily := Iodine.GetNodeFontFamily(netI, nodeI, &errCode)
-	iodineCString :=  C.CString(FontFamily)
+	iodineCString := C.CString(FontFamily)
 	return iodineCString
 }
-
 
 //export getNodeFontStyle
 //getErrorCode() is needed after this function in API
@@ -334,10 +332,9 @@ func getNodeFontStyle(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	FontStyle := Iodine.GetNodeFontStyle(netI, nodeI, &errCode)
-	iodineCString :=  C.CString(FontStyle)
+	iodineCString := C.CString(FontStyle)
 	return iodineCString
 }
-
 
 //export getNodeFontWeight
 //getErrorCode() is needed after this function in API
@@ -347,7 +344,7 @@ func getNodeFontWeight(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	FontWeight := Iodine.GetNodeFontWeight(netI, nodeI, &errCode)
-	iodineCString :=  C.CString(FontWeight)
+	iodineCString := C.CString(FontWeight)
 	return iodineCString
 }
 
@@ -359,10 +356,9 @@ func getNodeFontName(neti, nodei C.int) *C.char {
 	netI := int(neti)
 	nodeI := int(nodei)
 	Name := Iodine.GetNodeFontName(netI, nodeI, &errCode)
-	iodineCString :=  C.CString(Name)
+	iodineCString := C.CString(Name)
 	return iodineCString
 }
-
 
 //export getNodeFontColorRGB
 //getErrorCode() is needed after this function in API
@@ -408,7 +404,6 @@ func setNodeCoordinate(neti, nodei C.int, x, y C.float) C.int {
 	nodeI := int(nodei)
 	x1 := float64(x)
 	y1 := float64(y)
-
 
 	err := Iodine.SetNodeCoordinate(netI, nodeI, x1, y1)
 	return C.int(err)
@@ -492,7 +487,6 @@ func setNodeOutlineThickness(neti, nodei, thickness C.int) C.int {
 	return C.int(err)
 }
 
-
 //export setNodeFontPointSize
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
@@ -505,7 +499,6 @@ func setNodeFontPointSize(neti, nodei, fontPointSize C.int) C.int {
 	return C.int(err)
 }
 
-
 //export setNodeFontFamily
 //setNodeFontFamily set the fontFamily of a node
 //errCode 5: net index out of range
@@ -517,7 +510,6 @@ func setNodeFontFamily(neti, nodei C.int, fontFamily *C.char) C.int {
 	err := Iodine.SetNodeFontFamily(netI, nodeI, FontFamily)
 	return C.int(err)
 }
-
 
 //export setNodeFontStyle
 //setNodeFontStyle set the fontStyle of a node
@@ -542,6 +534,7 @@ func setNodeFontWeight(neti, nodei C.int, fontWeight *C.char) C.int {
 	err := Iodine.SetNodeFontWeight(netI, nodeI, FontWeight)
 	return C.int(err)
 }
+
 //export setNodeFontName
 //setNodeFontName set the FontName of a node
 //errCode 5: net index out of range
@@ -553,7 +546,6 @@ func setNodeFontName(neti, nodei C.int, fontName *C.char) C.int {
 	err := Iodine.SetNodeFontName(netI, nodeI, FontName)
 	return C.int(err)
 }
-
 
 //export setNodeFontColorRGB
 //errCode: 0:ok, -7: node index out of range
@@ -580,7 +572,6 @@ func setNodeFontColorAlpha(neti, nodei C.int, a C.float) C.int {
 	err := Iodine.SetNodeFontColorAlpha(netI, nodeI, A)
 	return C.int(err)
 }
-
 
 //export createReaction
 //errCode: 0: ok, -3: ID repeat
@@ -634,7 +625,7 @@ func getReactionID(neti, reai C.int) *C.char {
 	netI := int(neti)
 	reaI := int(reai)
 	ID := Iodine.GetReactionID(netI, reaI, &errCode)
-	iodineCString :=  C.CString(ID)
+	iodineCString := C.CString(ID)
 	return iodineCString
 }
 
@@ -646,7 +637,7 @@ func getReactionRateLaw(neti, reai C.int) *C.char {
 	netI := int(neti)
 	reaI := int(reai)
 	rateLaw := Iodine.GetReactionRateLaw(netI, reaI, &errCode)
-	iodineCString :=  C.CString(rateLaw)
+	iodineCString := C.CString(rateLaw)
 	return iodineCString
 }
 
@@ -857,4 +848,3 @@ func setReactionLineThickness(neti, reai, thickness C.int) C.int {
 	return C.int(err)
 }
 func main() {}
-

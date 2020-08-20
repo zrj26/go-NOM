@@ -890,6 +890,248 @@ void test_getNodeOutlineThickness()
     }
 }
 
+void test_getNodeFontPointSize()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    int num1 = Iod_getNodeFontPointSize(0, 0);
+    ERR = ERR && assertIntEqual(num1, 20);
+    num1 = Iod_getNodeFontPointSize(-1, 1);
+    ERR = ERR && assertIntEqual(num1, -5);
+    num1 = Iod_getNodeFontPointSize(3, 1);
+    ERR = ERR && assertIntEqual(num1, -5);
+    num1 = Iod_getNodeFontPointSize(1, -1);
+    ERR = ERR && assertIntEqual(num1, -7);
+    num1 = Iod_getNodeFontPointSize(1, 4);
+    ERR = ERR && assertIntEqual(num1, -7);
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontFamily()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontFamily(0, 0);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "default";
+    ERR = (strcmp(id1, id2) == 0);
+
+    id1 = Iod_getNodeFontFamily(-1, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontFamily(3, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontFamily(0, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    id1 = Iod_getNodeFontFamily(0, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontStyle()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontStyle(0, 0);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "normal";
+    ERR = (strcmp(id1, id2) == 0);
+
+    id1 = Iod_getNodeFontStyle(-1, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontStyle(3, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontStyle(0, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    id1 = Iod_getNodeFontStyle(0, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontWeight()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontWeight(0, 0);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "default";
+    ERR = (strcmp(id1, id2) == 0);
+
+    id1 = Iod_getNodeFontWeight(-1, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontWeight(3, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontWeight(0, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    id1 = Iod_getNodeFontWeight(0, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontName()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontName(0, 0);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "";
+    ERR = (strcmp(id1, id2) == 0);
+
+    id1 = Iod_getNodeFontName(-1, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontName(3, 0);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    id1 = Iod_getNodeFontName(0, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    id1 = Iod_getNodeFontName(0, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontColorRGB()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    unsigned color1 = Iod_getNodeFontColorRGB(0, 0);
+    ERR = ERR && assertIntEqual((int)color1, 0); //hex: '0x0'
+    color1 = Iod_getNodeFontColorRGB(-1, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    color1 = Iod_getNodeFontColorRGB(3, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    color1 = Iod_getNodeFontColorRGB(1, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    color1 = Iod_getNodeFontColorRGB(1, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_getNodeFontColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getNodeFontColorAlpha(0, 0);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01); 
+    alpha1 = Iod_getNodeFontColorAlpha(-1, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getNodeFontColorAlpha(3, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
+    alpha1 = Iod_getNodeFontColorAlpha(1, -1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+    alpha1 = Iod_getNodeFontColorAlpha(1, 4);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
 void test_setNodeID()
 {
     COUNT_FUNCTIONS++;
@@ -1305,6 +1547,380 @@ void test_setNodeOutlineThickness()
    if (ERR == TRUE)
    {
        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontPointSize()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    int t1 = Iod_getNodeFontPointSize(0, 1);
+    ERR = ERR && assertIntEqual(t1, 20);
+    int err = Iod_setNodeFontPointSize(0, 1, 10);
+    ERR = ERR && assertIntEqual(err, 0);
+    t1 = Iod_getNodeFontPointSize(0, 1);
+    ERR = ERR && assertIntEqual(t1, 10);
+
+    err = Iod_setNodeFontPointSize(-1, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontPointSize(3, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontPointSize(0, -1, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontPointSize(0, 4, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontPointSize(0, 1, 0);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontPointSize(0, 1, -1);
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    t1 = Iod_getNodeFontPointSize(0, 1);
+    ERR = ERR && assertIntEqual(t1, 20);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    t1 = Iod_getNodeFontPointSize(0, 1);
+    ERR = ERR && assertIntEqual(t1, 10);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontFamily()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontFamily(0, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "default";
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_setNodeFontFamily(0, 1, "decorative");
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontFamily(0, 1);
+    char *id3 = "decorative";
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    err = Iod_setNodeFontFamily(-1, 1, "default");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontFamily(3, 1, "default");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontFamily(1, -1, "default");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontFamily(1, 1, "default");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontFamily(0, 1, "Default");
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontFamily(0, 1, "node3");
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontFamily(0, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontFamily(0, 1);
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontStyle()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontStyle(0, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "normal";
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_setNodeFontStyle(0, 1, "italic");
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontStyle(0, 1);
+    char *id3 = "italic";
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    err = Iod_setNodeFontStyle(-1, 1, "normal");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontStyle(3, 1, "normal");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontStyle(1, -1, "normal");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontStyle(1, 1, "normal");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontStyle(0, 1, "Normal");
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontStyle(0, 1, "node3");
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontStyle(0, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontStyle(0, 1);
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontWeight()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontWeight(0, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "default";
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_setNodeFontWeight(0, 1, "bold");
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontWeight(0, 1);
+    char *id3 = "bold";
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    err = Iod_setNodeFontWeight(-1, 1, "default");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontWeight(3, 1, "default");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontWeight(1, -1, "default");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontWeight(1, 1, "default");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontWeight(0, 1, "Default");
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontWeight(0, 1, "node3");
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontWeight(0, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontWeight(0, 1);
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontName()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *id1 = Iod_getNodeFontName(0, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *id2 = "";
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_setNodeFontName(0, 1, "123");
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontName(0, 1);
+    char *id3 = "123";
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    err = Iod_setNodeFontName(-1, 1, "");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontName(3, 1, "");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontName(1, -1, "");
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontName(1, 1, "");
+    ERR = ERR && assertIntEqual(err, -7);
+
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontName(0, 1);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && (strcmp(id1, id2) == 0);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    id1 = Iod_getNodeFontName(0, 1);
+    ERR = ERR && (strcmp(id1, id3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontColorRGB()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    unsigned color1 = Iod_getNodeFontColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 0); //hex: '0x0'
+    int err = Iod_setNodeFontColorRGB(0, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeFontColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+
+    err = Iod_setNodeFontColorRGB(-1, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontColorRGB(3, 1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontColorRGB(0, -1, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontColorRGB(0, 4, 30, 180, 160);
+    ERR = ERR && assertIntEqual(err, -7);
+
+    err = Iod_setNodeFontColorRGB(0, 1, -1, 180, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorRGB(0, 1, 256, 180, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorRGB(0, 1, 30, -1, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorRGB(0, 1, 30, 256, 160);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorRGB(0, 1, 30, 180, -1);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorRGB(0, 1, 30, 180, 256);
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeFontColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 0); //hex: '0x0'
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    color1 = Iod_getNodeFontColorRGB(0, 1);
+    ERR = ERR && assertIntEqual((int)color1, 2012320); //hex: '0x1eb4a0'
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setNodeFontColorAlpha()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float alpha1 = Iod_getNodeFontColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    int err = Iod_setNodeFontColorAlpha(0, 1, 0.5);
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeFontColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
+
+    err = Iod_setNodeFontColorAlpha(-1, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontColorAlpha(3, 1, 1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setNodeFontColorAlpha(0, -1, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+    err = Iod_setNodeFontColorAlpha(0, 4, 1);
+    ERR = ERR && assertIntEqual(err, -7);
+
+    err = Iod_setNodeFontColorAlpha(0, 1, -0.1);
+    ERR = ERR && assertIntEqual(err, -12);
+    err = Iod_setNodeFontColorAlpha(0, 1, 1.1);
+    ERR = ERR && assertIntEqual(err, -12);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeFontColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 1, 0.01);
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, 0);
+    alpha1 = Iod_getNodeFontColorAlpha(0, 1);
+    ERR = ERR && Iod_floatEqual(alpha1, 0.5, 0.01);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
     }
     else
     {
@@ -2574,6 +3190,13 @@ void (*func_array2[])() = {
     test_getNodeOutlineColorRGB,
     test_getNodeOutlineColorAlpha,
     test_getNodeOutlineThickness,
+    test_getNodeFontPointSize,
+    test_getNodeFontFamily,
+    test_getNodeFontStyle,
+    test_getNodeFontWeight,
+    test_getNodeFontName,
+    test_getNodeFontColorRGB,
+    test_getNodeFontColorAlpha,
     test_setNodeID,
     test_setNodeCoordinate,
     test_setNodeSize,
@@ -2582,7 +3205,14 @@ void (*func_array2[])() = {
     test_setNodeOutlineColorRGB,
     test_setNodeOutlineColorAlpha,
     test_setNodeOutlineThickness,
-};
+    test_setNodeFontPointSize,
+    test_setNodeFontFamily,
+    test_setNodeFontStyle,
+    test_setNodeFontWeight,
+    test_setNodeFontName,
+    test_setNodeFontColorRGB,
+    test_setNodeFontColorAlpha,
+    };
 
 void (*func_array3[])() = {
     test_createReaction,
