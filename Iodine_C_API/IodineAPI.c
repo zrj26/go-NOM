@@ -36,7 +36,7 @@ typedef unsigned int (*getNodeFillColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeFillColorAlphaProc)(int netIndex, int nodeIndex);
 typedef unsigned int (*getNodeOutlineColorRGBProc)(int netIndex, int nodeIndex);
 typedef float (*getNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex);
-typedef int (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
+typedef float (*getNodeOutlineThicknessProc)(int netIndex, int nodeIndex);
 typedef int (*getNodeFontPointSizeProc)(int netIndex, int nodeIndex);
 typedef char *(*getNodeFontFamilyProc)(int netIndex, int nodeIndex);
 typedef char *(*getNodeFontStyleProc)(int netIndex, int nodeIndex);
@@ -51,7 +51,7 @@ typedef int (*setNodeFillColorRGBProc)(int netIndex, int nodeIndex, int R, int G
 typedef int (*setNodeFillColorAlphaProc)(int netIndex, int nodeIndex, float A);
 typedef int (*setNodeOutlineColorRGBProc)(int netIndex, int nodeIndex, int R, int G, int B);
 typedef int (*setNodeOutlineColorAlphaProc)(int netIndex, int nodeIndex, float A);
-typedef int (*setNodeOutlineThicknessProc)(int netIndex, int nodeIndex, int thickness);
+typedef int (*setNodeOutlineThicknessProc)(int netIndex, int nodeIndex, float thickness);
 typedef int (*setNodeFontPointSizeProc)(int netIndex, int nodeIndex, int fontPointSize);
 typedef int (*setNodeFontFamilyProc)(int netIndex, int nodeIndex, const char *fontFamily);
 typedef int (*setNodeFontStyleProc)(int netIndex, int nodeIndex, const char *fontStyle);
@@ -68,7 +68,7 @@ typedef char *(*getReactionIDProc)(int netIndex, int reactionIndex);
 typedef char *(*getReactionRateLawProc)(int netIndex, int reactionIndex);
 typedef unsigned int (*getReactionFillColorRGBProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionFillColorAlphaProc)(int netIndex, int reactionIndex);
-typedef int (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
+typedef float (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID);
 typedef float (*getReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID);
 typedef int (*getNumberOfSrcNodesProc)(int netIndex, int reactionIndex);
@@ -80,10 +80,13 @@ typedef int (*addSrcNodeProc)(int netIndex, int reactionIndex, int nodeIndex, fl
 typedef int (*addDestNodeProc)(int netIndex, int reactionIndex, int nodeIndex, float stoich);
 typedef int (*deleteSrcNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
 typedef int (*deleteDestNodeProc)(int netIndex, int reactionIndex, const char *nodeID);
+typedef int (*setReactionIDProc)(int netIndex, int reactionIndex, const char *newID);
 typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateLaw);
+typedef int (*setReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID, float newStoich);
+typedef int (*setReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID, float newStoich);
 typedef int (*setReactionFillColorRGBProc)(int netIndex, int reactionIndex, int R, int G, int B);
 typedef int (*setReactionFillColorAlphaProc)(int netIndex, int reactionIndex, float A);
-typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, int thickness);
+typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, float thickness);
 
 getErrorCodeProc Iod_getErrorCode;
 setErrorCodeProc setErrorCode;
@@ -162,7 +165,10 @@ addSrcNodeProc Iod_addSrcNode;
 addDestNodeProc Iod_addDestNode;
 deleteSrcNodeProc Iod_deleteSrcNode;
 deleteDestNodeProc Iod_deleteDestNode;
+setReactionIDProc Iod_setReactionID;
 setRateLawProc Iod_setRateLaw;
+setReactionSrcNodeStoichProc Iod_setReactionSrcNodeStoich;
+setReactionDestNodeStoichProc Iod_setReactionDestNodeStoich;
 setReactionFillColorRGBProc Iod_setReactionFillColorRGB;
 setReactionFillColorAlphaProc Iod_setReactionFillColorAlpha;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
@@ -572,8 +578,23 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
+    Iod_setReactionID = (setReactionIDProc)GetProcAddress(Iod_hinstLib, "setReactionID");
+    if (Iod_setReactionID == NULL)
+    {
+        return -13;
+    }
     Iod_setRateLaw = (setRateLawProc)GetProcAddress(Iod_hinstLib, "setRateLaw");
     if (Iod_setRateLaw == NULL)
+    {
+        return -13;
+    }
+    Iod_setReactionSrcNodeStoich = (setReactionSrcNodeStoichProc)GetProcAddress(Iod_hinstLib, "setReactionSrcNodeStoich");
+    if (Iod_setReactionSrcNodeStoich == NULL)
+    {
+        return -13;
+    }
+    Iod_setReactionDestNodeStoich = (setReactionDestNodeStoichProc)GetProcAddress(Iod_hinstLib, "setReactionDestNodeStoich");
+    if (Iod_setReactionDestNodeStoich == NULL)
     {
         return -13;
     }

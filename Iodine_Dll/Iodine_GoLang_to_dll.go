@@ -295,11 +295,11 @@ func getNodeOutlineColorAlpha(neti, nodei C.int) C.float {
 //export getNodeOutlineThickness
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
-func getNodeOutlineThickness(neti, nodei C.int) C.int {
+func getNodeOutlineThickness(neti, nodei C.int) C.float {
 	netI := int(neti)
 	nodeI := int(nodei)
-	err := Iodine.GetNodeOutlineThickness(netI, nodeI)
-	return C.int(err)
+	thickness := Iodine.GetNodeOutlineThickness(netI, nodeI, &errCode)
+	return C.float(thickness)
 }
 
 //export getNodeFontPointSize
@@ -479,10 +479,10 @@ func setNodeOutlineColorAlpha(neti, nodei C.int, a C.float) C.int {
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 //-12: Variable out of range
-func setNodeOutlineThickness(neti, nodei, thickness C.int) C.int {
+func setNodeOutlineThickness(neti, nodei C.int, thickness C.float) C.int {
 	netI := int(neti)
 	nodeI := int(nodei)
-	Thickness := int(thickness)
+	Thickness := float64(thickness)
 	err := Iodine.SetNodeOutlineThickness(netI, nodeI, Thickness)
 	return C.int(err)
 }
@@ -667,11 +667,11 @@ func getReactionFillColorAlpha(neti, reai C.int) C.float {
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-func getReactionLineThickness(neti, reai C.int) C.int {
+func getReactionLineThickness(neti, reai C.int) C.float {
 	netI := int(neti)
 	reaI := int(reai)
-	thickness := Iodine.GetReactionLineThickness(netI, reaI)
-	return C.int(thickness)
+	thickness := Iodine.GetReactionLineThickness(netI, reaI, &errCode)
+	return C.float(thickness)
 }
 
 //export getReactionSrcNodeStoich
@@ -743,7 +743,7 @@ func getListOfReactionDestNodes(neti, reai C.int) C.int {
 }
 
 //export getReactionNodeID
-//used in python APi functions getListOfReactionSrc/DestNodes()
+//used in APi functions getListOfReactionSrc/DestNodes()
 func getReactionNodeID(index int) *C.char {
 	id := nodeList[index]
 	iodineCString := C.CString(id)
@@ -802,6 +802,20 @@ func deleteDestNode(neti, reai C.int, destNodeid *C.char) C.int {
 	return C.int(err)
 }
 
+
+//export setReactionID
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+//-3: id repeat
+func setReactionID(neti, reai C.int, newID  *C.char) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	NewID := C.GoString(newID)
+	err := Iodine.SetReactionID(netI, reaI, NewID)
+	return C.int(err)
+}
+
+
 //export setRateLaw
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
@@ -810,6 +824,33 @@ func setRateLaw(neti, reai C.int, ratelaw *C.char) C.int {
 	reaI := int(reai)
 	rateLaw := C.GoString(ratelaw)
 	err := Iodine.SetRateLaw(netI, reaI, rateLaw)
+	return C.int(err)
+}
+
+
+//export setReactionSrcNodeStoich
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+func setReactionSrcNodeStoich(neti, reai C.int, srcNodeID *C.char, newStoich C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	SrcNodeID := C.GoString(srcNodeID)
+	NewStoich := float64(newStoich)
+	err := Iodine.SetReactionSrcNodeStoich(netI, reaI, SrcNodeID, NewStoich)
+	return C.int(err)
+}
+
+//export setReactionDestNodeStoich
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+func setReactionDestNodeStoich(neti, reai C.int, destNodeID *C.char, newStoich C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	DestNodeID := C.GoString(destNodeID)
+	NewStoich := float64(newStoich)
+	err := Iodine.SetReactionDestNodeStoich(netI, reaI, DestNodeID, NewStoich)
 	return C.int(err)
 }
 
@@ -840,11 +881,13 @@ func setReactionFillColorAlpha(neti, reai C.int, a C.float) C.int {
 //export setReactionLineThickness
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
-func setReactionLineThickness(neti, reai, thickness C.int) C.int {
+func setReactionLineThickness(neti, reai C.int, thickness C.float) C.int {
 	netI := int(neti)
 	reaI := int(reai)
-	Thickness := int(thickness)
+	Thickness := float64(thickness)
 	err := Iodine.SetReactionLineThickness(netI, reaI, Thickness)
 	return C.int(err)
 }
+
+
 func main() {}

@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 7 "Iodine_GoLang_to_dll.go"
+#line 6 "Iodine_GoLang_to_dll.go"
  #include <stdio.h>
  #include <stdlib.h>
 
@@ -221,7 +221,7 @@ extern float getNodeOutlineColorAlpha(int p0, int p1);
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
 
-extern int getNodeOutlineThickness(int p0, int p1);
+extern float getNodeOutlineThickness(int p0, int p1);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
@@ -311,7 +311,7 @@ extern int setNodeOutlineColorAlpha(int p0, int p1, float p2);
 //-5: net index out of range
 //-12: Variable out of range
 
-extern int setNodeOutlineThickness(int p0, int p1, int p2);
+extern int setNodeOutlineThickness(int p0, int p1, float p2);
 
 //errCode: 0:ok, -7: node index out of range
 //-5: net index out of range
@@ -404,7 +404,7 @@ extern float getReactionFillColorAlpha(int p0, int p1);
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
-extern int getReactionLineThickness(int p0, int p1);
+extern float getReactionLineThickness(int p0, int p1);
 
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
@@ -440,7 +440,7 @@ extern int getListOfReactionSrcNodes(int p0, int p1);
 
 extern int getListOfReactionDestNodes(int p0, int p1);
 
-//used in python APi functions getListOfReactionSrc/DestNodes()
+//used in APi functions getListOfReactionSrc/DestNodes()
 
 extern char* getReactionNodeID(GoInt p0);
 
@@ -472,8 +472,26 @@ extern int deleteDestNode(int p0, int p1, char* p2);
 
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
+//-3: id repeat
+
+extern int setReactionID(int p0, int p1, char* p2);
+
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
 
 extern int setRateLaw(int p0, int p1, char* p2);
+
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+
+extern int setReactionSrcNodeStoich(int p0, int p1, char* p2, float p3);
+
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+
+extern int setReactionDestNodeStoich(int p0, int p1, char* p2, float p3);
 
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
@@ -488,7 +506,7 @@ extern int setReactionFillColorAlpha(int p0, int p1, float p2);
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
-extern int setReactionLineThickness(int p0, int p1, int p2);
+extern int setReactionLineThickness(int p0, int p1, float p2);
 
 #ifdef __cplusplus
 }

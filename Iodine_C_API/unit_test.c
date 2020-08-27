@@ -835,7 +835,7 @@ void test_getNodeOutlineColorAlpha()
     bool ERR = TRUE;
 
     float alpha1 = Iod_getNodeOutlineColorAlpha(0, 0);
-    ERR = ERR && Iod_floatEqual(alpha1,1, 0.01); //hex: '0xff6450'
+    ERR = ERR && Iod_floatEqual(alpha1,1, 0.01); 
     alpha1 = Iod_getNodeOutlineColorAlpha(-1, 1);
     int err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
@@ -867,16 +867,20 @@ void test_getNodeOutlineThickness()
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    int num1 = Iod_getNodeOutlineThickness(0, 0);
-    ERR = ERR && assertIntEqual(num1, 3);
+    float num1 = Iod_getNodeOutlineThickness(0, 0);
+    ERR = ERR && Iod_floatEqual(num1, 3.0, 0.01);
     num1 = Iod_getNodeOutlineThickness(-1, 1);
-    ERR = ERR && assertIntEqual(num1, -5);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
     num1 = Iod_getNodeOutlineThickness(3, 1);
-    ERR = ERR && assertIntEqual(num1, -5);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -5);
     num1 = Iod_getNodeOutlineThickness(1, -1);
-    ERR = ERR && assertIntEqual(num1, -7);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
     num1 = Iod_getNodeOutlineThickness(1, 4);
-    ERR = ERR && assertIntEqual(num1, -7);
+    err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, -7);
     if (ERR == TRUE)
     {
         printf(".");
@@ -1513,24 +1517,24 @@ void test_setNodeOutlineThickness()
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-   int t1 = Iod_getNodeOutlineThickness(0,1);
-   ERR = ERR && assertIntEqual(t1, 3);
-   int err = Iod_setNodeOutlineThickness(0,1,1);
+   float t1 = Iod_getNodeOutlineThickness(0,1);
+   ERR = ERR && Iod_floatEqual(t1, 3.0, 0.01);
+   int err = Iod_setNodeOutlineThickness(0, 1, 1.0);
    ERR = ERR && assertIntEqual(err, 0);
    t1 = Iod_getNodeOutlineThickness(0, 1);
-   ERR = ERR && assertIntEqual(t1, 1);
+   ERR = ERR && Iod_floatEqual(t1, 1.0, 0.01);
 
-   err = Iod_setNodeOutlineThickness(-1, 1, 1);
+   err = Iod_setNodeOutlineThickness(-1, 1, 1.0);
    ERR = ERR && assertIntEqual(err, -5);
-   err = Iod_setNodeOutlineThickness(3, 1, 1);
+   err = Iod_setNodeOutlineThickness(3, 1, 1.0);
    ERR = ERR && assertIntEqual(err, -5);
-   err = Iod_setNodeOutlineThickness(0, -1, 1);
+   err = Iod_setNodeOutlineThickness(0, -1, 1.0);
    ERR = ERR && assertIntEqual(err, -7);
-   err = Iod_setNodeOutlineThickness(0, 4, 1);
+   err = Iod_setNodeOutlineThickness(0, 4, 1.0);
    ERR = ERR && assertIntEqual(err, -7);
-   err = Iod_setNodeOutlineThickness(0, 1, 0);
+   err = Iod_setNodeOutlineThickness(0, 1, 0.0);
    ERR = ERR && assertIntEqual(err, -12);
-   err = Iod_setNodeOutlineThickness(0, 1, -1);
+   err = Iod_setNodeOutlineThickness(0, 1, -1.0);
    ERR = ERR && assertIntEqual(err, -12);
 
    err = Iod_redo();
@@ -1538,11 +1542,11 @@ void test_setNodeOutlineThickness()
    err = Iod_undo();
    ERR = ERR && assertIntEqual(err, 0);
    t1 = Iod_getNodeOutlineThickness(0, 1);
-   ERR = ERR && assertIntEqual(t1, 3);
+   ERR = ERR && Iod_floatEqual(t1, 3.0, 0.01);
    err = Iod_redo();
    ERR = ERR && assertIntEqual(err, 0);
    t1 = Iod_getNodeOutlineThickness(0, 1);
-   ERR = ERR && assertIntEqual(t1, 1);
+   ERR = ERR && Iod_floatEqual(t1, 1.0, 0.01);
 
    if (ERR == TRUE)
    {
@@ -2339,15 +2343,19 @@ void test_getReactionLineThickness()
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    int t1 = Iod_getReactionLineThickness(0,0);
-    ERR = ERR && assertIntEqual(t1, 3);
-    int err = Iod_getReactionLineThickness(-1, 0);
+    float t1 = Iod_getReactionLineThickness(0,0);
+    ERR = ERR && Iod_floatEqual(t1, 3.0, 0.01);
+    t1 = Iod_getReactionLineThickness(-1, 0);
+    int err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_getReactionLineThickness(1, 0);
+    t1 = Iod_getReactionLineThickness(1, 0);
+    err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_getReactionLineThickness(0, -1);
+    t1 = Iod_getReactionLineThickness(0, -1);
+    err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -6);
-    err = Iod_getReactionLineThickness(0, 2);
+    t1 = Iod_getReactionLineThickness(0, 2);
+    err = Iod_getErrorCode();
     ERR = ERR && assertIntEqual(err, -6);
 
     if (ERR == TRUE)
@@ -2892,6 +2900,56 @@ void test_deleteDestNode()
     }
 }
 
+void test_setReactionID()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    char *str1 = Iod_getReactionID(0, 1);
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    char *str2 = "Rea2";
+    ERR = ERR && (strcmp(str1, str2) == 0);
+    err = Iod_setReactionID(0, 1,  "ABC");
+    ERR = ERR && assertIntEqual(err, 0);
+    char *str3 = "ABC";
+    str1 = Iod_getReactionID(0, 1);
+    ERR = ERR && (strcmp(str1, str3) == 0);
+
+    err = Iod_setReactionID(-1, 1, "ABC");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionID(1, 1, "ABC");
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionID(0, -1, "ABC");
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionID(0, 2, "ABC");
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionID(0, 1, "Rea1");
+    ERR = ERR && assertIntEqual(err, -3);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    str1 = Iod_getReactionID(0, 1);
+    ERR = ERR && (strcmp(str1, str2) == 0);
+    err = Iod_redo();
+    str1 = Iod_getReactionID(0, 1);
+    ERR = ERR && (strcmp(str1, str3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
 void test_setRateLaw()
 {
     COUNT_FUNCTIONS++;
@@ -2902,7 +2960,7 @@ void test_setRateLaw()
     ERR = ERR && assertIntEqual(err, 0);
     char *str2 = "k2*A";
     ERR = ERR && (strcmp(str1, str2) == 0);
-    err = Iod_setRateLaw(0, 1,  "ABC");
+    err = Iod_setRateLaw(0, 1, "ABC");
     ERR = ERR && assertIntEqual(err, 0);
     char *str3 = "ABC";
     str1 = Iod_getReactionRateLaw(0, 1);
@@ -2926,6 +2984,110 @@ void test_setRateLaw()
     err = Iod_redo();
     str1 = Iod_getReactionRateLaw(0, 1);
     ERR = ERR && (strcmp(str1, str3) == 0);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setReactionSrcNodeStoich()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float s1 = Iod_getReactionSrcNodeStoich(0, 0, "node1");
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && Iod_floatEqual(s1, 1.1, 0.01);
+    err = Iod_setReactionSrcNodeStoich(0, 0, "node1", 3.1);
+    ERR = ERR && assertIntEqual(err, 0);
+    s1 = Iod_getReactionSrcNodeStoich(0, 0, "node1");
+    ERR = ERR && Iod_floatEqual(s1, 3.1, 0.01);
+
+    err = Iod_setReactionSrcNodeStoich(-1, 0, "node1", 3.1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionSrcNodeStoich(1, 0, "node1", 3.1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionSrcNodeStoich(0, -1, "node1", 3.1);
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionSrcNodeStoich(0, 2, "node1", 3.1);
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionSrcNodeStoich(0, 0, "Node1", 3.1);
+    ERR = ERR && assertIntEqual(err, -2);
+    err = Iod_setReactionSrcNodeStoich(0, 0, "node1", 0.0);
+    ERR = ERR && assertIntEqual(err, -8);
+    err = Iod_setReactionSrcNodeStoich(0, 0, "node1", -3.1);
+    ERR = ERR && assertIntEqual(err, -8);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    s1 = Iod_getReactionSrcNodeStoich(0, 0, "node1");
+    ERR = ERR && Iod_floatEqual(s1, 1.1, 0.01);
+    err = Iod_redo();
+    s1 = Iod_getReactionSrcNodeStoich(0, 0, "node1");
+    ERR = ERR && Iod_floatEqual(s1, 3.1, 0.01);
+
+    if (ERR == TRUE)
+    {
+        printf(".");
+    }
+    else
+    {
+        printf("X");
+        COUNT_FAIL++;
+        *p = (char *)__FUNCTION__;
+        p++;
+    }
+}
+
+void test_setReactionDestNodeStoich()
+{
+    COUNT_FUNCTIONS++;
+    bool ERR = TRUE;
+
+    float s1 = Iod_getReactionDestNodeStoich(0, 0, "node3");
+    int err = Iod_getErrorCode();
+    ERR = ERR && assertIntEqual(err, 0);
+    ERR = ERR && Iod_floatEqual(s1, 3.3, 0.01);
+    err = Iod_setReactionDestNodeStoich(0, 0, "node3", 3.1);
+    ERR = ERR && assertIntEqual(err, 0);
+    s1 = Iod_getReactionDestNodeStoich(0, 0, "node3");
+    ERR = ERR && Iod_floatEqual(s1, 3.1, 0.01);
+
+    err = Iod_setReactionDestNodeStoich(-1, 0, "node3", 3.1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionDestNodeStoich(1, 0, "node3", 3.1);
+    ERR = ERR && assertIntEqual(err, -5);
+    err = Iod_setReactionDestNodeStoich(0, -1, "node3", 3.1);
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionDestNodeStoich(0, 2, "node3", 3.1);
+    ERR = ERR && assertIntEqual(err, -6);
+    err = Iod_setReactionDestNodeStoich(0, 0, "Node3", 3.1);
+    ERR = ERR && assertIntEqual(err, -2);
+    err = Iod_setReactionDestNodeStoich(0, 0, "node3", 0.0);
+    ERR = ERR && assertIntEqual(err, -8);
+    err = Iod_setReactionDestNodeStoich(0, 0, "node3", -3.1);
+    ERR = ERR && assertIntEqual(err, -8);
+
+    err = Iod_redo();
+    ERR = ERR && assertIntEqual(err, -9);
+    err = Iod_undo();
+    ERR = ERR && assertIntEqual(err, 0);
+    s1 = Iod_getReactionDestNodeStoich(0, 0, "node3");
+    ERR = ERR && Iod_floatEqual(s1, 3.3, 0.01);
+    err = Iod_redo();
+    s1 = Iod_getReactionDestNodeStoich(0, 0, "node3");
+    ERR = ERR && Iod_floatEqual(s1, 3.1, 0.01);
 
     if (ERR == TRUE)
     {
@@ -3053,24 +3215,24 @@ void test_setReactionLineThickness()
     COUNT_FUNCTIONS++;
     bool ERR = TRUE;
 
-    int t1= Iod_getReactionLineThickness(0,1);
-    ERR = ERR && assertIntEqual(t1, 3);
-    int err = Iod_setReactionLineThickness(0,1,1);
+    float t1= Iod_getReactionLineThickness(0,1);
+    ERR = ERR && Iod_floatEqual(t1, 3.0, 0.01);
+    int err = Iod_setReactionLineThickness(0, 1, 1.0);
     ERR = ERR && assertIntEqual(err, 0);
     t1 = Iod_getReactionLineThickness(0, 1);
-    ERR = ERR && assertIntEqual(t1, 1);
+    ERR = ERR && Iod_floatEqual(t1, 1.0, 0.01);
 
-    err = Iod_setReactionLineThickness(-1, 1, 1);
+    err = Iod_setReactionLineThickness(-1, 1, 1.0);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setReactionLineThickness(3, 1, 1);
+    err = Iod_setReactionLineThickness(3, 1, 1.0);
     ERR = ERR && assertIntEqual(err, -5);
-    err = Iod_setReactionLineThickness(0, -1, 1);
+    err = Iod_setReactionLineThickness(0, -1, 1.0);
     ERR = ERR && assertIntEqual(err, -6);
-    err = Iod_setReactionLineThickness(0, 4, 1);
+    err = Iod_setReactionLineThickness(0, 4, 1.0);
     ERR = ERR && assertIntEqual(err, -6);
-    err = Iod_setReactionLineThickness(0, 1, 0);
+    err = Iod_setReactionLineThickness(0, 1, 0.0);
     ERR = ERR && assertIntEqual(err, -12);
-    err = Iod_setReactionLineThickness(0, 1, -1);
+    err = Iod_setReactionLineThickness(0, 1, -1.0);
     ERR = ERR && assertIntEqual(err, -12);
 
     err = Iod_redo();
@@ -3078,11 +3240,11 @@ void test_setReactionLineThickness()
     err = Iod_undo();
     ERR = ERR && assertIntEqual(err, 0);
     t1 = Iod_getReactionLineThickness(0, 1);
-    ERR = ERR && assertIntEqual(t1, 3);
+    ERR = ERR && Iod_floatEqual(t1, 3.0, 0.01);
     err = Iod_redo();
     ERR = ERR && assertIntEqual(err, 0);
     t1 = Iod_getReactionLineThickness(0, 1);
-    ERR = ERR && assertIntEqual(t1, 1);
+    ERR = ERR && Iod_floatEqual(t1, 1.0, 0.01);
 
     if (ERR == TRUE)
     {
@@ -3242,7 +3404,10 @@ void (*func_array4[])() = {
     test_addDestNode,
     test_deleteSrcNode,
     test_deleteDestNode,
+    test_setReactionID,
     test_setRateLaw,
+    test_setReactionSrcNodeStoich,
+    test_setReactionDestNodeStoich,
     test_setReactionFillColorRGB,
     test_setReactionFillColorAlpha,
     test_setReactionLineThickness,
