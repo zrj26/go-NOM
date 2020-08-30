@@ -69,8 +69,14 @@ typedef char *(*getReactionRateLawProc)(int netIndex, int reactionIndex);
 typedef unsigned int (*getReactionFillColorRGBProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionFillColorAlphaProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionLineThicknessProc)(int netIndex, int reactionIndex);
+typedef float (*getReactionCenterHandleXProc)(int netIndex, int reactionIndex);
+typedef float (*getReactionCenterHandleYProc)(int netIndex, int reactionIndex);
 typedef float (*getReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID);
 typedef float (*getReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID);
+typedef float (*getReactionSrcNodeHandleXProc)(int netIndex, int reactionIndex, const char *srcNodeID);
+typedef float (*getReactionSrcNodeHandleYProc)(int netIndex, int reactionIndex, const char *srcNodeID);
+typedef float (*getReactionDestNodeHandleXProc)(int netIndex, int reactionIndex, const char *destNodeID);
+typedef float (*getReactionDestNodeHandleYProc)(int netIndex, int reactionIndex, const char *destNodeID);
 typedef int (*getNumberOfSrcNodesProc)(int netIndex, int reactionIndex);
 typedef int (*getNumberOfDestNodesProc)(int netIndex, int reactionIndex);
 typedef int (*getListOfReactionSrcNodesProc)(int netIndex, int reactionIndex);
@@ -84,9 +90,12 @@ typedef int (*setReactionIDProc)(int netIndex, int reactionIndex, const char *ne
 typedef int (*setRateLawProc)(int netIndex, int reactionIndex, const char *rateLaw);
 typedef int (*setReactionSrcNodeStoichProc)(int netIndex, int reactionIndex, const char *srcNodeID, float newStoich);
 typedef int (*setReactionDestNodeStoichProc)(int netIndex, int reactionIndex, const char *destNodeID, float newStoich);
+typedef int (*setReactionSrcNodeHandlePositionProc)(int netIndex, int reactionIndex, const char *srcNodeID, float handleX, float handleY);
+typedef int (*setReactionDestNodeHandlePositionProc)(int netIndex, int reactionIndex, const char *destNodeID, float handleX, float handleY);
 typedef int (*setReactionFillColorRGBProc)(int netIndex, int reactionIndex, int R, int G, int B);
 typedef int (*setReactionFillColorAlphaProc)(int netIndex, int reactionIndex, float A);
 typedef int (*setReactionLineThicknessProc)(int netIndex, int reactionIndex, float thickness);
+typedef int (*setReactionCenterHandlePositionProc)(int netIndex, int reactionIndex, float thickness);
 
 getErrorCodeProc Iod_getErrorCode;
 setErrorCodeProc setErrorCode;
@@ -154,8 +163,14 @@ getReactionRateLawProc Iod_getReactionRateLaw;
 getReactionFillColorRGBProc Iod_getReactionFillColorRGB;
 getReactionFillColorAlphaProc Iod_getReactionFillColorAlpha;
 getReactionLineThicknessProc Iod_getReactionLineThickness;
+getReactionCenterHandleXProc Iod_getReactionCenterHandleX;
+getReactionCenterHandleYProc Iod_getReactionCenterHandleY;
 getReactionSrcNodeStoichProc Iod_getReactionSrcNodeStoich;
 getReactionDestNodeStoichProc Iod_getReactionDestNodeStoich;
+getReactionSrcNodeHandleXProc Iod_getReactionSrcNodeHandleX;
+getReactionSrcNodeHandleYProc Iod_getReactionSrcNodeHandleY;
+getReactionDestNodeHandleXProc Iod_getReactionDestNodeHandleX;
+getReactionDestNodeHandleYProc Iod_getReactionDestNodeHandleY;
 getNumberOfSrcNodesProc Iod_getNumberOfSrcNodes;
 getNumberOfDestNodesProc Iod_getNumberOfDestNodes;
 getListOfReactionSrcNodesProc getListOfReactionSrcNodes;
@@ -169,9 +184,12 @@ setReactionIDProc Iod_setReactionID;
 setRateLawProc Iod_setRateLaw;
 setReactionSrcNodeStoichProc Iod_setReactionSrcNodeStoich;
 setReactionDestNodeStoichProc Iod_setReactionDestNodeStoich;
+setReactionSrcNodeHandlePositionProc Iod_setReactionSrcNodeHandlePosition;
+setReactionDestNodeHandlePositionProc Iod_setReactionDestNodeHandlePosition;
 setReactionFillColorRGBProc Iod_setReactionFillColorRGB;
 setReactionFillColorAlphaProc Iod_setReactionFillColorAlpha;
 setReactionLineThicknessProc Iod_setReactionLineThickness;
+setReactionCenterHandlePositionProc Iod_setReactionCenterHandlePosition;
 
 typedef struct
 {
@@ -523,6 +541,16 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
+    Iod_getReactionCenterHandleX = (getReactionCenterHandleXProc)GetProcAddress(Iod_hinstLib, "getReactionCenterHandleX");
+    if (Iod_getReactionCenterHandleX == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionCenterHandleY = (getReactionCenterHandleYProc)GetProcAddress(Iod_hinstLib, "getReactionCenterHandleY");
+    if (Iod_getReactionCenterHandleY == NULL)
+    {
+        return -13;
+    }
     Iod_getReactionSrcNodeStoich = (getReactionSrcNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionSrcNodeStoich");
     if (Iod_getReactionSrcNodeStoich == NULL)
     {
@@ -530,6 +558,26 @@ int loadDll(const char *pathToDll)
     }
     Iod_getReactionDestNodeStoich = (getReactionDestNodeStoichProc)GetProcAddress(Iod_hinstLib, "getReactionDestNodeStoich");
     if (Iod_getReactionDestNodeStoich == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionSrcNodeHandleX = (getReactionSrcNodeHandleXProc)GetProcAddress(Iod_hinstLib, "getReactionSrcNodeHandleX");
+    if (Iod_getReactionSrcNodeHandleX == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionSrcNodeHandleY = (getReactionSrcNodeHandleYProc)GetProcAddress(Iod_hinstLib, "getReactionSrcNodeHandleY");
+    if (Iod_getReactionSrcNodeHandleY == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionDestNodeHandleX = (getReactionDestNodeHandleXProc)GetProcAddress(Iod_hinstLib, "getReactionDestNodeHandleX");
+    if (Iod_getReactionDestNodeHandleX == NULL)
+    {
+        return -13;
+    }
+    Iod_getReactionDestNodeHandleY = (getReactionDestNodeHandleYProc)GetProcAddress(Iod_hinstLib, "getReactionDestNodeHandleY");
+    if (Iod_getReactionDestNodeHandleY == NULL)
     {
         return -13;
     }
@@ -598,6 +646,16 @@ int loadDll(const char *pathToDll)
     {
         return -13;
     }
+    Iod_setReactionSrcNodeHandlePosition = (setReactionSrcNodeHandlePositionProc)GetProcAddress(Iod_hinstLib, "setReactionSrcNodeHandlePosition");
+    if (Iod_setReactionSrcNodeHandlePosition == NULL)
+    {
+        return -13;
+    }
+    Iod_setReactionDestNodeHandlePosition = (setReactionDestNodeHandlePositionProc)GetProcAddress(Iod_hinstLib, "setReactionDestNodeHandlePosition");
+    if (Iod_setReactionDestNodeHandlePosition == NULL)
+    {
+        return -13;
+    }
     Iod_setReactionFillColorRGB = (setReactionFillColorRGBProc)GetProcAddress(Iod_hinstLib, "setReactionFillColorRGB");
     if (Iod_setReactionFillColorRGB == NULL)
     {
@@ -610,6 +668,11 @@ int loadDll(const char *pathToDll)
     }
     Iod_setReactionLineThickness = (setReactionLineThicknessProc)GetProcAddress(Iod_hinstLib, "setReactionLineThickness");
     if (Iod_setReactionLineThickness == NULL)
+    {
+        return -13;
+    }
+    Iod_setReactionCenterHandlePosition = (setReactionCenterHandlePositionProc)GetProcAddress(Iod_hinstLib, "setReactionCenterHandlePosition");
+    if (Iod_setReactionCenterHandlePosition == NULL)
     {
         return -13;
     }

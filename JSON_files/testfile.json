@@ -195,12 +195,28 @@
             "rateLaw": "k1*A",
             "species": [
                 {
-                    "node1": 1.100000023841858,
-                    "node2": 2.200000047683716
+                    "node1": {
+                        "stoich": 1.100000023841858,
+                        "handleX": 0,
+                        "handleY": 0
+                    },
+                    "node2": {
+                        "stoich": 2.200000047683716,
+                        "handleX": 0,
+                        "handleY": 0
+                    }
                 },
                 {
-                    "node3": 3.299999952316284,
-                    "node4": 4.400000095367432
+                    "node3": {
+                        "stoich": 3.299999952316284,
+                        "handleX": 0,
+                        "handleY": 0
+                    },
+                    "node4": {
+                        "stoich": 4.400000095367432,
+                        "handleX": 0,
+                        "handleY": 0
+                    }
                 }
             ],
             "fillColor": {
@@ -209,19 +225,37 @@
                 "B": 80,
                 "A": 255
             },
-            "thickness": 3
+            "thickness": 3,
+            "centerHandleX": 0,
+            "centerHandleY": 0
         },
         {
             "id": "Rea2",
             "rateLaw": "k2*A",
             "species": [
                 {
-                    "node2": 2.0999999046325684,
-                    "node4": 5.199999809265137
+                    "node2": {
+                        "stoich": 5.199999809265137,
+                        "handleX": 0,
+                        "handleY": 0
+                    },
+                    "node4": {
+                        "stoich": 2.0999999046325684,
+                        "handleX": 0,
+                        "handleY": 0
+                    }
                 },
                 {
-                    "node1": 8.300000190734863,
-                    "node3": 7.400000095367432
+                    "node1": {
+                        "stoich": 7.400000095367432,
+                        "handleX": 0,
+                        "handleY": 0
+                    },
+                    "node3": {
+                        "stoich": 8.300000190734863,
+                        "handleX": 0,
+                        "handleY": 0
+                    }
                 }
             ],
             "fillColor": {
@@ -230,7 +264,9 @@
                 "B": 80,
                 "A": 255
             },
-            "thickness": 3
+            "thickness": 3,
+            "centerHandleX": 0,
+            "centerHandleY": 0
         }
     ]
 }

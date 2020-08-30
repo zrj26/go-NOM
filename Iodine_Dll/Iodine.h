@@ -407,6 +407,18 @@ extern float getReactionFillColorAlpha(int p0, int p1);
 extern float getReactionLineThickness(int p0, int p1);
 
 //getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+
+extern float getReactionCenterHandleX(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+
+extern float getReactionCenterHandleY(int p0, int p1);
+
+//getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
 //-5: net index out of range, -2: name not found
 
@@ -417,6 +429,30 @@ extern float getReactionSrcNodeStoich(int p0, int p1, char* p2);
 //-5: net index out of range, -2: name not found
 
 extern float getReactionDestNodeStoich(int p0, int p1, char* p2);
+
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+
+extern float getReactionSrcNodeHandleX(int p0, int p1, char* p2);
+
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+
+extern float getReactionSrcNodeHandleY(int p0, int p1, char* p2);
+
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+
+extern float getReactionDestNodeHandleX(int p0, int p1, char* p2);
+
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+
+extern float getReactionDestNodeHandleY(int p0, int p1, char* p2);
 
 //return: non-negative int: ok, -6: reaction index out of range
 //-5: net index out of range
@@ -493,6 +529,18 @@ extern int setReactionSrcNodeStoich(int p0, int p1, char* p2, float p3);
 
 extern int setReactionDestNodeStoich(int p0, int p1, char* p2, float p3);
 
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+
+extern int setReactionSrcNodeHandlePosition(int p0, int p1, char* p2, float p3, float p4);
+
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+
+extern int setReactionDestNodeHandlePosition(int p0, int p1, char* p2, float p3, float p4);
+
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 
@@ -507,6 +555,12 @@ extern int setReactionFillColorAlpha(int p0, int p1, float p2);
 //-5: net index out of range
 
 extern int setReactionLineThickness(int p0, int p1, float p2);
+
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+//-12: Variable out of range
+
+extern int setReactionCenterHandlePosition(int p0, int p1, float p2, float p3);
 
 #ifdef __cplusplus
 }

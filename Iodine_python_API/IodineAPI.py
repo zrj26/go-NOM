@@ -77,9 +77,19 @@ libIodine.getReactionRateLaw.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionFillColorRGB.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionFillColorAlpha.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionLineThickness.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getReactionCenterHandleX.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getReactionCenterHandleY.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionSrcNodeStoich.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.getReactionDestNodeStoich.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
+libIodine.getReactionSrcNodeHandleX.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
+libIodine.getReactionSrcNodeHandleY.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
+libIodine.getReactionDestNodeHandleX.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
+libIodine.getReactionDestNodeHandleY.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p]
 libIodine.getNumberOfSrcNodes.argtypes = [
     ctypes.c_int, ctypes.c_int]
@@ -102,12 +112,18 @@ libIodine.setReactionSrcNodeStoich.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_float]
 libIodine.setReactionDestNodeStoich.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_float]
+libIodine.setReactionSrcNodeHandlePosition.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_float, ctypes.c_float]
+libIodine.setReactionDestNodeHandlePosition.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_float, ctypes.c_float]
 libIodine.setReactionFillColorRGB.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int]
 libIodine.setReactionFillColorAlpha.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_float]
 libIodine.setReactionLineThickness.argtypes = [
     ctypes.c_int, ctypes.c_int, ctypes.c_float]
+libIodine.setReactionCenterHandlePosition.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_float, ctypes.c_float]
 
 
 #########################   restype   #########################
@@ -173,8 +189,14 @@ libIodine.getReactionRateLaw.restype = ctypes.c_char_p
 libIodine.getReactionFillColorRGB.restype = ctypes.c_uint32
 libIodine.getReactionFillColorAlpha.restype = ctypes.c_float
 libIodine.getReactionLineThickness.restype = ctypes.c_float
+libIodine.getReactionCenterHandleX.restype = ctypes.c_float
+libIodine.getReactionCenterHandleY.restype = ctypes.c_float
 libIodine.getReactionSrcNodeStoich.restype = ctypes.c_float
 libIodine.getReactionDestNodeStoich.restype = ctypes.c_float
+libIodine.getReactionSrcNodeHandleX.restype = ctypes.c_float
+libIodine.getReactionSrcNodeHandleY.restype = ctypes.c_float
+libIodine.getReactionDestNodeHandleX.restype = ctypes.c_float
+libIodine.getReactionDestNodeHandleY.restype = ctypes.c_float
 libIodine.getNumberOfSrcNodes.restype = ctypes.c_int
 libIodine.getNumberOfDestNodes.restype = ctypes.c_int
 libIodine.getListOfReactionSrcNodes.restype = ctypes.c_int
@@ -188,9 +210,12 @@ libIodine.setReactionID.restype = ctypes.c_int
 libIodine.setRateLaw.restype = ctypes.c_int
 libIodine.setReactionSrcNodeStoich.restype = ctypes.c_int
 libIodine.setReactionDestNodeStoich.restype = ctypes.c_int
+libIodine.setReactionSrcNodeHandlePosition.restype = ctypes.c_int
+libIodine.setReactionDestNodeHandlePosition.restype = ctypes.c_int
 libIodine.setReactionFillColorRGB.restype = ctypes.c_int
 libIodine.setReactionFillColorAlpha.restype = ctypes.c_int
 libIodine.setReactionLineThickness.restype = ctypes.c_int
+libIodine.setReactionCenterHandlePosition.restype = ctypes.c_int
 
 
 class Error(Exception):
@@ -779,6 +804,17 @@ def getReactionLineThickness(neti: int, reai: int):
         return thickness
 
 
+def getReactionCenterHandlePosition(neti: int, reai: int):
+    handleX = round(libIodine.getReactionCenterHandleX(neti, reai),2)
+    handleY = round(libIodine.getReactionCenterHandleY(neti, reai),2)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](errorDict[errCode], neti, reai)
+    else:
+        return (handleX, handleY)
+
+
+
 def getReactionSrcNodeStoich(neti: int, reai: int, srcNodeID: str):
     SrcNodeStoich = libIodine.getReactionSrcNodeStoich(
         neti, reai, srcNodeID.encode())
@@ -800,6 +836,31 @@ def getReactionDestNodeStoich(neti: int, reai: int, destNodeID: str):
     else:
         return round(DestNodeStoich, 2)
 
+
+def getReactionSrcNodeHandlePosition(neti: int, reai: int, srcNodeID: str):
+    X = round(libIodine.getReactionSrcNodeHandleX(
+        neti, reai, srcNodeID.encode()), 2)
+    Y = round(libIodine.getReactionSrcNodeHandleY(
+        neti, reai, srcNodeID.encode()), 2)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, srcNodeID)
+    else:
+        return (X,Y)
+
+
+def getReactionDestNodeHandlePosition(neti: int, reai: int, destNodeID: str):
+    X = round(libIodine.getReactionDestNodeHandleX(
+        neti, reai, destNodeID.encode()), 2)
+    Y = round(libIodine.getReactionDestNodeHandleY(
+        neti, reai, destNodeID.encode()), 2)
+    errCode = getErrorCode()
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, destNodeID)
+    else:
+        return (X, Y)
 
 def getNumberOfSrcNodes(neti: int, reai: int):
     Num = libIodine.getNumberOfSrcNodes(neti, reai)
@@ -926,6 +987,21 @@ def setReactionDestNodeStoich(neti: int, reai: int, destNodeID: str, newStoich: 
             errorDict[errCode], neti, reai, destNodeID, newStoich)
 
 
+def setReactionSrcNodeHandlePosition(neti: int, reai: int, srcNodeID: str, handleX: float, handleY: float):
+    errCode = libIodine.setReactionSrcNodeHandlePosition(
+        neti, reai, srcNodeID.encode(), handleX, handleY)
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, srcNodeID, handleX, handleY)
+
+
+def setReactionDestNodeHandlePosition(neti: int, reai: int, destNodeID: str, handleX: float, handleY: float):
+    errCode = libIodine.setReactionDestNodeHandlePosition(
+        neti, reai, destNodeID.encode(), handleX, handleY)
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, destNodeID, handleX, handleY)
+
 def setReactionFillColorRGB(neti: int, reai: int, r: int, g: int, b: int):
     errCode = libIodine.setReactionFillColorRGB(neti, reai, r, g, b)
     if errCode < 0:
@@ -944,6 +1020,14 @@ def setReactionLineThickness(neti: int, reai: int, thickness: float):
     if errCode < 0:
         raise ExceptionDict[errCode](
             errorDict[errCode], neti, reai, thickness)
+
+
+def setReactionCenterHandlePosition(neti: int, reai: int, centerHandleX: float,centerHandleY: float):
+    errCode = libIodine.setReactionCenterHandlePosition(
+        neti, reai, centerHandleX, centerHandleY)
+    if errCode < 0:
+        raise ExceptionDict[errCode](
+            errorDict[errCode], neti, reai, centerHandleX,centerHandleY)
 
 
 def createUniUni(neti: int, reaID: str, rateLaw: str, srci: int, desti: int, srcStoich: float, destStoich: float):

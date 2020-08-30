@@ -998,6 +998,17 @@ class TestReactionFunc(unittest.TestCase):
         with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
             IodineAPI.getReactionLineThickness(0, 2)
 
+    def test_getReactionCenterHandlePosition(self):
+        self.assertEqual(IodineAPI.getReactionCenterHandlePosition(0, 0), (0,0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionCenterHandlePosition(-1, 0)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionCenterHandlePosition(1, 0)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionCenterHandlePosition(0, -1)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionCenterHandlePosition(0, 2)
+
 
     def test_getReactionSrcNodeStoich(self):
         self.assertEqual(
@@ -1028,6 +1039,36 @@ class TestReactionFunc(unittest.TestCase):
             IodineAPI.getReactionDestNodeStoich(0, 2, "node1")
         with self.assertRaises(IodineAPI.IDNotFoundError):
             IodineAPI.getReactionDestNodeStoich(0, 0, "node")
+
+    def test_getReactionSrcNodeHandlePosition(self):
+        self.assertEqual(
+            IodineAPI.getReactionSrcNodeHandlePosition(0, 1, "node4"), (0,0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionSrcNodeHandlePosition(-1, 0, "node1")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionSrcNodeHandlePosition(1, 0, "node1")
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionSrcNodeHandlePosition(0, -1, "node1")
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionSrcNodeHandlePosition(0, 2, "node1")
+        with self.assertRaises(IodineAPI.IDNotFoundError):
+            IodineAPI.getReactionSrcNodeHandlePosition(0, 0, "node")
+
+
+
+    def test_getReactionDestNodeHandlePosition(self):
+        self.assertEqual(
+            IodineAPI.getReactionDestNodeHandlePosition(0, 1, "node3"), (0,0))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionDestNodeHandlePosition(-1, 0, "node1")
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.getReactionDestNodeHandlePosition(1, 0, "node1")
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionDestNodeHandlePosition(0, -1, "node1")
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.getReactionDestNodeHandlePosition(0, 2, "node1")
+        with self.assertRaises(IodineAPI.IDNotFoundError):
+            IodineAPI.getReactionDestNodeHandlePosition(0, 0, "node")
 
 
 
@@ -1356,6 +1397,73 @@ class TestReactionNodeFunc(unittest.TestCase):
         self.assertEqual(
             IodineAPI.getReactionDestNodeStoich(0, 0, "node3"), 3.1)
 
+    def test_setReactionSrcNodeHandlePosition(self):
+        self.assertEqual(IodineAPI.getReactionSrcNodeHandlePosition(
+            0, 0, "node1"), (0,0))
+        self.assertEqual(IodineAPI.setReactionSrcNodeHandlePosition(
+            0, 0,  "node1", 2.1, 3.2), None)
+        self.assertEqual(IodineAPI.getReactionSrcNodeHandlePosition(
+            0, 0, "node1"), (2.1, 3.2))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(-1, 0, "node1", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(1, 0, "node1", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(0, -1, "node1", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(0, 2, "node1", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.IDNotFoundError):
+            IodineAPI.setReactionSrcNodeHandlePosition(0, 0, "Node1", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(0, 0, "node1", -1.0, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionSrcNodeHandlePosition(0, 0, "node1", 2.1, -1.0)
+
+
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(
+            IodineAPI.getReactionSrcNodeHandlePosition(0, 0, "node1"), (0,0))
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(
+            IodineAPI.getReactionSrcNodeHandlePosition(0, 0, "node1"), (2.1, 3.2))
+
+    def test_setReactionDestNodeHandlePosition(self):
+        self.assertEqual(IodineAPI.getReactionDestNodeHandlePosition(
+            0, 0, "node3"), (0,0))
+        self.assertEqual(IodineAPI.setReactionDestNodeHandlePosition(
+            0, 0,  "node3", 2.1, 3.2), None)
+        self.assertEqual(IodineAPI.getReactionDestNodeHandlePosition(
+            0, 0, "node3"), (2.1, 3.2))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(
+                -1, 0, "node3", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(
+                1, 0, "node3", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(
+                0, -1, "node3", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(
+                0, 2, "node3", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.IDNotFoundError):
+            IodineAPI.setReactionDestNodeHandlePosition(
+                0, 0, "Node3", 2.1, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(0, 0, "node3", -2.1, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionDestNodeHandlePosition(0, 0, "node3", 2.1, -3.2)
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(
+            IodineAPI.getReactionDestNodeHandlePosition(0, 0, "node3"), (0, 0))
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(
+            IodineAPI.getReactionDestNodeHandlePosition(0, 0, "node3"), (2.1, 3.2))
+
 
     def test_setReactionFillColorRGB(self):
         self.assertEqual(
@@ -1445,6 +1553,31 @@ class TestReactionNodeFunc(unittest.TestCase):
         self.assertEqual(IodineAPI.getReactionLineThickness(0, 1), 3)
         self.assertEqual(IodineAPI.redo(), None)
         self.assertEqual(IodineAPI.getReactionLineThickness(0, 1), 1)
+
+
+    def test_setReactionCenterHandlePosition(self):
+        self.assertEqual(IodineAPI.getReactionCenterHandlePosition(0, 1), (0,0))
+        self.assertEqual(IodineAPI.setReactionCenterHandlePosition(0, 1, 2.1,3.2), None)
+        self.assertEqual(
+            IodineAPI.getReactionCenterHandlePosition(0, 1), (2.1, 3.2))
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(-1, 1, 2.1, 3.2)
+        with self.assertRaises(IodineAPI.NetIndexOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(3, 1, 2.1,3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(0, -1, 2.1, 3.2)
+        with self.assertRaises(IodineAPI.ReactionIndexOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(0, 4, 2.1, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(0, 1, -2.1, 3.2)
+        with self.assertRaises(IodineAPI.VariableOutOfRangeError):
+            IodineAPI.setReactionCenterHandlePosition(0, 1, 2.1,-3.2)
+        with self.assertRaises(IodineAPI.StackEmptyError):
+            IodineAPI.redo()
+        self.assertEqual(IodineAPI.undo(), None)
+        self.assertEqual(IodineAPI.getReactionCenterHandlePosition(0, 1), (0,0))
+        self.assertEqual(IodineAPI.redo(), None)
+        self.assertEqual(IodineAPI.getReactionCenterHandlePosition(0, 1), (2.1,3.2))
 
 
     def test_saveNetworkAsJSON_readNetworkFromJSON(self):

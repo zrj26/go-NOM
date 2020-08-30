@@ -674,6 +674,29 @@ func getReactionLineThickness(neti, reai C.int) C.float {
 	return C.float(thickness)
 }
 
+//export getReactionCenterHandleX
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+func getReactionCenterHandleX(neti, reai C.int) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	handleX := Iodine.GetReactionCenterHandleX(netI, reaI, &errCode)
+	return C.float(handleX)
+}
+
+
+//export getReactionCenterHandleY
+//getErrorCode() is needed after this function in API
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+func getReactionCenterHandleY(neti, reai C.int) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	handleY := Iodine.GetReactionCenterHandleY(netI, reaI, &errCode)
+	return C.float(handleY)
+}
+
 //export getReactionSrcNodeStoich
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
@@ -697,6 +720,56 @@ func getReactionDestNodeStoich(neti, reai C.int, destNodeid *C.char) C.float {
 	Stoich := Iodine.GetReactionDestNodeStoich(netI, reaI, destNodeID, &errCode)
 	return C.float(Stoich)
 }
+
+//export getReactionSrcNodeHandleX
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+func getReactionSrcNodeHandleX(neti, reai C.int, srcNodeid *C.char) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	srcNodeID := C.GoString(srcNodeid)
+	handleX := Iodine.GetReactionSrcNodeHandleX(netI, reaI, srcNodeID, &errCode)
+	return C.float(handleX)
+}
+
+//export getReactionSrcNodeHandleY
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+func getReactionSrcNodeHandleY(neti, reai C.int, srcNodeid *C.char) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	srcNodeID := C.GoString(srcNodeid)
+	handleY := Iodine.GetReactionSrcNodeHandleY(netI, reaI, srcNodeID, &errCode)
+	return C.float(handleY)
+}
+
+
+//export getReactionDestNodeHandleX
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+func getReactionDestNodeHandleX(neti, reai C.int, destNodeid *C.char) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	destNodeID := C.GoString(destNodeid)
+	handleX := Iodine.GetReactionDestNodeHandleX(netI, reaI, destNodeID, &errCode)
+	return C.float(handleX)
+}
+
+//export getReactionDestNodeHandleY
+//getErrorCode() is needed after this function in API
+//return: positive int: ok, -6: reaction index out of range,
+//-5: net index out of range, -2: name not found
+func getReactionDestNodeHandleY(neti, reai C.int, destNodeid *C.char) C.float {
+	netI := int(neti)
+	reaI := int(reai)
+	destNodeID := C.GoString(destNodeid)
+	handleY := Iodine.GetReactionDestNodeHandleY(netI, reaI, destNodeID, &errCode)
+	return C.float(handleY)
+}
+
 
 //export getNumberOfSrcNodes
 //return: non-negative int: ok, -6: reaction index out of range
@@ -854,6 +927,34 @@ func setReactionDestNodeStoich(neti, reai C.int, destNodeID *C.char, newStoich C
 	return C.int(err)
 }
 
+//export setReactionSrcNodeHandlePosition
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+func setReactionSrcNodeHandlePosition(neti, reai C.int, srcNodeID *C.char, handleX, handleY C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	SrcNodeID := C.GoString(srcNodeID)
+	HandleX := float64(handleX)
+	HandleY := float64(handleY)
+	err := Iodine.SetReactionSrcNodeHandlePosition(netI, reaI, SrcNodeID, HandleX, HandleY)
+	return C.int(err)
+}
+
+//export setReactionDestNodeHandlePosition
+//errCode: -6: reaction index out of range,
+//-5: net index out of range, -2: id not found
+//-8: wrong stoich
+func setReactionDestNodeHandlePosition(neti, reai C.int, destNodeID *C.char, handleX, handleY C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	DestNodeID := C.GoString(destNodeID)
+	HandleX := float64(handleX)
+	HandleY := float64(handleY)
+	err := Iodine.SetReactionDestNodeHandlePosition(netI, reaI, DestNodeID, HandleX, HandleY)
+	return C.int(err)
+}
+
 //export setReactionFillColorRGB
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
@@ -889,5 +990,17 @@ func setReactionLineThickness(neti, reai C.int, thickness C.float) C.int {
 	return C.int(err)
 }
 
+//export setReactionCenterHandlePosition
+//errCode: 0:ok, -6: reaction index out of range
+//-5: net index out of range
+//-12: Variable out of range
+func setReactionCenterHandlePosition(neti, reai C.int, centerHandleX,centerHandleY C.float) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	CenterHandleX := float64(centerHandleX)
+	CenterHandleY := float64(centerHandleY)
+	err := Iodine.SetReactionCenterHandlePosition(netI, reaI, CenterHandleX, CenterHandleY)
+	return C.int(err)
+}
 
 func main() {}
