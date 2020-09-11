@@ -111,6 +111,12 @@ func getNumberOfNetworks() C.int {
 	return C.int(Iodine.GetNumberOfNetworks())
 }
 
+//export getLargestNetworkIndex
+//no error handling
+func getLargestNetworkIndex() C.int {
+	return C.int(Iodine.GetLargestNetworkIndex())
+}
+
 //export getNetworkID
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -5: net index out of range
@@ -118,6 +124,14 @@ func getNetworkID(neti C.int) *C.char {
 	netI := int(neti)
 	iodineCString := C.CString(Iodine.GetNetworkID(netI, &errCode))
 	return iodineCString
+}
+
+//export getNetworkBool
+//errCode: 0:ok, -5: net index out of range
+func getNetworkBool(neti C.int) C.int {
+	netI := int(neti)
+	bool1 := Iodine.GetNetworkBool(netI)
+	return C.int(bool1)
 }
 
 //export addNode
@@ -170,6 +184,13 @@ func getNumberOfNodes(neti C.int) C.int {
 	return C.int(num)
 }
 
+//export getLargestNodeIndex
+//-5: net index out of range
+func getLargestNodeIndex(neti C.int) C.int {
+	netI := int(neti)
+	num := Iodine.GetLargestNodeIndex(netI)
+	return C.int(num)
+}
 //export getNodeCenterX
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -7: node index out of range
@@ -202,6 +223,16 @@ func getNodeID(neti, nodei C.int) *C.char {
 	ID := Iodine.GetNodeID(netI, nodeI, &errCode)
 	iodineCString := C.CString(ID)
 	return iodineCString
+}
+
+//export getNodeBool
+//errCode: 0:ok, -7: node index out of range
+//-5: net index out of range
+func getNodeBool(neti, nodei C.int) C.int {
+	netI := int(neti)
+	nodeI := int(nodei)
+	bool1 := Iodine.GetNodeBool(netI, nodeI)
+	return C.int(bool1)
 }
 
 //export getNodeX
@@ -617,6 +648,15 @@ func getNumberOfReactions(neti C.int) C.int {
 	return C.int(num)
 }
 
+
+//export getLargestReactionIndex
+//return: >=0: ok, -5: net index out of range
+func getLargestReactionIndex(neti C.int) C.int {
+	netI := int(neti)
+	num := Iodine.GetLargestReactionIndex(netI)
+	return C.int(num)
+}
+
 //export getReactionID
 //getErrorCode() is needed after this function in API
 //errCode: 0:ok, -6: reaction index out of range
@@ -627,6 +667,15 @@ func getReactionID(neti, reai C.int) *C.char {
 	ID := Iodine.GetReactionID(netI, reaI, &errCode)
 	iodineCString := C.CString(ID)
 	return iodineCString
+}
+
+//export getReactionBool
+//return: >=0: ok, -5: net index out of range
+func getReactionBool(neti, reai C.int) C.int {
+	netI := int(neti)
+	reaI := int(reai)
+	bool1 := Iodine.GetReactionBool(netI, reaI)
+	return C.int(bool1)
 }
 
 //export getReactionRateLaw
@@ -684,7 +733,6 @@ func getReactionCenterHandleX(neti, reai C.int) C.float {
 	handleX := Iodine.GetReactionCenterHandleX(netI, reaI, &errCode)
 	return C.float(handleX)
 }
-
 
 //export getReactionCenterHandleY
 //getErrorCode() is needed after this function in API
@@ -745,7 +793,6 @@ func getReactionSrcNodeHandleY(neti, reai C.int, srcNodeid *C.char) C.float {
 	return C.float(handleY)
 }
 
-
 //export getReactionDestNodeHandleX
 //getErrorCode() is needed after this function in API
 //return: positive int: ok, -6: reaction index out of range,
@@ -769,7 +816,6 @@ func getReactionDestNodeHandleY(neti, reai C.int, destNodeid *C.char) C.float {
 	handleY := Iodine.GetReactionDestNodeHandleY(netI, reaI, destNodeID, &errCode)
 	return C.float(handleY)
 }
-
 
 //export getNumberOfSrcNodes
 //return: non-negative int: ok, -6: reaction index out of range
@@ -875,19 +921,17 @@ func deleteDestNode(neti, reai C.int, destNodeid *C.char) C.int {
 	return C.int(err)
 }
 
-
 //export setReactionID
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 //-3: id repeat
-func setReactionID(neti, reai C.int, newID  *C.char) C.int {
+func setReactionID(neti, reai C.int, newID *C.char) C.int {
 	netI := int(neti)
 	reaI := int(reai)
 	NewID := C.GoString(newID)
 	err := Iodine.SetReactionID(netI, reaI, NewID)
 	return C.int(err)
 }
-
 
 //export setRateLaw
 //errCode: 0:ok, -6: reaction index out of range
@@ -899,7 +943,6 @@ func setRateLaw(neti, reai C.int, ratelaw *C.char) C.int {
 	err := Iodine.SetRateLaw(netI, reaI, rateLaw)
 	return C.int(err)
 }
-
 
 //export setReactionSrcNodeStoich
 //errCode: -6: reaction index out of range,
@@ -994,7 +1037,7 @@ func setReactionLineThickness(neti, reai C.int, thickness C.float) C.int {
 //errCode: 0:ok, -6: reaction index out of range
 //-5: net index out of range
 //-12: Variable out of range
-func setReactionCenterHandlePosition(neti, reai C.int, centerHandleX,centerHandleY C.float) C.int {
+func setReactionCenterHandlePosition(neti, reai C.int, centerHandleX, centerHandleY C.float) C.int {
 	netI := int(neti)
 	reaI := int(reai)
 	CenterHandleX := float64(centerHandleX)

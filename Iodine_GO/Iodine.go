@@ -20,7 +20,10 @@ var networkSet TNetworkSet
 type TNetSetStack []TNetworkSet
 
 //TNetworkSet list of network
-type TNetworkSet []TNetwork
+type TNetworkSet struct {
+	netSet     []TNetwork
+	netSetBool []bool
+}
 
 //TNode A  node with a id, an x,y coordinate
 //(top/left corner of node) and w, h (width and height)
@@ -43,10 +46,12 @@ type TNode struct {
 
 //TNetwork The list of Nodes
 type TNetwork struct {
-	MagicIdentifier string      `json:"magicIdentifier"`
-	ID              string      `json:"id"`
-	Nodes           []TNode     `json:"nodes"`
+	MagicIdentifier string  `json:"magicIdentifier"`
+	ID              string  `json:"id"`
+	Nodes           []TNode `json:"nodes"`
+	nodes           []bool
 	ReactionSet     []TReaction `json:"reactions"`
+	reactionset     []bool
 }
 
 //TReaction a reaction with multiple species
@@ -87,87 +92,95 @@ func (s *TNetSetStack) pop() TNetworkSet {
 
 func (n *TNetworkSet) deepcopy() TNetworkSet {
 	NewNetworkSet := TNetworkSet{}
-	for i := range *n {
+	for i := range (*n).netSet {
 		NewNetworkX := TNetwork{
-			ID:              (*n)[i].ID,
-			MagicIdentifier: (*n)[i].MagicIdentifier}
-
-		for j := range (*n)[i].Nodes {
-			NewNodeX := TNode{ID: (*n)[i].Nodes[j].ID,
-				X:                (*n)[i].Nodes[j].X,
-				Y:                (*n)[i].Nodes[j].Y,
-				W:                (*n)[i].Nodes[j].W,
-				H:                (*n)[i].Nodes[j].H,
+			ID:              (*n).netSet[i].ID,
+			MagicIdentifier: (*n).netSet[i].MagicIdentifier}
+		for x1 := range (*n).netSet[i].nodes {
+			NewNetworkX.nodes = append(NewNetworkX.nodes, (*n).netSet[i].nodes[x1])
+		}
+		for y1 := range (*n).netSet[i].reactionset {
+			NewNetworkX.reactionset = append(NewNetworkX.reactionset, (*n).netSet[i].reactionset[y1])
+		}
+		for j := range (*n).netSet[i].Nodes {
+			NewNodeX := TNode{ID: (*n).netSet[i].Nodes[j].ID,
+				X:                (*n).netSet[i].Nodes[j].X,
+				Y:                (*n).netSet[i].Nodes[j].Y,
+				W:                (*n).netSet[i].Nodes[j].W,
+				H:                (*n).netSet[i].Nodes[j].H,
 				FillColor:        color.RGBA{},
 				OutlineColor:     color.RGBA{},
-				OutlineThickness: (*n)[i].Nodes[j].OutlineThickness,
-				FontPointSize:    (*n)[i].Nodes[j].FontPointSize,
-				FontFamily:       (*n)[i].Nodes[j].FontFamily,
-				FontStyle:        (*n)[i].Nodes[j].FontStyle,
-				FontWeight:       (*n)[i].Nodes[j].FontWeight,
-				FontName:         (*n)[i].Nodes[j].FontName,
+				OutlineThickness: (*n).netSet[i].Nodes[j].OutlineThickness,
+				FontPointSize:    (*n).netSet[i].Nodes[j].FontPointSize,
+				FontFamily:       (*n).netSet[i].Nodes[j].FontFamily,
+				FontStyle:        (*n).netSet[i].Nodes[j].FontStyle,
+				FontWeight:       (*n).netSet[i].Nodes[j].FontWeight,
+				FontName:         (*n).netSet[i].Nodes[j].FontName,
 				FontColor:        color.RGBA{},
 			}
-			NewNodeX.FillColor.R = (*n)[i].Nodes[j].FillColor.R
-			NewNodeX.FillColor.G = (*n)[i].Nodes[j].FillColor.G
-			NewNodeX.FillColor.B = (*n)[i].Nodes[j].FillColor.B
-			NewNodeX.FillColor.A = (*n)[i].Nodes[j].FillColor.A
-			NewNodeX.OutlineColor.R = (*n)[i].Nodes[j].OutlineColor.R
-			NewNodeX.OutlineColor.G = (*n)[i].Nodes[j].OutlineColor.G
-			NewNodeX.OutlineColor.B = (*n)[i].Nodes[j].OutlineColor.B
-			NewNodeX.OutlineColor.A = (*n)[i].Nodes[j].OutlineColor.A
-			NewNodeX.FontColor.R = (*n)[i].Nodes[j].FontColor.R
-			NewNodeX.FontColor.G = (*n)[i].Nodes[j].FontColor.G
-			NewNodeX.FontColor.B = (*n)[i].Nodes[j].FontColor.B
-			NewNodeX.FontColor.A = (*n)[i].Nodes[j].FontColor.A
+			NewNodeX.FillColor.R = (*n).netSet[i].Nodes[j].FillColor.R
+			NewNodeX.FillColor.G = (*n).netSet[i].Nodes[j].FillColor.G
+			NewNodeX.FillColor.B = (*n).netSet[i].Nodes[j].FillColor.B
+			NewNodeX.FillColor.A = (*n).netSet[i].Nodes[j].FillColor.A
+			NewNodeX.OutlineColor.R = (*n).netSet[i].Nodes[j].OutlineColor.R
+			NewNodeX.OutlineColor.G = (*n).netSet[i].Nodes[j].OutlineColor.G
+			NewNodeX.OutlineColor.B = (*n).netSet[i].Nodes[j].OutlineColor.B
+			NewNodeX.OutlineColor.A = (*n).netSet[i].Nodes[j].OutlineColor.A
+			NewNodeX.FontColor.R = (*n).netSet[i].Nodes[j].FontColor.R
+			NewNodeX.FontColor.G = (*n).netSet[i].Nodes[j].FontColor.G
+			NewNodeX.FontColor.B = (*n).netSet[i].Nodes[j].FontColor.B
+			NewNodeX.FontColor.A = (*n).netSet[i].Nodes[j].FontColor.A
 
 			NewNetworkX.Nodes = append(NewNetworkX.Nodes, NewNodeX)
 		}
 
-		for k := range (*n)[i].ReactionSet {
+		for k := range (*n).netSet[i].ReactionSet {
 			NewReactionX := TReaction{
-				ID:            (*n)[i].ReactionSet[k].ID,
-				RateLaw:       (*n)[i].ReactionSet[k].RateLaw,
+				ID:            (*n).netSet[i].ReactionSet[k].ID,
+				RateLaw:       (*n).netSet[i].ReactionSet[k].RateLaw,
 				FillColor:     color.RGBA{},
-				Thickness:     (*n)[i].ReactionSet[k].Thickness,
-				CenterHandleX: (*n)[i].ReactionSet[k].CenterHandleX,
-				CenterHandleY: (*n)[i].ReactionSet[k].CenterHandleY,
+				Thickness:     (*n).netSet[i].ReactionSet[k].Thickness,
+				CenterHandleX: (*n).netSet[i].ReactionSet[k].CenterHandleX,
+				CenterHandleY: (*n).netSet[i].ReactionSet[k].CenterHandleY,
 			}
 
 			NewReactionX.Species[0] = make(map[string]TSpeciesNode, 0)
 			NewReactionX.Species[1] = make(map[string]TSpeciesNode, 0)
 
-			for l := range (*n)[i].ReactionSet[k].Species[0] {
+			for l := range (*n).netSet[i].ReactionSet[k].Species[0] {
 				NewReactionX.Species[0][l] = TSpeciesNode{
-					Stoich:  (*n)[i].ReactionSet[k].Species[0][l].Stoich,
-					HandleX: (*n)[i].ReactionSet[k].Species[0][l].HandleX,
-					HandleY: (*n)[i].ReactionSet[k].Species[0][l].HandleY,
+					Stoich:  (*n).netSet[i].ReactionSet[k].Species[0][l].Stoich,
+					HandleX: (*n).netSet[i].ReactionSet[k].Species[0][l].HandleX,
+					HandleY: (*n).netSet[i].ReactionSet[k].Species[0][l].HandleY,
 				}
 			}
-			for m := range (*n)[i].ReactionSet[k].Species[1] {
+			for m := range (*n).netSet[i].ReactionSet[k].Species[1] {
 				NewReactionX.Species[1][m] = TSpeciesNode{
-					Stoich:  (*n)[i].ReactionSet[k].Species[1][m].Stoich,
-					HandleX: (*n)[i].ReactionSet[k].Species[1][m].HandleX,
-					HandleY: (*n)[i].ReactionSet[k].Species[1][m].HandleY,
+					Stoich:  (*n).netSet[i].ReactionSet[k].Species[1][m].Stoich,
+					HandleX: (*n).netSet[i].ReactionSet[k].Species[1][m].HandleX,
+					HandleY: (*n).netSet[i].ReactionSet[k].Species[1][m].HandleY,
 				}
 			}
-			NewReactionX.FillColor.R = (*n)[i].ReactionSet[k].FillColor.R
-			NewReactionX.FillColor.G = (*n)[i].ReactionSet[k].FillColor.G
-			NewReactionX.FillColor.B = (*n)[i].ReactionSet[k].FillColor.B
-			NewReactionX.FillColor.A = (*n)[i].ReactionSet[k].FillColor.A
+			NewReactionX.FillColor.R = (*n).netSet[i].ReactionSet[k].FillColor.R
+			NewReactionX.FillColor.G = (*n).netSet[i].ReactionSet[k].FillColor.G
+			NewReactionX.FillColor.B = (*n).netSet[i].ReactionSet[k].FillColor.B
+			NewReactionX.FillColor.A = (*n).netSet[i].ReactionSet[k].FillColor.A
 
 			NewNetworkX.ReactionSet = append(NewNetworkX.ReactionSet, NewReactionX)
 		}
 
-		NewNetworkSet = append(NewNetworkSet, NewNetworkX)
+		NewNetworkSet.netSet = append(NewNetworkSet.netSet, NewNetworkX)
+	}
+	for i := range (*n).netSetBool {
+		NewNetworkSet.netSetBool = append(NewNetworkSet.netSetBool, (*n).netSetBool[i])
 	}
 	return NewNetworkSet
 }
 
 //GetNetworkSet GetNetworkSet
 //used in Iodine_C.go functions
-func GetNetworkSet() *TNetworkSet {
-	return &networkSet
+func GetNetworkSet() *[]TNetwork {
+	return &networkSet.netSet
 }
 
 //Undo ge back to last state
@@ -214,10 +227,10 @@ var errorDict map[int]string = map[int]string{
 	-2:  "id not found: ",
 	-3:  "id repeat: ",
 	-4:  "node is not free: ",
-	-5:  "net index out of range: ",
-	-6:  "reaction index out of range: ",
-	-7:  "node index out of range: ",
-	-8:  "wrong stoich: ",
+	-5:  "invalid net index",
+	-6:  "invalid reaction index",
+	-7:  "invalid node index",
+	-8:  "invalid stoich: ",
 	-9:  "stack is empty",
 	-10: "Json convert error",
 	-11: "File error",
@@ -255,14 +268,14 @@ func addErrorMessage(errCode int, errorMessage1, errorMessage2, errorMessage3 st
 		errMSG1 += errorMessage2 + ".\n"
 		errMSG2 += errorMessage2 + ".\n"
 	case -5:
-		errMSG1 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
-		errMSG2 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
+		errMSG1 += errorMessage2 + ".\n"
+		errMSG2 += errorMessage2 + ".\n"
 	case -6:
-		errMSG1 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
-		errMSG2 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
+		errMSG1 += errorMessage2 + ".\n"
+		errMSG2 += errorMessage2 + ".\n"
 	case -7:
-		errMSG1 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
-		errMSG2 += errorMessage2 + ", index range: " + errorMessage3 + ".\n"
+		errMSG1 += errorMessage2 + ".\n"
+		errMSG2 += errorMessage2 + ".\n"
 	case -8:
 		errMSG1 += "error stoich and it's node" + errorMessage2 + ", stoich has to be positive.\n"
 		errMSG2 += "error stoich and it's node" + errorMessage2 + ", stoich has to be positive.\n"
@@ -337,8 +350,13 @@ var fontWeightDict map[string]int = map[string]int{
 //errCode -3: id repeat, 0 :ok
 func NewNetwork(id string) int {
 	errCode := 0
-	for i := range networkSet {
-		if networkSet[i].ID == id {
+	if id == "" {
+		errCode = -3
+		addErrorMessage(errCode, ("(\"" + id + "\")"), id, "")
+		return errCode
+	}
+	for i := range networkSet.netSet {
+		if networkSet.netSet[i].ID == id {
 			errCode = -3
 			addErrorMessage(errCode, ("(\"" + id + "\")"), id, "")
 			return errCode
@@ -349,7 +367,8 @@ func NewNetwork(id string) int {
 		netSetStack.push(networkSet)
 	}
 	newNetwork := TNetwork{MagicIdentifier: "NM01", ID: id}
-	networkSet = append(networkSet, newNetwork)
+	networkSet.netSet = append(networkSet.netSet, newNetwork)
+	networkSet.netSetBool = append(networkSet.netSetBool, true)
 	return errCode
 }
 
@@ -357,8 +376,11 @@ func NewNetwork(id string) int {
 //return:  -2: net id can't find, >=0: ok
 func GetNetworkIndex(id string) int {
 	errCode := -2
-	for i := range networkSet {
-		if networkSet[i].ID == id {
+	if id == "" {
+		return errCode
+	}
+	for i := range networkSet.netSet {
+		if networkSet.netSet[i].ID == id {
 			index := i
 			return index
 		}
@@ -368,17 +390,16 @@ func GetNetworkIndex(id string) int {
 }
 
 //SaveNetworkAsJSON SaveNetworkAsJSON
-//errCode:  0:ok, -5: net index out of range
+//errCode:  0:ok, -5: invalid net index
 //-10: "Json convert error", -11: "File error",
 func SaveNetworkAsJSON(neti int, fileName string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	file, err1 := json.MarshalIndent(networkSet[neti], "", "    ")
+	file, err1 := json.MarshalIndent(networkSet.netSet[neti], "", "    ")
 	if err1 != nil {
 		errCode = -10
 		addErrorMessage(errCode, "()", "", "")
@@ -411,8 +432,8 @@ func ReadNetworkFromJSON(filePath string) int {
 		addErrorMessage(errCode, "(\""+filePath+"\")", "", "")
 		return errCode
 	}
-	for i := range networkSet {
-		if newNet.ID == networkSet[i].ID {
+	for i := range networkSet.netSet {
+		if newNet.ID == networkSet.netSet[i].ID {
 			errCode = -3
 			addErrorMessage(errCode, ("(\"" + filePath + "\")"), newNet.ID, "")
 			return errCode
@@ -423,19 +444,17 @@ func ReadNetworkFromJSON(filePath string) int {
 		redoStack = TNetSetStack{}
 		netSetStack.push(networkSet)
 	}
-	networkSet = append(networkSet, newNet)
-	// fmt.Println(networkSet)
+	networkSet.netSet = append(networkSet.netSet, newNet)
 	return errCode
 }
 
 //DeleteNetwork DeleteNetwork
-//errCode:  0:ok, -5: net index out of range
+//errCode:  0:ok, -5: invalid net index
 func DeleteNetwork(neti int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
 
@@ -443,13 +462,9 @@ func DeleteNetwork(neti int) int {
 		redoStack = TNetSetStack{}
 		netSetStack.push(networkSet)
 	}
-	if neti == 0 {
-		networkSet = networkSet[1:]
-	} else if neti == len(networkSet)-1 {
-		networkSet = networkSet[:len(networkSet)-1]
-	} else {
-		networkSet = append(networkSet[:neti], networkSet[neti+1:]...)
-	}
+	networkSet.netSet[neti] = TNetwork{}
+	networkSet.netSetBool[neti] = false
+
 	return errCode
 }
 
@@ -467,35 +482,66 @@ func ClearNetworks() {
 //GetNumberOfNetworks GetNumberOfNetworks
 //no error handling
 func GetNumberOfNetworks() int {
-	return len(networkSet)
+	count := 0
+	for i := range networkSet.netSetBool {
+		if networkSet.netSetBool[i] == true {
+			count++
+		}
+	}
+	return count
+}
+
+//GetLargestNetworkIndex GetLargestNetworkIndex
+//no error handling
+func GetLargestNetworkIndex() int {
+	return len(networkSet.netSetBool)
 }
 
 //GetNetworkID GetID of network
-//errCode: 0:ok, -5: net index out of range
+//errCode: 0:ok, -5: invalid net index
 func GetNetworkID(neti int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error"
 	}
-	return networkSet[neti].ID
+	return networkSet.netSet[neti].ID
+}
+//GetNetworkBool return 0 if this network is deleted
+//errCode: 0:ok, -5: invalid net index
+func GetNetworkBool(neti int) int {
+	bool1 := 0
+	if neti < 0 || neti >= len(networkSet.netSet) {
+		bool1 = -5
+		addErrorMessage(bool1, "()", strconv.Itoa(neti), "")
+		return bool1
+	}
+	if networkSet.netSetBool[neti] == true {
+		bool1 = 1
+		return bool1
+	}
+
+	return bool1
 }
 
 //AddNode adds a node to the network
 //errCode -3: id repeat, 0 :ok
-//-5: net index out of range
+//-5: invalid net index
 //-12: Variable out of range:
 func AddNode(neti int, id string, x, y, w, h float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
+	n := networkSet.netSet[neti]
+	if id == "" {
+		errCode = -3
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", \"" + id + "\")"), id, "")
+		return errCode
+	}
 	for i := range n.Nodes {
 		if n.Nodes[i].ID == id {
 			errCode = -3
@@ -532,22 +578,25 @@ func AddNode(neti int, id string, x, y, w, h float64) int {
 		FontColor:        color.RGBA{R: 0, G: 0, B: 0, A: 255},
 	}
 	n.Nodes = append(n.Nodes, newNode)
-	networkSet[neti] = n
+	n.nodes = append(n.nodes, true)
+	networkSet.netSet[neti] = n
 	return errCode
 }
 
 //GetNodeIndex get node index by id
 //index:  -2: node id can't find, >=0: ok
-//-5: net index out of range
+//-5: invalid net index
 func GetNodeIndex(neti int, id string) int {
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode := -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
 	errCode := -2
-	n := networkSet[neti]
+	if id == "" {
+		return errCode
+	}
+	n := networkSet.netSet[neti]
 	for i := range n.Nodes {
 		if n.Nodes[i].ID == id {
 			index := i
@@ -585,21 +634,19 @@ func (n *TNetwork) getFreeNodes() []int {
 }
 
 //DeleteNode delete the node with index
-//return: 0: ok, -7: node index out of range, -4: node is not free
-//-5: net index out of range
+//return: 0: ok, -7: invalid node index, -4: node is not free
+//-5: invalid net index
 func DeleteNode(neti, nodei int) int {
 	errCode := -4
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	s := n.getFreeNodes()
@@ -618,65 +665,83 @@ func DeleteNode(neti, nodei int) int {
 		netSetStack.push(networkSet)
 	}
 
-	if nodei == 0 {
-		n.Nodes = n.Nodes[1:]
-	} else if nodei == len(n.Nodes)-1 {
-		n.Nodes = n.Nodes[:len(n.Nodes)-1]
-	} else {
-		n.Nodes = append(n.Nodes[:nodei], n.Nodes[nodei+1:]...)
-	}
-	networkSet[neti] = n
+	n.Nodes[nodei] = TNode{}
+	n.nodes[nodei] = false
+	// if nodei == 0 {
+	// 	n.Nodes = n.Nodes[1:]
+	// } else if nodei == len(n.Nodes)-1 {
+	// 	n.Nodes = n.Nodes[:len(n.Nodes)-1]
+	// } else {
+	// 	n.Nodes = append(n.Nodes[:nodei], n.Nodes[nodei+1:]...)
+	// }
+	// networkSet.netSet[neti] = n
 	return errCode
 }
 
 //ClearNetwork clear all nodes and reactions in this network
-//errCode: 0: ok, -5:  net index out of range
+//errCode: 0: ok, -5:  invalid net index
 func ClearNetwork(neti int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
 	if stackFlag {
 		redoStack = TNetSetStack{}
 		netSetStack.push(networkSet)
 	}
-	networkSet[neti].Nodes = make([]TNode, 0)
-	networkSet[neti].ReactionSet = make([]TReaction, 0)
+	networkSet.netSet[neti].Nodes = make([]TNode, 0)
+	networkSet.netSet[neti].nodes = make([]bool, 0)
+	networkSet.netSet[neti].ReactionSet = make([]TReaction, 0)
+	networkSet.netSet[neti].reactionset = make([]bool, 0)
 	return errCode
 }
 
 //GetNumberOfNodes get the number of nodes in the current network
-//num: >=0: ok, -5:  net index out of range
+//num: >=0: ok, -5:  invalid net index
 func GetNumberOfNodes(neti int) int {
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode := -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	return len(n.Nodes)
+	n := networkSet.netSet[neti]
+	count := 0
+	for i := range n.nodes {
+		if n.nodes[i] == true {
+			count++
+		}
+	}
+	return count
+}
+
+//GetLargestNodeIndex GetLargestNodeIndex
+//num: >=0: ok, -5:  invalid net index
+func GetLargestNodeIndex(neti int) int {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
+		errCode := -5
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
+		return errCode
+	}
+	n := networkSet.netSet[neti]
+	return len(n.nodes)
 }
 
 //GetNodeCenterX Get the X coordinate of the Center of node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeCenterX(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].X + n.Nodes[nodei].W*0.5
@@ -684,146 +749,156 @@ func GetNodeCenterX(neti, nodei int, errCode *int) float64 {
 
 //GetNodeCenterY Get the X coordinate of the Center of node
 //errCode: 0:ok, -7: index out of range
-//-5: net index out of range
+//-5: invalid net index
 func GetNodeCenterY(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].Y + n.Nodes[nodei].H*0.5
 }
 
 //GetNodeID Get the id of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeID(neti, nodei int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error" //meaningless string. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return "error"
 	}
 	return n.Nodes[nodei].ID
 }
 
+
+//GetNodeBool return 0 if this node is deleted
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
+func GetNodeBool(neti, nodei int) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
+		errCode = -5
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
+		return errCode
+	}
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) {
+		errCode = -7
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
+		return errCode
+	}
+	if n.nodes[nodei] == true {
+		errCode = 1
+		return errCode
+	}
+	return errCode
+}
+
 //GetNodeX Get the X coordinate of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeX(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].X
 }
 
 //GetNodeY Get the Y coordinate of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeY(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].Y
 }
 
 //GetNodeW Get the Width of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeW(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].W
 }
 
 //GetNodeH Get the Height of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeH(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return -10000000 //meaningless number. won't be passed to next layer
 	}
 	return n.Nodes[nodei].H
 }
 
 //GetNodeFillColorRGB GetNodeFillColor rgb format
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFillColorRGB(neti, nodei int, errCode *int) uint32 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	color1 := uint32(n.Nodes[nodei].FillColor.R)
@@ -833,21 +908,19 @@ func GetNodeFillColorRGB(neti, nodei int, errCode *int) uint32 {
 }
 
 //GetNodeFillColorAlpha GetNodeFillColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFillColorAlpha(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	alpha1 := float64(n.Nodes[nodei].FillColor.A) / 255
@@ -855,21 +928,19 @@ func GetNodeFillColorAlpha(neti, nodei int, errCode *int) float64 {
 }
 
 //GetNodeOutlineColorRGB GetNodeOutlineColorRGB
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeOutlineColorRGB(neti, nodei int, errCode *int) uint32 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	color1 := uint32(n.Nodes[nodei].OutlineColor.R)
@@ -879,21 +950,19 @@ func GetNodeOutlineColorRGB(neti, nodei int, errCode *int) uint32 {
 }
 
 //GetNodeOutlineColorAlpha GetNodeOutlineColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeOutlineColorAlpha(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	alpha1 := float64(n.Nodes[nodei].OutlineColor.A) / 255
@@ -901,147 +970,133 @@ func GetNodeOutlineColorAlpha(neti, nodei int, errCode *int) float64 {
 }
 
 //GetNodeOutlineThickness GetNodeOutlineThickness
-//errCode: -7: node index out of range
-//-5: net index out of range
+//errCode: -7: invalid node index
+//-5: invalid net index
 func GetNodeOutlineThickness(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0
 	}
 	return n.Nodes[nodei].OutlineThickness
 }
 
 //GetNodeFontPointSize GetNodeFontPointSize
-//errCode: -7: node index out of range
-//-5: net index out of range
+//errCode: -7: invalid node index
+//-5: invalid net index
 func GetNodeFontPointSize(neti, nodei int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	return n.Nodes[nodei].FontPointSize
 }
 
 //GetNodeFontFamily Get the FontFamily of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontFamily(neti, nodei int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error" //meaningless string. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return "error"
 	}
 	return n.Nodes[nodei].FontFamily
 }
 
 //GetNodeFontStyle GetNodeFontStyle
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontStyle(neti, nodei int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error" //meaningless string. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return "error"
 	}
 	return n.Nodes[nodei].FontStyle
 }
 
 //GetNodeFontWeight GetNodeFontWeight
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontWeight(neti, nodei int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error" //meaningless string. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return "error"
 	}
 	return n.Nodes[nodei].FontWeight
 }
 
 //GetNodeFontName Get the fontName of the node
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontName(neti, nodei int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error" //meaningless string. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return "error"
 	}
 	return n.Nodes[nodei].FontName
 }
 
 //GetNodeFontColorRGB GetNodeFontColorRGB
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontColorRGB(neti, nodei int, errCode *int) uint32 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	color1 := uint32(n.Nodes[nodei].FontColor.R)
@@ -1051,21 +1106,19 @@ func GetNodeFontColorRGB(neti, nodei int, errCode *int) uint32 {
 }
 
 //GetNodeFontColorAlpha GetNodeFontColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func GetNodeFontColorAlpha(neti, nodei int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		*errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(nodei), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
 	alpha1 := float64(n.Nodes[nodei].FontColor.A) / 255
@@ -1074,21 +1127,24 @@ func GetNodeFontColorAlpha(neti, nodei int, errCode *int) float64 {
 
 //SetNodeID set the id of a node
 //errCode -3: id repeat, 0 :ok
-//-5: net index out of range
-//-7: node index out of range
+//-5: invalid net index
+//-7: invalid node index
 func SetNodeID(neti, nodei int, newID string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
+		return errCode
+	}
+	if newID == "" {
+		errCode = -3
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", " + strconv.Itoa(nodei) + ", \"" + newID + "\")"), newID, "")
 		return errCode
 	}
 	for i := range n.Nodes {
@@ -1108,22 +1164,20 @@ func SetNodeID(neti, nodei int, newID string) int {
 }
 
 //SetNodeCoordinate SetNodeCoordinate
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeCoordinate(neti, nodei int, x, y float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if x < 0 || y < 0 {
@@ -1145,22 +1199,20 @@ func SetNodeCoordinate(neti, nodei int, x, y float64) int {
 }
 
 //SetNodeSize SetNodeSize
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeSize(neti, nodei int, w, h float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if w <= 0 || h <= 0 {
@@ -1182,22 +1234,20 @@ func SetNodeSize(neti, nodei int, w, h float64) int {
 }
 
 //SetNodeFillColorRGB SetNodeFillColorRGB
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeFillColorRGB(neti, nodei, r, g, b int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
@@ -1221,22 +1271,20 @@ func SetNodeFillColorRGB(neti, nodei, r, g, b int) int {
 }
 
 //SetNodeFillColorAlpha SetNodeFillColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeFillColorAlpha(neti, nodei int, a float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if a < 0 || a > 1 {
@@ -1257,22 +1305,20 @@ func SetNodeFillColorAlpha(neti, nodei int, a float64) int {
 }
 
 //SetNodeOutlineColorRGB SetNodeOutlineColorRGB
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeOutlineColorRGB(neti, nodei, r, g, b int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
@@ -1296,22 +1342,20 @@ func SetNodeOutlineColorRGB(neti, nodei, r, g, b int) int {
 }
 
 //SetNodeOutlineColorAlpha SetNodeOutlineColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeOutlineColorAlpha(neti, nodei int, a float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if a < 0 || a > 1 {
@@ -1332,22 +1376,20 @@ func SetNodeOutlineColorAlpha(neti, nodei int, a float64) int {
 }
 
 //SetNodeOutlineThickness SetNodeOutlineThickness
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range
 func SetNodeOutlineThickness(neti, nodei int, thickness float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if thickness <= 0 {
@@ -1366,22 +1408,20 @@ func SetNodeOutlineThickness(neti, nodei int, thickness float64) int {
 }
 
 //SetNodeFontPointSize SetNodeFontPointSize
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range
 func SetNodeFontPointSize(neti, nodei, fontPointSize int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if fontPointSize <= 0 {
@@ -1400,22 +1440,20 @@ func SetNodeFontPointSize(neti, nodei, fontPointSize int) int {
 }
 
 //SetNodeFontFamily SetNodeFontFamily
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range
 func SetNodeFontFamily(neti, nodei int, fontFamily string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	_, ok := fontFamilyDict[fontFamily]
@@ -1434,22 +1472,20 @@ func SetNodeFontFamily(neti, nodei int, fontFamily string) int {
 }
 
 //SetNodeFontStyle SetNodeFontStyle
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range
 func SetNodeFontStyle(neti, nodei int, fontStyle string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	_, ok := fontStyleDict[fontStyle]
@@ -1468,22 +1504,20 @@ func SetNodeFontStyle(neti, nodei int, fontStyle string) int {
 }
 
 //SetNodeFontWeight SetNodeFontWeight
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range
 func SetNodeFontWeight(neti, nodei int, fontWeight string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	_, ok := fontWeightDict[fontWeight]
@@ -1502,21 +1536,19 @@ func SetNodeFontWeight(neti, nodei int, fontWeight string) int {
 }
 
 //SetNodeFontName SetNodeFontName
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 func SetNodeFontName(neti, nodei int, fontName string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 
@@ -1530,22 +1562,20 @@ func SetNodeFontName(neti, nodei int, fontName string) int {
 }
 
 //SetNodeFontColorRGB SetNodeFontColorRGB
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeFontColorRGB(neti, nodei, r, g, b int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 {
@@ -1569,22 +1599,20 @@ func SetNodeFontColorRGB(neti, nodei, r, g, b int) int {
 }
 
 //SetNodeFontColorAlpha SetNodeFontColorAlpha
-//errCode: 0:ok, -7: node index out of range
-//-5: net index out of range
+//errCode: 0:ok, -7: invalid node index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetNodeFontColorAlpha(neti, nodei int, a float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	n := networkSet[neti]
-	if nodei < 0 || nodei >= len(n.Nodes) {
+	n := networkSet.netSet[neti]
+	if nodei < 0 || nodei >= len(n.Nodes) || n.nodes[nodei] == false {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if a < 0 || a > 1 {
@@ -1606,16 +1634,20 @@ func SetNodeFontColorAlpha(neti, nodei int, a float64) int {
 
 //CreateReaction create an empty reacton
 //errCode: 0: ok, -3: id repeat
-//-5: net index out of range
+//-5: invalid net index
 func CreateReaction(neti int, id string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
+	r := networkSet.netSet[neti].ReactionSet
+	if id == "" {
+		errCode = -3
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", \"" + id + "\")"), id, "")
+		return errCode
+	}
 	for i := range r {
 		if r[i].ID == id {
 			errCode = -3
@@ -1635,23 +1667,25 @@ func CreateReaction(neti int, id string) int {
 	newReact.Species[0] = make(map[string]TSpeciesNode, 0)
 	newReact.Species[1] = make(map[string]TSpeciesNode, 0)
 
-	r = append(r, newReact)
-	networkSet[neti].ReactionSet = r
+	networkSet.netSet[neti].ReactionSet = append(networkSet.netSet[neti].ReactionSet, newReact)
+	networkSet.netSet[neti].reactionset = append(networkSet.netSet[neti].reactionset, true)
 	return errCode
 }
 
 //GetReactionIndex get reaction index by id
 //return: -2: id can't find, >=0: ok
-//-5: net index out of range
+//-5: invalid net index
 func GetReactionIndex(neti int, id string) int {
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode := -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
 	errCode := -2
-	r := networkSet[neti].ReactionSet
+	if id == "" {
+		return errCode
+	}
+	r := networkSet.netSet[neti].ReactionSet
 	for i := range r {
 		if r[i].ID == id {
 			index := i
@@ -1663,128 +1697,161 @@ func GetReactionIndex(neti int, id string) int {
 }
 
 //DeleteReaction delete the reaction with index
-//errCode:  0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode:  0:ok, -6: invalid reaction index
+//-5: invalid net index
 func DeleteReaction(neti, reai int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	if stackFlag {
 		redoStack = TNetSetStack{}
 		netSetStack.push(networkSet)
 	}
-	if reai == 0 {
-		r = r[1:]
-	} else if reai == len(r)-1 {
-		r = r[:len(r)-1]
-	} else {
-		r = append(r[:reai], r[reai+1:]...)
-	}
-	networkSet[neti].ReactionSet = r
+	networkSet.netSet[neti].ReactionSet[reai] = TReaction{}
+	networkSet.netSet[neti].reactionset[reai] = false
+
+	// if reai == 0 {
+	// 	r = r[1:]
+	// } else if reai == len(r)-1 {
+	// 	r = r[:len(r)-1]
+	// } else {
+	// 	r = append(r[:reai], r[reai+1:]...)
+	// }
+	// networkSet.netSet[neti].ReactionSet = r
 
 	return errCode
 }
 
 //ClearReactions clear all reactions in this network
-//errCode: 0: ok, -5: net index out of range
+//errCode: 0: ok, -5: invalid net index
 func ClearReactions(neti int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
 	if stackFlag {
 		redoStack = TNetSetStack{}
 		netSetStack.push(networkSet)
 	}
-	networkSet[neti].ReactionSet = make([]TReaction, 0)
+	networkSet.netSet[neti].ReactionSet = make([]TReaction, 0)
+	networkSet.netSet[neti].reactionset = make([]bool, 0)
 	return errCode
 }
 
 //GetNumberOfReactions get the number of reactions in the current Reactionset
-//return: >=0: ok, -5: net index out of range
+//return: >=0: ok, -5: invalid net index
 func GetNumberOfReactions(neti int) int {
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode := -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	return len(r)
+	count := 0
+	for i := range networkSet.netSet[neti].reactionset {
+		if networkSet.netSet[neti].reactionset[i] == true {
+			count++
+		}
+	}
+	return count
+}
+
+//GetLargestReactionIndex GetLargestReactionIndex
+//return: >=0: ok, -5: invalid net index
+func GetLargestReactionIndex(neti int) int {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
+		errCode := -5
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
+		return errCode
+	}
+	return len(networkSet.netSet[neti].reactionset)
 }
 
 //GetReactionID Get the id of Reaction
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 func GetReactionID(neti, reai int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error"
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return "error"
 	}
 	return r[reai].ID
 }
 
+//GetReactionBool return 0 if this reaction is deleted
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
+func GetReactionBool(neti, reai int) int {
+	errCode := 0
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
+		errCode = -5
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
+		return errCode
+	}
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) {
+		errCode = -6
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
+		return errCode
+	}
+	if networkSet.netSet[neti].reactionset[reai] == true {
+		errCode = 1
+		return errCode
+	}
+	return errCode
+}
+
 //GetReactionRateLaw Get the ratelaw of Reaction
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 func GetReactionRateLaw(neti, reai int, errCode *int) string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return "error"
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return "error"
 	}
 	return r[reai].RateLaw
 }
 
 //GetReactionFillColorRGB GetReactionFillColorRGB
-//errCode: 0:ok,  -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok,  -6: invalid reaction index
+//-5: invalid net index
 func GetReactionFillColorRGB(neti, reai int, errCode *int) uint32 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return 0
 	}
 	color1 := uint32(r[reai].FillColor.R)
@@ -1794,21 +1861,19 @@ func GetReactionFillColorRGB(neti, reai int, errCode *int) uint32 {
 }
 
 //GetReactionFillColorAlpha GetReactionFillColorAlpha
-//errCode: 0:ok,  -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok,  -6: invalid reaction index
+//-5: invalid net index
 func GetReactionFillColorAlpha(neti, reai int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0 //meaningless number. won't be passed to next layer
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return 0
 	}
 	alpha1 := float64(r[reai].FillColor.A) / 255
@@ -1816,84 +1881,76 @@ func GetReactionFillColorAlpha(neti, reai int, errCode *int) float64 {
 }
 
 //GetReactionLineThickness GetReactionLineThickness
-//errCode: -6: reaction index out of range
-//-5: net index out of range
+//errCode: -6: invalid reaction index
+//-5: invalid net index
 func GetReactionLineThickness(neti, reai int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return 0
 	}
 	return r[reai].Thickness
 }
 
 //GetReactionCenterHandleX GetReactionCenterHandleX
-//errCode: -6: reaction index out of range
-//-5: net index out of range
+//errCode: -6: invalid reaction index
+//-5: invalid net index
 func GetReactionCenterHandleX(neti, reai int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return 0
 	}
 	return r[reai].CenterHandleX
 }
 
 //GetReactionCenterHandleY GetReactionCenterHandleY
-//errCode: -6: reaction index out of range
-//-5: net index out of range
+//errCode: -6: invalid reaction index
+//-5: invalid net index
 func GetReactionCenterHandleY(neti, reai int, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return 0
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return 0
 	}
 	return r[reai].CenterHandleY
 }
 
 //GetReactionSrcNodeStoich Get the SrcNode stoichiometry of Reaction
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 func GetReactionSrcNodeStoich(neti, reai int, srcNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -1906,21 +1963,19 @@ func GetReactionSrcNodeStoich(neti, reai int, srcNodeID string, errCode *int) fl
 }
 
 //GetReactionDestNodeStoich Get the DestNode stoichiometry of Reaction
-//return: positive float : ok, -6: reaction index out of range, -7: node index out of range
-//-5: net index out of range
+//return: positive float : ok, -6: invalid reaction index, -7: invalid node index
+//-5: invalid net index
 func GetReactionDestNodeStoich(neti, reai int, destNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[1][destNodeID]
@@ -1933,21 +1988,19 @@ func GetReactionDestNodeStoich(neti, reai int, destNodeID string, errCode *int) 
 }
 
 //GetReactionSrcNodeHandleX Get the SrcNode handel X of Reaction
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 func GetReactionSrcNodeHandleX(neti, reai int, srcNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -1959,24 +2012,20 @@ func GetReactionSrcNodeHandleX(neti, reai int, srcNodeID string, errCode *int) f
 	return r[reai].Species[0][srcNodeID].HandleX
 }
 
-
-
 //GetReactionSrcNodeHandleY Get the SrcNode handel Y of Reaction
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 func GetReactionSrcNodeHandleY(neti, reai int, srcNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -1988,23 +2037,20 @@ func GetReactionSrcNodeHandleY(neti, reai int, srcNodeID string, errCode *int) f
 	return r[reai].Species[0][srcNodeID].HandleY
 }
 
-
 //GetReactionDestNodeHandleX Get the DestNode handel X of Reaction
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 func GetReactionDestNodeHandleX(neti, reai int, destNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[1][destNodeID]
@@ -2016,24 +2062,20 @@ func GetReactionDestNodeHandleX(neti, reai int, destNodeID string, errCode *int)
 	return r[reai].Species[1][destNodeID].HandleX
 }
 
-
-
 //GetReactionDestNodeHandleY Get the DestNode handel Y of Reaction
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 func GetReactionDestNodeHandleY(neti, reai int, destNodeID string, errCode *int) float64 {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return -1000000
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return -1000000
 	}
 	_, ok := r[reai].Species[1][destNodeID]
@@ -2045,66 +2087,58 @@ func GetReactionDestNodeHandleY(neti, reai int, destNodeID string, errCode *int)
 	return r[reai].Species[1][destNodeID].HandleY
 }
 
-
-
 //GetNumberOfSrcNodes Get the SrcNode length of Reaction
-//return: non-negative int: ok, -6: reaction index out of range
-//-5: net index out of range
+//return: non-negative int: ok, -6: invalid reaction index
+//-5: invalid net index
 func GetNumberOfSrcNodes(neti, reai int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	return len(r[reai].Species[0])
 }
 
 //GetNumberOfDestNodes Get the DestNode length of Reaction
-//return: non-negative int: ok, -6: reaction index out of range
-//-5: net index out of range
+//return: non-negative int: ok, -6: invalid reaction index
+//-5: invalid net index
 func GetNumberOfDestNodes(neti, reai int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	return len(r[reai].Species[1])
 }
 
 //GetListOfReactionSrcNodes GetListOfReactionSrcNodes in alphabetical order
-//return: non-empty slice : ok, -6: reaction index out of range
-//-5: net index out of range
+//return: non-empty slice : ok, -6: invalid reaction index
+//-5: invalid net index
 func GetListOfReactionSrcNodes(neti, reai int, errCode *int) []string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return make([]string, 0)
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return make([]string, 0)
 	}
 	list := make([]string, 0)
@@ -2116,21 +2150,19 @@ func GetListOfReactionSrcNodes(neti, reai int, errCode *int) []string {
 }
 
 //GetListOfReactionDestNodes GetListOfReactionDestNodes in alphabetical order
-//return: non-empty slice : ok, -6: reaction index out of range
-//-5: net index out of range
+//return: non-empty slice : ok, -6: invalid reaction index
+//-5: invalid net index
 func GetListOfReactionDestNodes(neti, reai int, errCode *int) []string {
 	*errCode = 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		*errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(neti), "")
 		return make([]string, 0)
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		*errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(*errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(*errCode, "()", strconv.Itoa(reai), "")
 		return make([]string, 0)
 	}
 	list := make([]string, 0)
@@ -2143,30 +2175,27 @@ func GetListOfReactionDestNodes(neti, reai int, errCode *int) []string {
 
 //AddSrcNode add node and Stoich to reactionlist
 //errCode:  0:ok,
-//-5: net index out of range
-//-6: reaction index out of range,
-//-7: node index out of range
+//-5: invalid net index
+//-6: invalid reaction index,
+//-7: invalid node index
 //-8: "wrong stoich: stoich has to be positive"
 //-3: id repeat
 func AddSrcNode(neti, reai, nodei int, stoich float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
-	if nodei < 0 || nodei >= len(networkSet[neti].Nodes) {
+	if nodei < 0 || nodei >= len(networkSet.netSet[neti].Nodes) {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if stoich <= 0.0 {
@@ -2180,7 +2209,7 @@ func AddSrcNode(neti, reai, nodei int, stoich float64) int {
 		netSetStack.push(networkSet)
 	}
 
-	srcNodeID := networkSet[neti].Nodes[nodei].ID
+	srcNodeID := networkSet.netSet[neti].Nodes[nodei].ID
 	_, ok := r[reai].Species[0][srcNodeID]
 	if ok == true {
 		errCode = -3
@@ -2194,30 +2223,27 @@ func AddSrcNode(neti, reai, nodei int, stoich float64) int {
 
 //AddDestNode add node and Stoich to reactionlist
 //errCode:  0:ok,
-//-5: net index out of range
-//-6: reaction index out of range,
-//-7: node index out of range
+//-5: invalid net index
+//-6: invalid reaction index,
+//-7: invalid node index
 //-8: "wrong stoich: stoich has to be positive"
 //-3: id repeat
 func AddDestNode(neti, reai, nodei int, stoich float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
-	if nodei < 0 || nodei >= len(networkSet[neti].Nodes) {
+	if nodei < 0 || nodei >= len(networkSet.netSet[neti].Nodes) {
 		errCode = -7
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNodes(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(nodei), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(nodei), "")
 		return errCode
 	}
 	if stoich <= 0 {
@@ -2231,7 +2257,7 @@ func AddDestNode(neti, reai, nodei int, stoich float64) int {
 		netSetStack.push(networkSet)
 	}
 
-	destNodeID := networkSet[neti].Nodes[nodei].ID
+	destNodeID := networkSet.netSet[neti].Nodes[nodei].ID
 	_, ok := R.Species[1][destNodeID]
 	if ok == true {
 		errCode = -3
@@ -2239,28 +2265,26 @@ func AddDestNode(neti, reai, nodei int, stoich float64) int {
 		return errCode
 	}
 	R.Species[1][destNodeID] = TSpeciesNode{Stoich: stoich}
-	networkSet[neti].ReactionSet[reai] = R
+	networkSet.netSet[neti].ReactionSet[reai] = R
 
 	return errCode
 }
 
 //DeleteSrcNode delete src nodes by id(ID).
-//errCode: 0:ok, -6: reaction index out of range,
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index,
+//-5: invalid net index
 //-2: id not found
 func DeleteSrcNode(neti, reai int, srcNodeID string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	R := r[reai]
@@ -2277,27 +2301,25 @@ func DeleteSrcNode(neti, reai int, srcNodeID string) int {
 	}
 
 	delete(R.Species[0], srcNodeID)
-	networkSet[neti].ReactionSet[reai] = R
+	networkSet.netSet[neti].ReactionSet[reai] = R
 	return errCode
 }
 
 //DeleteDestNode delete all dest nodes by id
-//errCode: 0:ok, -6: reaction index out of range,
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index,
+//-5: invalid net index
 //-2: id not found
 func DeleteDestNode(neti, reai int, destNodeID string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	R := r[reai]
@@ -2314,27 +2336,30 @@ func DeleteDestNode(neti, reai int, destNodeID string) int {
 	}
 
 	delete(R.Species[1], destNodeID)
-	networkSet[neti].ReactionSet[reai] = R
+	networkSet.netSet[neti].ReactionSet[reai] = R
 	return errCode
 }
 
 //SetReactionID edit id of reaction
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 //-3: id repeat
 func SetReactionID(neti, reai int, newID string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
+		return errCode
+	}
+	if newID == "" {
+		errCode = -3
+		addErrorMessage(errCode, ("(" + strconv.Itoa(neti) + ", " + strconv.Itoa(reai) + ", \"" + newID + "\")"), newID, "")
 		return errCode
 	}
 	for i := range r {
@@ -2349,26 +2374,24 @@ func SetReactionID(neti, reai int, newID string) int {
 		netSetStack.push(networkSet)
 	}
 
-	networkSet[neti].ReactionSet[reai].ID = newID
+	networkSet.netSet[neti].ReactionSet[reai].ID = newID
 	return errCode
 }
 
 //SetRateLaw edit rate law of reaction
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 func SetRateLaw(neti, reai int, rateLaw string) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	if stackFlag {
@@ -2376,27 +2399,25 @@ func SetRateLaw(neti, reai int, rateLaw string) int {
 		netSetStack.push(networkSet)
 	}
 
-	networkSet[neti].ReactionSet[reai].RateLaw = rateLaw
+	networkSet.netSet[neti].ReactionSet[reai].RateLaw = rateLaw
 	return errCode
 }
 
 //SetReactionSrcNodeStoich edit Stoich by Reaction SrcNodeID
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 //-8: wrong stoich
 func SetReactionSrcNodeStoich(neti, reai int, srcNodeID string, newStoich float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -2418,22 +2439,20 @@ func SetReactionSrcNodeStoich(neti, reai int, srcNodeID string, newStoich float6
 }
 
 //SetReactionDestNodeStoich edit Stoich by Reaction DestNodeID
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 //-8: wrong stoich
 func SetReactionDestNodeStoich(neti, reai int, destNodeID string, newStoich float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	_, ok := r[reai].Species[1][destNodeID]
@@ -2454,24 +2473,21 @@ func SetReactionDestNodeStoich(neti, reai int, destNodeID string, newStoich floa
 	return errCode
 }
 
-
 //SetReactionSrcNodeHandlePosition edit handleX and Y by Reaction SrcNodeID
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 //-12: Variable out of range
 func SetReactionSrcNodeHandlePosition(neti, reai int, srcNodeID string, handleX, handleY float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	_, ok := r[reai].Species[0][srcNodeID]
@@ -2493,24 +2509,21 @@ func SetReactionSrcNodeHandlePosition(neti, reai int, srcNodeID string, handleX,
 	return errCode
 }
 
-
 //SetReactionDestNodeHandlePosition edit handleX and Y by Reaction DestNodeID
-//errCode: -6: reaction index out of range,
-//-5: net index out of range, -2: id not found
+//errCode: -6: invalid reaction index,
+//-5: invalid net index, -2: id not found
 //-12: Variable out of range
 func SetReactionDestNodeHandlePosition(neti, reai int, destNodeID string, handleX, handleY float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	_, ok := r[reai].Species[1][destNodeID]
@@ -2532,24 +2545,21 @@ func SetReactionDestNodeHandlePosition(neti, reai int, destNodeID string, handle
 	return errCode
 }
 
-
 //SetReactionFillColorRGB SetReactionFillColorRGB
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 //-12: Variable out of range
 func SetReactionFillColorRGB(neti, reai, R, G, B int) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	if R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255 {
@@ -2573,22 +2583,20 @@ func SetReactionFillColorRGB(neti, reai, R, G, B int) int {
 }
 
 //SetReactionFillColorAlpha SetReactionFillColorAlpha
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 //-12: Variable out of range:
 func SetReactionFillColorAlpha(neti, reai int, a float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	if a < 0 || a > 1 {
@@ -2608,22 +2616,20 @@ func SetReactionFillColorAlpha(neti, reai int, a float64) int {
 }
 
 //SetReactionLineThickness SetReactionLineThickness
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 //-12: Variable out of range
 func SetReactionLineThickness(neti, reai int, thickness float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
 	if thickness <= 0 {
@@ -2637,31 +2643,28 @@ func SetReactionLineThickness(neti, reai int, thickness float64) int {
 		netSetStack.push(networkSet)
 	}
 
-	networkSet[neti].ReactionSet[reai].Thickness = thickness
+	networkSet.netSet[neti].ReactionSet[reai].Thickness = thickness
 	return errCode
 }
 
-
 //SetReactionCenterHandlePosition SetReactionCenterHandlePosition
-//errCode: 0:ok, -6: reaction index out of range
-//-5: net index out of range
+//errCode: 0:ok, -6: invalid reaction index
+//-5: invalid net index
 //-12: Variable out of range
-func SetReactionCenterHandlePosition(neti, reai int, centerHandleX,centerHandleY float64) int {
+func SetReactionCenterHandlePosition(neti, reai int, centerHandleX, centerHandleY float64) int {
 	errCode := 0
-	if neti < 0 || neti >= len(networkSet) {
+	if neti < 0 || neti >= len(networkSet.netSet) || networkSet.netSetBool[neti] == false {
 		errCode = -5
-		range1 := "int[0," + strconv.Itoa(GetNumberOfNetworks()-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(neti), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(neti), "")
 		return errCode
 	}
-	r := networkSet[neti].ReactionSet
-	if reai < 0 || reai >= len(r) {
+	r := networkSet.netSet[neti].ReactionSet
+	if reai < 0 || reai >= len(r) || networkSet.netSet[neti].reactionset[reai] == false {
 		errCode = -6
-		range1 := "int[0," + strconv.Itoa(GetNumberOfReactions(neti)-1) + "]"
-		addErrorMessage(errCode, "()", strconv.Itoa(reai), range1)
+		addErrorMessage(errCode, "()", strconv.Itoa(reai), "")
 		return errCode
 	}
-	if centerHandleX < 0 || centerHandleY <0 {
+	if centerHandleX < 0 || centerHandleY < 0 {
 		errCode = -12
 		m2 := strconv.FormatFloat(centerHandleX, 'f', 2, 64)
 		addErrorMessage(errCode, "()", m2, "xy")
@@ -2672,11 +2675,10 @@ func SetReactionCenterHandlePosition(neti, reai int, centerHandleX,centerHandleY
 		netSetStack.push(networkSet)
 	}
 
-	networkSet[neti].ReactionSet[reai].CenterHandleX = centerHandleX
-	networkSet[neti].ReactionSet[reai].CenterHandleY = centerHandleY
+	networkSet.netSet[neti].ReactionSet[reai].CenterHandleX = centerHandleX
+	networkSet.netSet[neti].ReactionSet[reai].CenterHandleY = centerHandleY
 	return errCode
 }
-
 
 func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i int, src1Stoich, src2Stoich, dest1Stoich, dest2Stoich float64) {
 	StartGroup()
@@ -2695,9 +2697,20 @@ func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i in
 //###################################################################
 
 // func main() {
-// 	err:= 0
+// // 	err:= 0
 // NewNetwork("network1")
-// NewNetwork("network1")
+// NewNetwork("network2")
+// NewNetwork("network3")
+// fmt.Println(NewNetwork(""))
+// fmt.Println(networkSet.netSet)
+// fmt.Println(networksetBool)
+// fmt.Println(GetNumberOfNetworks())
+// fmt.Println(GetLargestNetworkIndex())
+// 	DeleteNetwork(1)
+// 	fmt.Println(networkSet.netSet)
+// 	fmt.Println(networksetBool)
+// 	fmt.Println(GetNumberOfNetworks())
+
 // fmt.Println(GetErrorMessage())
 // 	AddNode(0, "node1", 1.1, 2.5, 5.4, 6.4)
 // 	SetNodeFillColorRGB(0,0,23,43,53)
@@ -2715,5 +2728,5 @@ func createBiBi(neti int, reaID, rateLaw string, src1i, src2i, dest1i, dest2i in
 // 	Undo()
 // 	SaveNetworkAsJSON(0,"net2.json")
 // 	Redo()
-// 	SaveNetworkAsJSON(0,"net3.json")
+// SaveNetworkAsJSON(0,"net3.json")
 // }

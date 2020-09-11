@@ -12,15 +12,18 @@ libIodine.readNetworkFromJSON.argtypes = [
     ctypes.c_char_p]
 libIodine.deleteNetwork.argtypes = [ctypes.c_int]
 libIodine.getNetworkID.argtypes = [ctypes.c_int]
+libIodine.getNetworkBool.argtypes = [ctypes.c_int]
 libIodine.addNode.argtypes = [ctypes.c_int, ctypes.c_char_p,
                               ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float]
 libIodine.getNodeIndex.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libIodine.deleteNode.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.clearNetwork.argtypes = [ctypes.c_int]
 libIodine.getNumberOfNodes.argtypes = [ctypes.c_int]
+libIodine.getLargestNodeIndex.argtypes = [ctypes.c_int]
 libIodine.getNodeCenterX.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeCenterY.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeID.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getNodeBool.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeX.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeY.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getNodeW.argtypes = [ctypes.c_int, ctypes.c_int]
@@ -72,7 +75,9 @@ libIodine.getReactionIndex.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libIodine.deleteReaction.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.clearReactions.argtypes = [ctypes.c_int]
 libIodine.getNumberOfReactions.argtypes = [ctypes.c_int]
+libIodine.getLargestReactionIndex.argtypes = [ctypes.c_int]
 libIodine.getReactionID.argtypes = [ctypes.c_int, ctypes.c_int]
+libIodine.getReactionBool.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionRateLaw.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionFillColorRGB.argtypes = [ctypes.c_int, ctypes.c_int]
 libIodine.getReactionFillColorAlpha.argtypes = [ctypes.c_int, ctypes.c_int]
@@ -138,15 +143,19 @@ libIodine.saveNetworkAsJSON.restype = ctypes.c_int
 libIodine.readNetworkFromJSON.restype = ctypes.c_int
 libIodine.deleteNetwork.restype = ctypes.c_int
 libIodine.getNumberOfNetworks.restype = ctypes.c_int
+libIodine.getLargestNetworkIndex.restype = ctypes.c_int
 libIodine.getNetworkID.restype = ctypes.c_char_p
+libIodine.getNetworkBool.restype = ctypes.c_int
 libIodine.addNode.restype = ctypes.c_int
 libIodine.getNodeIndex.restype = ctypes.c_int
 libIodine.deleteNode.restype = ctypes.c_int
 libIodine.clearNetwork.restype = ctypes.c_int
 libIodine.getNumberOfNodes.restype = ctypes.c_int
+libIodine.getLargestNodeIndex.restype = ctypes.c_int
 libIodine.getNodeCenterX.restype = ctypes.c_float
 libIodine.getNodeCenterY.restype = ctypes.c_float
 libIodine.getNodeID.restype = ctypes.c_char_p
+libIodine.getNodeBool.restype = ctypes.c_int
 libIodine.getNodeX.restype = ctypes.c_float
 libIodine.getNodeY.restype = ctypes.c_float
 libIodine.getNodeW.restype = ctypes.c_float
@@ -184,7 +193,9 @@ libIodine.getReactionIndex.restype = ctypes.c_int
 libIodine.deleteReaction.restype = ctypes.c_int
 libIodine.clearReactions.restype = ctypes.c_int
 libIodine.getNumberOfReactions.restype = ctypes.c_int
+libIodine.getLargestReactionIndex.restype = ctypes.c_int
 libIodine.getReactionID.restype = ctypes.c_char_p
+libIodine.getReactionBool.restype = ctypes.c_int
 libIodine.getReactionRateLaw.restype = ctypes.c_char_p
 libIodine.getReactionFillColorRGB.restype = ctypes.c_uint32
 libIodine.getReactionFillColorAlpha.restype = ctypes.c_float
@@ -273,9 +284,9 @@ errorDict = {
     -2: "id not found: ",
     -3: "id repeat: ",
     -4: "node is not free: ",
-    -5: "net index out of range: ",
-    -6: "reaction index out of range: ",
-    -7: "node index out of range: ",
+    -5: "invalid net index: ",
+    -6: "invalid reaction index: ",
+    -7: "invalid node index: ",
     -8: "wrong stoich: stoich has to be positive: ",
     -9: "stack is empty",
     -10: "Json convert error",
@@ -377,6 +388,8 @@ def clearNetworks():
 def getNumberOfNetworks():
     return libIodine.getNumberOfNetworks()
 
+def getLargestNetworkIndex():
+    return libIodine.getLargestNetworkIndex()
 
 def getNetworkID(neti: int):
     netID = libIodine.getNetworkID(neti).decode("utf-8")
@@ -386,12 +399,21 @@ def getNetworkID(neti: int):
     else:
         return netID
 
+def getNetworkBool(neti: int):
+    bool1 = libIodine.getNetworkBool(neti)
+    if bool1 < 0:
+        raise ExceptionDict[bool1](errorDict[bool1],  neti)
+    else:
+        return bool1
+
 
 def getListOfNetworks():
-    a = getNumberOfNetworks()
+    a = getLargestNetworkIndex()
     idList = []
     for neti in range(a):
-        idList.append(getNetworkID(neti))
+        bool1 = getNetworkBool(neti)
+        if bool1 == 1:
+            idList.append(getNetworkID(neti))
     return idList
 
 
@@ -429,6 +451,12 @@ def getNumberOfNodes(neti: int):
     else:
         return num
 
+def getLargestNodeIndex(neti: int):
+    num = libIodine.getLargestNodeIndex(neti)
+    if num < 0:
+        raise ExceptionDict[num](errorDict[num], neti)
+    else:
+        return num
 
 def getNodeCenter(neti: int, nodei: int):
     X = round(libIodine.getNodeCenterX(neti, nodei), 2)
@@ -450,12 +478,21 @@ def getNodeID(neti: int, nodei: int):
     else:
         return nodeID
 
+def getNodeBool(neti: int, nodei: int):
+    bool1 = libIodine.getNodeBool(neti, nodei)
+    if bool1 < 0:
+        raise ExceptionDict[bool1](errorDict[bool1], neti)
+    else:
+        return bool1
+
 
 def getListOfNodeIDs(neti: int):
-    n = getNumberOfNodes(neti)
+    n = getLargestNodeIndex(neti)
     nodeList = []
     for nodei in range(n):
-        nodeList.append(getNodeID(neti, nodei))
+        bool1 = getNodeBool(neti, nodei)
+        if bool1 == 1:
+            nodeList.append(getNodeID(neti, nodei))
     return nodeList
 
 
@@ -737,6 +774,12 @@ def getNumberOfReactions(neti: int):
     else:
         return reaNum
 
+def getLargestReactionIndex(neti: int):
+    reaNum = libIodine.getLargestReactionIndex(neti)
+    if reaNum < 0:
+        raise ExceptionDict[reaNum](errorDict[reaNum], neti)
+    else:
+        return reaNum
 
 def getReactionID(neti: int, reai: int):
     reaID = libIodine.getReactionID(neti, reai).decode("utf-8")
@@ -747,11 +790,20 @@ def getReactionID(neti: int, reai: int):
         return reaID
 
 
+def getReactionBool(neti: int, reai: int):
+    bool1 = libIodine.getReactionBool(neti, reai)
+    if bool1 < 0:
+        raise ExceptionDict[bool1](errorDict[bool1], neti)
+    else:
+        return bool1
+
 def getListOfReactionIDs(neti: int):
-    n = getNumberOfReactions(neti)
+    n = getLargestReactionIndex(neti)
     reaList = []
     for i in range(n):
-        reaList.append(getReactionID(neti, i))
+        bool1 = getReactionBool(neti, i)
+        if bool1 == 1:
+            reaList.append(getReactionID(neti, i))
     return reaList
 
 
